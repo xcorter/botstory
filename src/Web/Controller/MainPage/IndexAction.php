@@ -41,7 +41,9 @@ class IndexAction
     public function __invoke(): Response
     {
         return new Response(
-            $this->twig->render('@web/base.html.twig')
+            $this->twig->render('@web/base.html.twig', [
+                'text' => 'this is template'
+            ])
         );
     }
 }
