@@ -6,6 +6,10 @@
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
-        {{ text }}
+        <div>{{ text }}</div>
+
+        {% for i in texts %}
+            <div>{{ i }}</div>
+        {% endfor %}
     </body>
 </html>

@@ -42,7 +42,12 @@ class IndexAction
     {
         return new Response(
             $this->twig->render('@web/base.html.twig', [
-                'text' => 'this is template'
+                'text' => 'this is template',
+                'texts' => [
+                    'text1',
+                    'text2',
+                    'text3',
+                ]
             ])
         );
     }
