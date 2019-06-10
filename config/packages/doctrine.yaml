@@ -14,9 +14,9 @@ doctrine:
         naming_strategy: doctrine.orm.naming_strategy.underscore
         auto_mapping: true
         mappings:
-            App\Bot:
+            App\Core:
                 is_bundle: false
                 type: annotation
-                dir: '%kernel.project_dir%/src/Bot/Entity'
+                dir: '%kernel.project_dir%/src/Core/Entity'
                 prefix: 'App\Bot\Entity'
-                alias: App\Bot
+                alias: App\Core

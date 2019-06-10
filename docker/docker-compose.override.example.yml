@@ -1,0 +1,7 @@
+version: '3.7'
+
+services:
+  botstory-php:
+    environment:
+      XDEBUG_CONFIG: remote_host=docker.for.mac.host.internal remote_connect_back=false
+

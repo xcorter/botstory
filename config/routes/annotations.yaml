@@ -1,3 +1,3 @@
-controllers:
-    resource: ../../src/Controller/
+controllers_web:
+    resource: ../../src/Web/Controller/
     type: annotation
