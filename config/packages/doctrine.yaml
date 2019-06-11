@@ -18,5 +18,5 @@ doctrine:
                 is_bundle: false
                 type: annotation
                 dir: '%kernel.project_dir%/src/Core/Entity'
-                prefix: 'App\Bot\Entity'
+                prefix: 'App\Core\Entity'
                 alias: App\Core

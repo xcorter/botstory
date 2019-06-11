@@ -2,7 +2,7 @@
 
 namespace App\Core\Repository;
 
-use App\Bot\Entity\Game;
+use App\Core\Entity\Game;
 use Doctrine\ORM\EntityManagerInterface;
 
 class GameRepository
