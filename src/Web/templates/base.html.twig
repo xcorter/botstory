@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
-    </head>
-    <body>
-        <div>{{ text }}</div>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    {% block stylesheets %}{% endblock %}
+</head>
+<body>
+    <div>{{ text }}</div>
 
-        {% for i in texts %}
-            <div>{{ i }}</div>
-        {% endfor %}
-    </body>
+    {% for user in texts %}
+
+        <div>{{ user.name }}</div>
+
+    {% endfor %}
+
+</body>
 </html>

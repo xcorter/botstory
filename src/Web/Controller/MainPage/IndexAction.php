@@ -40,15 +40,12 @@ class IndexAction
      */
     public function __invoke(): Response
     {
-        $this->gameRepository->findAll();
+       $texts =  $this->gameRepository->findAll();
+
         return new Response(
             $this->twig->render('@web/base.html.twig', [
                 'text' => 'this is template',
-                'texts' => [
-                    'text1',
-                    'text2',
-                    'text3',
-                ]
+                'texts' => $texts
             ])
         );
     }
