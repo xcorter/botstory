@@ -2,12 +2,13 @@
 
 namespace App\Web\Controller\MainPage;
 
-use App\Core\Repository\GameRepository;
 use Symfony\Component\HttpFoundation\Response;
+use App\Core\Repository\GameRepository;
 use Symfony\Component\Routing\Annotation\Route;
 use Twig\Environment;
 
-class IndexAction
+
+class Detail
 {
 
     /**
@@ -32,23 +33,20 @@ class IndexAction
     }
 
     /**
-     * @Route("/")
-     * @return Response
+     * @Route("/{gameId}", name="game")
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
      */
-    public function __invoke(): Response
+    public function showGame($gameId): Response
     {
-       $texts =  $this->gameRepository->findAll();
+        $game = $this->gameRepository->findGameById($gameId);
 
         return new Response(
-            $this->twig->render('@web/base.html.twig', [
-                'text' => 'this is template',
-                'texts' => $texts
-            ])
+
+            $this->twig->render('@web/game.html.twig', array
+            ('game' => $game))
         );
     }
-
 
 }

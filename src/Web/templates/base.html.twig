@@ -10,8 +10,8 @@
 
     {% for user in texts %}
 
-        <div>{{ user.name }}</div>
 
+        <div><a href="{{ path('game', {'gameId': user.id}) }}">{{ user.name }}</a></div>
     {% endfor %}
 
 </body>
