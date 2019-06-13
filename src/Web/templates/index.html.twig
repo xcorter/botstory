@@ -1,0 +1,14 @@
+{% extends "@web/base.html.twig" %}
+
+{% block title %}Welcome!{% endblock %}
+{% block head %}
+{% endblock %}
+
+{% block content %}
+    <div>{{ text }}</div>
+    {% for user in texts %}
+        <div><a href="{{ path('game', {'gameId': user.id}) }}">{{ user.name }}</a></div>
+    {% endfor %}
+{% endblock %}
+
+

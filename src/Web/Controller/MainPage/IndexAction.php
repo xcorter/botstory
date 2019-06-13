@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Twig\Environment;
 
+
 class IndexAction
 {
 
@@ -43,7 +44,7 @@ class IndexAction
        $texts =  $this->gameRepository->findAll();
 
         return new Response(
-            $this->twig->render('@web/base.html.twig', [
+            $this->twig->render('@web/index.html.twig', [
                 'text' => 'this is template',
                 'texts' => $texts
             ])

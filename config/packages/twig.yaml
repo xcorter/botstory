@@ -4,3 +4,5 @@ twig:
     strict_variables: '%kernel.debug%'
     paths:
         '%kernel.project_dir%/src/Web/templates': web
+
+

@@ -44,8 +44,8 @@ class Detail
 
         return new Response(
 
-            $this->twig->render('@web/game.html.twig', array
-            ('game' => $game))
+            $this->twig->render('@web/game.html.twig',
+            ['game' => $game])
         );
     }
 
