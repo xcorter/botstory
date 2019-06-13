@@ -2,6 +2,7 @@
 
 namespace App\Web\Controller\MainPage;
 
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use App\Core\Repository\GameRepository;
 use Symfony\Component\Routing\Annotation\Route;
@@ -20,16 +21,25 @@ class Detail
      * @var GameRepository
      */
     private $gameRepository;
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
 
     /**
      * IndexAction constructor.
      * @param Environment $twig
      * @param GameRepository $gameRepository
+     * @param LoggerInterface $logger
      */
-    public function __construct(Environment $twig, GameRepository $gameRepository)
-    {
+    public function __construct(
+        Environment $twig,
+        GameRepository $gameRepository,
+        LoggerInterface $logger
+    ) {
         $this->twig = $twig;
         $this->gameRepository = $gameRepository;
+        $this->logger = $logger;
     }
 
     /**
@@ -41,6 +51,10 @@ class Detail
     public function showGame($gameId): Response
     {
         $game = $this->gameRepository->findGameById($gameId);
+        if (!$game) {
+            $this->logger->error('Game not found');
+            throw new \OutOfRangeException('Game object not found');
+        }
 
         return new Response(
 
