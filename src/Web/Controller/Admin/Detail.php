@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Web\Controller\MainPage;
+namespace App\Web\Controller\Admin;
 
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -43,7 +43,7 @@ class Detail
     }
 
     /**
-     * @Route("/{gameId}", name="game")
+     * @Route("/admin/game/{gameId}", name="game")
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError

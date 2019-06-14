@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Web\Controller\MainPage;
+namespace App\Web\Controller\Admin;
 
 use App\Core\Repository\GameRepository;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,7 +33,7 @@ class IndexAction
     }
 
     /**
-     * @Route("/")
+     * @Route("/admin/")
      * @return Response
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
