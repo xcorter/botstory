@@ -23,12 +23,20 @@ class Game
     private $name;
 
     /**
+     * @ORM\Column(type="string", length=255, unique=true)
+     * @var string $author
+     */
+    private $author;
+
+    /**
      * Game constructor.
      * @param string $name
+     * @param string $author
      */
-    public function __construct(string $name)
+    public function __construct(string $name, string $author)
     {
         $this->name = $name;
+        $this->author = $author;
     }
 
     /**
@@ -45,5 +53,13 @@ class Game
     public function getName(): string
     {
         return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAuthor(): string
+    {
+        return $this->author;
     }
 }
