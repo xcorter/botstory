@@ -23,8 +23,9 @@
         <div>{{ text }}</div>
 
         {% for user in texts %}
-            <p><a href="{{ path('game', {'gameId': user.id}) }}" class="text-primary text-decoration-none">{{ user.name }}</a></p>
-
+        <div class="list-group">
+            <p><a href="{{ path('game', {'gameId': user.id}) }}" class="list-group-item list-group-item-action">{{ user.name }}</a></p>
+        </div>
         {% endfor %}
     </div>
 

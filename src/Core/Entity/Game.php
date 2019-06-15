@@ -23,7 +23,7 @@ class Game
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=255, unique=true)
+     * @ORM\Column(type="string", length=255)
      * @var string $author
      */
     private $author;
