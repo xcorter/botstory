@@ -13,11 +13,12 @@ class Game
      * @ORM\Column(type="integer", options={"unsigned"=true})
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\OneToMany(targetEntity="App/Core/Entity/Script", unique="true")
      * @var integer $id
      */
     private $id;
     /**
-     * @ORM\Column(type="string", length=255, unique=true)
+     *
      * @var string $name
      */
     private $name;
