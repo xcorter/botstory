@@ -4,6 +4,11 @@
 
 {% block content %}
     <h2>{{ game.name }}</h2>
+    {% for script in scripts %}
+        <div>
+            <p>{{script.text}}</p>
+        </div>
+    {% endfor %}
 {% endblock %}
 
 

@@ -2,6 +2,7 @@
 
 namespace App\Web\Controller\Admin;
 
+use App\Core\Repository\ScriptRepository;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use App\Core\Repository\GameRepository;
@@ -21,6 +22,12 @@ class Detail
      * @var GameRepository
      */
     private $gameRepository;
+
+    /**
+     * @var ScriptRepository
+     */
+    private $scriptRepository;
+
     /**
      * @var LoggerInterface
      */
@@ -30,15 +37,18 @@ class Detail
      * IndexAction constructor.
      * @param Environment $twig
      * @param GameRepository $gameRepository
+     * @param ScriptRepository $scriptRepository
      * @param LoggerInterface $logger
      */
     public function __construct(
         Environment $twig,
         GameRepository $gameRepository,
+        ScriptRepository $scriptRepository,
         LoggerInterface $logger
     ) {
         $this->twig = $twig;
         $this->gameRepository = $gameRepository;
+        $this->scriptRepository = $scriptRepository;
         $this->logger = $logger;
     }
 
@@ -51,6 +61,8 @@ class Detail
     public function showGame($gameId): Response
     {
         $game = $this->gameRepository->findGameById($gameId);
+        $scripts = $this->scriptRepository->findAllScriptsByGameId($gameId);
+
         if (!$game) {
             $this->logger->error('Game not found');
             throw new \OutOfRangeException('Game object not found');
@@ -59,7 +71,9 @@ class Detail
         return new Response(
 
             $this->twig->render('@web/game.html.twig',
-            ['game' => $game])
+            ['game' => $game,
+            'scripts' => $scripts
+            ])
         );
     }
 
