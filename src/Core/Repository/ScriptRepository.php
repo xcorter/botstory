@@ -25,7 +25,14 @@ class ScriptRepository
 
     public function findAllScriptsByGameId(int $gameId): array
     {
-        return $this->entityManager->getRepository(Script::class)->findBy(['game' =>$gameId], ['step' => 'ASC']);
+        return $this->entityManager->getRepository(Script::class)->findBy(
+            [
+                'game' => $gameId
+            ],
+            [
+                'step' => 'ASC'
+            ]
+        );
     }
 
 }

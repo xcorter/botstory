@@ -69,11 +69,13 @@ class Detail
         }
 
         return new Response(
-
-            $this->twig->render('@web/game.html.twig',
-            ['game' => $game,
-            'scripts' => $scripts
-            ])
+            $this->twig->render(
+                '@web/game.html.twig',
+                [
+                    'game' => $game,
+                    'scripts' => $scripts
+                ]
+            )
         );
     }
 
