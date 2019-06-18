@@ -29,7 +29,11 @@ class GameRepository
         return $this->entityManager->getRepository(Game::class)->findAll();
     }
 
-    public function findGameById(int $id)
+    /**
+     * @param int $id
+     * @return Game|null
+     */
+    public function findGameById(int $id): ?Game
     {
         return $this->entityManager->getRepository(Game::class)->find($id);
     }

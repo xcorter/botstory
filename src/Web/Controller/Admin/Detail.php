@@ -54,19 +54,22 @@ class Detail
 
     /**
      * @Route("/admin/game/{gameId}", name="game")
+     * @param int $gameId
+     * @return Response
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
      */
-    public function showGame($gameId): Response
+    public function showGame(int $gameId): Response
     {
         $game = $this->gameRepository->findGameById($gameId);
-        $scripts = $this->scriptRepository->findAllScriptsByGameId($gameId);
 
         if (!$game) {
             $this->logger->error('Game not found');
             throw new \OutOfRangeException('Game object not found');
         }
+
+        $scripts = $this->scriptRepository->findAllScriptsByGameId($game->getId());
 
         return new Response(
             $this->twig->render(
