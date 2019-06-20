@@ -4,8 +4,13 @@ namespace App\Core\Repository;
 
 
 use App\Core\Entity\Script;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
 
+/**
+ * @method createQueryBuilder(string $string)
+ */
 class ScriptRepository
 {
 
@@ -35,4 +40,12 @@ class ScriptRepository
         );
     }
 
+    /*public function getAllSCripts(int $gameId)
+    {
+        return $this->createQueryBuilder('a')
+            ->select('game')
+            ->getQuery()
+            ->getResult()
+            ;
+    }*/
 }

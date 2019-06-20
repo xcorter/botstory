@@ -4,11 +4,18 @@
 
 {% block content %}
     <h2>{{ game.name }}</h2>
+    <ul>
     {% for script in scripts %}
         <div>
             <p>{{script.text}}</p>
         </div>
     {% endfor %}
+    </ul>
+
+    <div class="navigation">
+        {{ knp_pagination_render(scripts) }}
+    </div>
+
 {% endblock %}
 
 
