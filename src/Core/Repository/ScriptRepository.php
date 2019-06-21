@@ -6,7 +6,6 @@ namespace App\Core\Repository;
 use App\Core\Entity\Script;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityRepository;
 
 /**
  * @method createQueryBuilder(string $string)
@@ -40,12 +39,14 @@ class ScriptRepository
         );
     }
 
-    /*public function getAllSCripts(int $gameId)
+    public function getPaginatorQuery(int $gameId): \Doctrine\ORM\Query
     {
-        return $this->createQueryBuilder('a')
-            ->select('game')
-            ->getQuery()
-            ->getResult()
-            ;
-    }*/
+       return   $this->entityManager->createQueryBuilder()
+            ->select('id', 'game', 'text')
+            ->from('script', 'q')
+            ->andWhere('q.game = :gameId')
+            ->setParameter('gameId', $gameId)
+            ->orderBy('q.step', 'ASC')
+            ->getQuery();
+    }
 }

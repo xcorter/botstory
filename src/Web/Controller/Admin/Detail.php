@@ -68,21 +68,19 @@ class Detail
     public function showGame(int $gameId, Request $request, PaginatorInterface $paginator): Response
     {
         $game = $this->gameRepository->findGameById($gameId);
-        $scripts = $this->scriptRepository->findAllScriptsByGameId($game->getId());
-
-
 
         if (!$game) {
             $this->logger->error('Game not found');
             throw new \OutOfRangeException('Game object not found');
         }
 
-
+      
+        $scriptsQuery = $this->scriptRepository->getPaginatorQuery($game->getId());
 
         // Paginate the results of the query
         $scripts = $paginator->paginate(
         // Doctrine Query, not results
-            $scripts,
+            $scriptsQuery,
             // Define the page parameter
             $request->query->getInt('page', 1),
             // Items per page
