@@ -39,9 +39,10 @@ class ScriptRepository
             ]
         );
     }
+
     public function getPaginatorQuery(int $gameId): Query
     {
-       return   $this->entityManager->createQueryBuilder()
+       return $this->entityManager->createQueryBuilder()
             ->select('q.id',  'q.text')
             ->from(Script::class, 'q')
             ->andWhere('q.game = :gameId')
