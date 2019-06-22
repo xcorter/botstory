@@ -74,7 +74,6 @@ class Detail
             throw new \OutOfRangeException('Game object not found');
         }
 
-      
         $scriptsQuery = $this->scriptRepository->getPaginatorQuery($game->getId());
 
         // Paginate the results of the query
@@ -86,18 +85,14 @@ class Detail
             // Items per page
             20
         );
-
-
         return new Response(
             $this->twig->render(
                 '@web/game.html.twig',
                 [
                     'game' => $game,
                     'scripts' => $scripts
-
                 ]
             )
         );
     }
-
 }
