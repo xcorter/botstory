@@ -74,4 +74,30 @@ class Script
     {
         return $this->game;
     }
+
+    /**
+     * @param string $text
+     */
+    public function setText(string $text): void
+    {
+        $this->text = $text;
+    }
+
+    /**
+     * @param int $step
+     */
+    public function setStep(int $step): void
+    {
+        $this->step = $step;
+    }
+
+    /**
+     * @param Game $game
+     */
+    public function setGame(Game $game): void
+    {
+        $this->game = $game;
+    }
+
+
 }
