@@ -5,16 +5,13 @@ namespace App\Web\Controller\Admin;
 
 use App\Core\Entity\Script;
 use App\Web\Form\ScriptType;
-
-
 use App\Core\Repository\GameRepository;
 use App\Core\Repository\ScriptRepository;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Form\FormBuilderInterface;
 use Twig\Environment;
 
 class AddScript extends AbstractController
@@ -33,28 +30,33 @@ class AddScript extends AbstractController
      * @var ScriptRepository
      */
     private $scriptRepository;
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
 
     /**
-     * IndexAction constructor.
+     * AddScript constructor.
      * @param Environment $twig
      * @param GameRepository $gameRepository
      * @param ScriptRepository $scriptRepository
+     * @param LoggerInterface $logger
      */
     public function __construct(
         Environment $twig,
+        GameRepository $gameRepository,
         ScriptRepository $scriptRepository,
-        GameRepository $gameRepository
-
-    )
-    {
+        LoggerInterface $logger
+    ) {
         $this->twig = $twig;
-        $this->scriptRepository = $scriptRepository;
         $this->gameRepository = $gameRepository;
-
+        $this->scriptRepository = $scriptRepository;
+        $this->logger = $logger;
     }
 
+
     /**
-     * @Route("/admin/game/{gameId}/addScript", name="addScript")
+     * @Route("/admin/game/{gameId}/addScript", name="addScript", methods={"GET"})
      * @param int $gameId
      * @return Response
      * @throws \Twig\Error\LoaderError
@@ -70,13 +72,9 @@ class AddScript extends AbstractController
             throw new \OutOfRangeException('Game object not found');
         }
 
-        $script = new Script('', 25, 34);
-        $script->setGame($game);
-        $script->setStep('245');
-        $script->setText('Here is my new Text');
-
-
-        $form = $this->createForm(ScriptType::class, $script);
+        $form = $this->createForm(ScriptType::class, null, [
+            'game_entity' => $game
+        ]);
 
         return new Response(
             $this->twig->render(
@@ -101,31 +99,14 @@ class AddScript extends AbstractController
      */
     public function saveData(int $gameId, Request $request)
     {
-        $game = $this->gameRepository->findGameById($gameId);
-
-        $script = new Script('sdsdf', 34, 3);
-
-
-        $form = $this->createForm(ScriptType::class, $script,
-            [
-            'action' => $this->generateUrl('createScript')
-        ]);
+        $form = $this->createForm(ScriptType::class);
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
-
-
-            $text = $form['text']->getData();
-            $step = $form['step']->getData();
-
-            $script->setGame($gameId);
-            $script->setText($text);
-            $script->setStep($step);
-
-           $em =  $this->getDoctrine()->getManager();
-            $em->persist($script);
-            $em->flush();
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var Script $script */
+            $script = $form->getData();
+            $this->scriptRepository->save($script);
         }
 
         return new Response(

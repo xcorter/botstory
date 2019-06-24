@@ -36,7 +36,7 @@ class Script
      */
     private $game;
 
-    public function __construct(string $text, int $step, int $game)
+    public function __construct(string $text, int $step, Game $game)
     {
         $this->text = $text;
         $this->step = $step;
@@ -70,7 +70,7 @@ class Script
     /**
      * @return int
      */
-    public function getGame(): int
+    public function getGame(): Game
     {
         return $this->game;
     }

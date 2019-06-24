@@ -4,29 +4,6 @@
 
 {% block content %}
 
-    {#<form class="mt-5 ml-5" method="post">
-        <div class="form-row">
-            <div class="col-md-4 mb-3">
-                <label for="validationDefault01">Номер шага</label>
-                <input type="number" name ="step" class="form-control" id="validationDefault01" placeholder="Введите номер">
-            </div>
-
-        </div>
-        <div class="form-row">
-            <div class="col-md-4 mb-3">
-                <label for="exampleFormControlTextarea1">Text</label>
-                <textarea name="text" class="form-control rounded-0" id="exampleFormControlTextarea1" rows="10"></textarea>
-            </div>
-        </div>
-        <div class="form-row">
-            <button class="btn btn-danger btn-lg">Отмена</button>
-            <button class="btn btn-success btn-lg ml-4" type="submit" name="submit">Ok</button>
-        </div>
-
-    </form>#}
-
-    {{ form_start(post_form, {'attr': {'id': 'custom_post_form'}}) }}
     {{ form(post_form) }}
-    {{ form_end(post_form) }}
 
 {% endblock %}

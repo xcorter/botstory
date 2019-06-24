@@ -52,16 +52,9 @@ class ScriptRepository
             ->getQuery();
     }
 
-    /*public function saveScript(int $gameId, Request $request)
+    public function save(Script $script): void
     {
-        $script = new Script($request->get('game'), $request->get('step'), $request->get('text'));
-        $script->setGame($request->get($gameId));
-        $script->setGame($request->get('game'));
-        $script->setGame($request->get('game'));
-
-
-         $this->entityManager->persist($script);
-        $this->entityManager->flush($script);
-        return $this->entityManager;
-    }*/
+        $this->entityManager->persist($script);
+        $this->entityManager->flush();
+    }
 }
