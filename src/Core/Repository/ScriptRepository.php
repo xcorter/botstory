@@ -6,6 +6,7 @@ namespace App\Core\Repository;
 use App\Core\Entity\Script;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\Query;
 
 /**
@@ -42,12 +43,18 @@ class ScriptRepository
 
     public function getPaginatorQuery(int $gameId): Query
     {
-       return $this->entityManager->createQueryBuilder()
-            ->select('q.id',  'q.text')
+        return $this->entityManager->createQueryBuilder()
+            ->select('q.id', 'q.text')
             ->from(Script::class, 'q')
             ->andWhere('q.game = :gameId')
             ->setParameter('gameId', $gameId)
             ->orderBy('q.step', 'ASC')
             ->getQuery();
+    }
+
+    public function save(Script $script): void
+    {
+        $this->entityManager->persist($script);
+        $this->entityManager->flush();
     }
 }

@@ -36,7 +36,7 @@ class Script
      */
     private $game;
 
-    public function __construct(string $text, int $step, int $game)
+    public function __construct(string $text, int $step, Game $game)
     {
         $this->text = $text;
         $this->step = $step;
@@ -70,8 +70,34 @@ class Script
     /**
      * @return int
      */
-    public function getGame(): int
+    public function getGame(): Game
     {
         return $this->game;
     }
+
+    /**
+     * @param string $text
+     */
+    public function setText(string $text): void
+    {
+        $this->text = $text;
+    }
+
+    /**
+     * @param int $step
+     */
+    public function setStep(int $step): void
+    {
+        $this->step = $step;
+    }
+
+    /**
+     * @param Game $game
+     */
+    public function setGame(Game $game): void
+    {
+        $this->game = $game;
+    }
+
+
 }
