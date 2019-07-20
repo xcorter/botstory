@@ -15,7 +15,8 @@
         "symfony/orm-pack": "^1.0",
         "symfony/twig-bundle": "4.3.*",
         "symfony/webpack-encore-bundle": "^1.6",
-        "symfony/yaml": "4.3.*"
+        "symfony/yaml": "4.3.*",
+        "franchuk/simple-telegram-client": "@dev"
     },
     "config": {
         "preferred-install": {
@@ -61,5 +62,11 @@
             "allow-contrib": false,
             "require": "4.3.*"
         }
-    }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:xcorter/SimpleTelegramBotClient.git"
+        }
+    ]
 }
