@@ -4,25 +4,46 @@ namespace App\Core\User;
 
 class UserContext
 {
-
+    /**
+     * @var int
+     */
+    private $step = UserConstant::STEP_START;
+    /**
+     * @var int
+     */
     private $currentGame;
 
-    /**
-     * @param mixed $currentGame
-     * @return UserContext
-     */
-    public function setCurrentGame($currentGame): UserContext
+    public function selectGameStep(): UserContext
     {
-        $this->currentGame = $currentGame;
+        $this->step = UserConstant::STEP_SELECT_GAME;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return bool
      */
-    public function getCurrentGame()
+    public function isStart(): bool
     {
-        return $this->currentGame;
+        return $this->step === UserConstant::STEP_START;
     }
 
+    public function isStepSelectGame(): bool
+    {
+        return $this->step === UserConstant::STEP_SELECT_GAME;
+    }
+
+    public function selectGame(int $game): void
+    {
+        $this->currentGame = $game;
+    }
+
+    public function serialize(): string
+    {
+        return serialize($this);
+    }
+
+    public static function deserialize($serialized): UserContext
+    {
+        return unserialize($serialized, [__CLASS__]);
+    }
 }

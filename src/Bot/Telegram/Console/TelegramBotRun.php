@@ -2,12 +2,20 @@
 
 namespace App\Bot\Telegram\Console;
 
+use App\Bot\Telegram\Step\StepFactory;
+use App\Bot\Telegram\Transform\ResponseConverter;
+use App\Core\Entity\Update;
+use App\Core\Entity\User;
+use App\Core\Interaction\InteractionService;
+use App\Core\Update\UpdateRepository;
+use App\Core\User\UserConstant;
+use App\Core\User\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use SimpleTelegramBotClient\TelegramService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Longman\TelegramBot\Telegram;
+use SimpleTelegramBotClient\Dto\User as TelegramUser;
 
 class TelegramBotRun extends Command
 {
@@ -16,19 +24,38 @@ class TelegramBotRun extends Command
      */
     private $telegramService;
     /**
-     * @var EntityManagerInterface
+     * @var UserRepository
      */
-    private $entityManager;
+    private $userRepository;
+    /**
+     * @var UpdateRepository
+     */
+    private $updateRepository;
+    /**
+     * @var StepFactory
+     */
+    private $stepFactory;
 
     /**
      * TelegramBotRun constructor.
      * @param TelegramService $telegramService
-     * @param EntityManagerInterface $entityManager
+     * @param UserRepository $userRepository
+     * @param UpdateRepository $updateRepository
+     * @param StepFactory $stepFactory
      */
-    public function __construct(TelegramService $telegramService, EntityManagerInterface $entityManager)
-    {
+    public function __construct(
+        TelegramService $telegramService,
+        UserRepository $userRepository,
+        UpdateRepository $updateRepository,
+        StepFactory $stepFactory
+    ) {
         parent::__construct();
+        $this->telegramService = $telegramService;
+        $this->userRepository = $userRepository;
+        $this->updateRepository = $updateRepository;
+        $this->stepFactory = $stepFactory;
     }
+
 
     protected function configure()
     {
@@ -43,9 +70,50 @@ class TelegramBotRun extends Command
             $response = $this->telegramService->getUpdates();
             $updates = $response->getResult();
             foreach ($updates as $update) {
-                $update->getMessage();
+                $updateId = $update->getUpdateId();
+                if ($this->updateRepository->updateExists($updateId, UserConstant::PROVIDER_TELEGRAM)) {
+                    continue;
+                }
+                $message = $update->getMessage();
+                if (!$message) {
+                    continue;
+                }
+                $userFromTelegram = $message->getFrom();
+                if (!$userFromTelegram) {
+                    throw new \RuntimeException('User from telegram is null');
+                }
+                $user = $this->userRepository->findProviderUserId($userFromTelegram->getId(), UserConstant::PROVIDER_TELEGRAM);
+                if (!$user) {
+                    $user = $this->createNewUser($userFromTelegram);
+                }
+                $showMenuStep = $this->stepFactory->getStep($user);
+                $showMenuStep->run($user, $message);
+                $this->createUpdate($update->getUpdateId());
+                $this->userRepository->save($user);
             }
             sleep(1);
         }
+    }
+
+    /**
+     * @param TelegramUser $userFromTelegram
+     * @return User
+     */
+    private function createNewUser(TelegramUser $userFromTelegram): User
+    {
+        $user = new User($userFromTelegram->getId(), UserConstant::PROVIDER_TELEGRAM);
+        $user
+            ->setFirstName($userFromTelegram->getFirstName())
+            ->setLastName($userFromTelegram->getLastName())
+            ->setUsername($userFromTelegram->getUsername())
+        ;
+        $this->userRepository->save($user);
+        return $user;
+    }
+
+    private function createUpdate(int $updateId): void
+    {
+        $update = new Update($updateId, UserConstant::PROVIDER_TELEGRAM);
+        $this->updateRepository->save($update);
     }
 }

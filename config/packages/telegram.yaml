@@ -7,3 +7,14 @@ services:
   _defaults:
     autowire: true      # Automatically injects dependencies in your services.
     autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+  SimpleTelegramBotClient\Config:
+    $key: '%telegram_token%'
+
+  GuzzleHttp\Client: ~
+
+  SimpleTelegramBotClient\TelegramService:
+    $config: '@SimpleTelegramBotClient\Config'
+    $client: '@GuzzleHttp\Client'
+    $serializer: '@jms_serializer'
+    $arrayTransformer: '@jms_serializer'
