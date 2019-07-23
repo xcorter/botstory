@@ -2,11 +2,10 @@
 
 namespace App\Web\Controller\Admin;
 
-use App\Core\Repository\GameRepository;
+use App\Core\Game\GameRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Twig\Environment;
-
 
 class IndexAction
 {

@@ -3,14 +3,11 @@
 namespace App\Bot\Telegram\Console;
 
 use App\Bot\Telegram\Step\StepFactory;
-use App\Bot\Telegram\Transform\ResponseConverter;
-use App\Core\Entity\Update;
+use App\Core\Entity\UpdateLog;
 use App\Core\Entity\User;
-use App\Core\Interaction\InteractionService;
 use App\Core\Update\UpdateRepository;
 use App\Core\User\UserConstant;
 use App\Core\User\UserRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use SimpleTelegramBotClient\TelegramService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -113,7 +110,7 @@ class TelegramBotRun extends Command
 
     private function createUpdate(int $updateId): void
     {
-        $update = new Update($updateId, UserConstant::PROVIDER_TELEGRAM);
+        $update = new UpdateLog($updateId, UserConstant::PROVIDER_TELEGRAM);
         $this->updateRepository->save($update);
     }
 }

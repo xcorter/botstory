@@ -16,7 +16,6 @@ services:
     # this creates a service per class whose id is the fully-qualified class name
     App\Bot\:
         resource: '../src/Bot/*'
-        exclude: '../src/Bot/{Telegram}'
 
     App\Web\:
         resource: '../src/Web/*'

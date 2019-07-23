@@ -2,15 +2,14 @@
 
 namespace App\Web\Controller\Admin;
 
-
 use App\Core\Entity\Script;
+use App\Core\Game\GameRepository;
+use App\Core\Script\ScriptRepository;
 use App\Web\Form\ScriptType;
-use App\Core\Repository\GameRepository;
-use App\Core\Repository\ScriptRepository;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Twig\Environment;
 

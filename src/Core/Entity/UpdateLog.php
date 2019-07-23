@@ -8,7 +8,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * @ORM\Entity()
  */
-class Update
+class UpdateLog
 {
     /**
      * @ORM\Column(type="integer", options={"unsigned"=true})

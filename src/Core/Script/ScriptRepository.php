@@ -1,12 +1,10 @@
 <?php
 
-namespace App\Core\Repository;
+namespace App\Core\Script;
 
-
+use App\Core\Entity\Game;
 use App\Core\Entity\Script;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\Query;
 
 /**
@@ -14,6 +12,7 @@ use Doctrine\ORM\Query;
  */
 class ScriptRepository
 {
+    public const FIRST_STEP = 1;
 
     /**
      * @var EntityManagerInterface
@@ -56,5 +55,14 @@ class ScriptRepository
     {
         $this->entityManager->persist($script);
         $this->entityManager->flush();
+    }
+
+    public function getScript(Game $game, int $step): Script
+    {
+        $this->entityManager->getRepository(Script::class)
+            ->findOneBy([
+                'game' => $game,
+                'step' => $step,
+            ]);
     }
 }

@@ -12,10 +12,20 @@ class UserContext
      * @var int
      */
     private $currentGame;
+    /**
+     * @var int|null
+     */
+    private $scriptId;
 
     public function selectGameStep(): UserContext
     {
         $this->step = UserConstant::STEP_SELECT_GAME;
+        return $this;
+    }
+
+    public function showMenuStep(): UserContext
+    {
+        $this->step = UserConstant::STEP_MENU;
         return $this;
     }
 
@@ -32,9 +42,10 @@ class UserContext
         return $this->step === UserConstant::STEP_SELECT_GAME;
     }
 
-    public function selectGame(int $game): void
+    public function runGame(int $game): void
     {
         $this->currentGame = $game;
+        $this->step = UserConstant::STEP_RUN;
     }
 
     public function serialize(): string
@@ -45,5 +56,26 @@ class UserContext
     public static function deserialize($serialized): UserContext
     {
         return unserialize($serialized, [__CLASS__]);
+    }
+
+    public function setCurrentScript(int $scriptId): void
+    {
+        $this->scriptId = $scriptId;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getCurrentScript(): ?int
+    {
+        return $this->scriptId;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getCurrentGame(): ?int
+    {
+        return $this->currentGame;
     }
 }

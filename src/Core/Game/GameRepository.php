@@ -7,7 +7,6 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class GameRepository
 {
-
     /**
      * @var EntityManagerInterface
      */
@@ -23,6 +22,14 @@ class GameRepository
     }
 
     /**
+     * @return Game[]
+     */
+    public function findAll(): array
+    {
+        return $this->entityManager->getRepository(Game::class)->findAll();
+    }
+
+    /**
      * @param string $name
      * @return Game|null
      */
@@ -31,5 +38,14 @@ class GameRepository
         return $this->entityManager->getRepository(Game::class)->findOneBy([
             'name' => $name
         ]);
+    }
+
+    /**
+     * @param int $id
+     * @return Game
+     */
+    public function findById(int $id): Game
+    {
+        return $this->entityManager->getRepository(Game::class)->find($id);
     }
 }

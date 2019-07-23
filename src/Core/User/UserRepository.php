@@ -37,6 +37,7 @@ class UserRepository
 
     public function save(User $user): void
     {
+
         $this->entityManager->persist($user);
         $this->entityManager->flush();
     }

@@ -41,7 +41,7 @@ class ShowMenuStep implements StepInterface
 
     public function run(User $user, Message $message): void
     {
-        $user->selectGame();
+        $user->showMenuStep();
         $interactionResponse = $this->interactionService->getInfo($message->getChat()->getId());
         $sendMessage = $this->responseConverter->convertToTelegramMessage($interactionResponse);
         $this->telegramService->sendMessage($sendMessage);

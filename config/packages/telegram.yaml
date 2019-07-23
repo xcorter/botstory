@@ -9,7 +9,12 @@ services:
     autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
 
   SimpleTelegramBotClient\Config:
-    $key: '%telegram_token%'
+    arguments:
+      $key: '%telegram_token%'
+    calls:
+      - method: setProxy
+        arguments:
+          - 'http://51.158.108.135:8811'
 
   GuzzleHttp\Client: ~
 

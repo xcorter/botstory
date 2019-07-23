@@ -4,7 +4,7 @@ namespace App\Web\Form;
 
 use App\Core\Entity\Game;
 use App\Core\Entity\Script;
-use App\Core\Repository\GameRepository;
+use App\Core\Game\GameRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\DataMapperInterface;
 use Symfony\Component\Form\Exception\UnexpectedTypeException;
@@ -15,7 +15,6 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-
 
 class ScriptType extends AbstractType implements DataMapperInterface
 {

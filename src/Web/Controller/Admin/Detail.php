@@ -2,16 +2,14 @@
 
 namespace App\Web\Controller\Admin;
 
-use App\Core\Repository\ScriptRepository;
-
-use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpFoundation\Response;
-use App\Core\Repository\GameRepository;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\Request;
+use App\Core\Game\GameRepository;
+use App\Core\Script\ScriptRepository;
 use Knp\Component\Pager\PaginatorInterface;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 use Twig\Environment;
-
 
 class Detail
 {

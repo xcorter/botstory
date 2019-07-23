@@ -2,7 +2,7 @@
 
 namespace App\Core\Update;
 
-use App\Core\Entity\Update;
+use App\Core\Entity\UpdateLog;
 use Doctrine\ORM\EntityManagerInterface;
 
 class UpdateRepository
@@ -29,13 +29,13 @@ class UpdateRepository
      */
     public function updateExists(int $updateId, string $provider): bool
     {
-        return (bool) $this->entityManager->getRepository(Update::class)->findOneBy([
+        return (bool) $this->entityManager->getRepository(UpdateLog::class)->findOneBy([
             'updateId' => $updateId,
             'provider' => $provider,
         ]);
     }
 
-    public function save(Update $update): void
+    public function save(UpdateLog $update): void
     {
         $this->entityManager->persist($update);
         $this->entityManager->flush();

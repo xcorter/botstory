@@ -131,8 +131,8 @@ class User
     }
 
     /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
+     * @ORM\PrePersist()
+     * @ORM\PreUpdate()
      */
     public function updatedTimestamps(): void
     {
@@ -143,8 +143,8 @@ class User
     }
 
     /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
+     * @ORM\PrePersist()
+     * @ORM\PreUpdate()
      */
     public function serializeContext(): void
     {
@@ -164,13 +164,26 @@ class User
         return $this->contextObject->isStart();
     }
 
-    public function selectGame(): void
+    public function showMenuStep(): void
+    {
+        $this->contextObject->showMenuStep();
+        $this->serializeContext();
+    }
+
+    public function selectGameStep(): void
     {
         $this->contextObject->selectGameStep();
+        $this->serializeContext();
     }
 
     public function getContext(): UserContext
     {
         return $this->contextObject;
+    }
+
+    public function runGame(int $id): void
+    {
+        $this->contextObject->runGame($id);
+        $this->serializeContext();
     }
 }
