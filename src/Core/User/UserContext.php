@@ -37,6 +37,11 @@ class UserContext
         return $this->step === UserConstant::STEP_START;
     }
 
+    public function isStepShowMenu(): bool
+    {
+        return $this->step === UserConstant::STEP_MENU;
+    }
+
     public function isStepSelectGame(): bool
     {
         return $this->step === UserConstant::STEP_SELECT_GAME;
@@ -46,6 +51,11 @@ class UserContext
     {
         $this->currentGame = $game;
         $this->step = UserConstant::STEP_RUN;
+    }
+
+    public function isGameRunning(): bool
+    {
+        return $this->step === UserConstant::STEP_RUN;
     }
 
     public function serialize(): string

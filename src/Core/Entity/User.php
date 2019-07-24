@@ -186,4 +186,10 @@ class User
         $this->contextObject->runGame($id);
         $this->serializeContext();
     }
+
+    public function setCurrentScript(int $scriptId): void
+    {
+        $this->contextObject->setCurrentScript($scriptId);
+        $this->serializeContext();
+    }
 }
