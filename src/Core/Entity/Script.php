@@ -35,11 +35,6 @@ class Script
      * @var Game
      */
     private $game;
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     * @var string $text
-     */
-    private $answers;
 
     public function __construct(string $text, int $step, Game $game)
     {
@@ -102,16 +97,5 @@ class Script
     public function setGame(Game $game): void
     {
         $this->game = $game;
-    }
-
-    public function setAnswers(array $answers): Script
-    {
-        $this->answers = json_encode($answers);
-        return $this;
-    }
-
-    public function getAnswers(): array
-    {
-        return json_decode($this->answers, true);
     }
 }

@@ -2,12 +2,30 @@
 
 namespace App\Core\Interaction;
 
+use App\Core\Answer\AnswerRepository;
 use App\Core\Entity\Game;
 use App\Core\Entity\Script;
 
 class InteractionService
 {
+    /**
+     * @var AnswerRepository
+     */
+    private $answerRepository;
 
+    /**
+     * InteractionService constructor.
+     * @param AnswerRepository $answerRepository
+     */
+    public function __construct(AnswerRepository $answerRepository)
+    {
+        $this->answerRepository = $answerRepository;
+    }
+
+    /**
+     * @param string $chatId
+     * @return InteractionResponse
+     */
     public function getInfo(string $chatId): InteractionResponse
     {
         $keyboard = [
@@ -34,12 +52,22 @@ class InteractionService
         return $interactionResponse;
     }
 
+    /**
+     * @param string $chatId
+     * @param Script $script
+     * @return InteractionResponse
+     */
     public function showScript(string $chatId, Script $script): InteractionResponse
     {
         $interactionResponse = new InteractionResponse($chatId, $script->getText());
-        $answers = $script->getAnswers();
+
+        $answers = $this->answerRepository->findByScript($script);
         if ($answers) {
-            $interactionResponse->setKeyboard($script->getAnswers());
+            $keyboard = [];
+            foreach ($answers as $answer) {
+                $keyboard[] = [$answer->getText()];
+            }
+            $interactionResponse->setKeyboard($keyboard);
         }
         return $interactionResponse;
     }

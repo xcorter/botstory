@@ -8,6 +8,7 @@ use App\Core\Entity\User;
 use App\Core\Update\UpdateRepository;
 use App\Core\User\UserConstant;
 use App\Core\User\UserRepository;
+use Psr\Log\LoggerInterface;
 use SimpleTelegramBotClient\TelegramService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -79,11 +80,20 @@ class TelegramBotRun extends Command
                 if (!$userFromTelegram) {
                     throw new \RuntimeException('User from telegram is null');
                 }
+                if ($userFromTelegram->getUsername() === 'kentforth') {
+                    continue;
+                }
                 $user = $this->userRepository->findProviderUserId($userFromTelegram->getId(), UserConstant::PROVIDER_TELEGRAM);
                 if (!$user) {
                     $user = $this->createNewUser($userFromTelegram);
                 }
-                $showMenuStep = $this->stepFactory->getStep($user);
+                try {
+                    $showMenuStep = $this->stepFactory->getStep($user);
+                } catch (\Throwable $exception) {
+                    // todo logger
+                    continue;
+                }
+
                 $showMenuStep->run($user, $message);
                 $this->createUpdate($update->getUpdateId());
                 $this->userRepository->save($user);

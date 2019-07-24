@@ -59,7 +59,7 @@ class ScriptRepository
 
     public function getScript(Game $game, int $step): Script
     {
-        $this->entityManager->getRepository(Script::class)
+        return $this->entityManager->getRepository(Script::class)
             ->findOneBy([
                 'game' => $game,
                 'step' => $step,
