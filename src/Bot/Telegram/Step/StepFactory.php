@@ -3,6 +3,7 @@
 namespace App\Bot\Telegram\Step;
 
 use App\Core\Entity\User;
+use Psr\Log\LoggerInterface;
 
 class StepFactory
 {
@@ -22,6 +23,10 @@ class StepFactory
      * @var GameSelectedStep
      */
     private $gameSelectedStep;
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
 
     /**
      * StepFactory constructor.
@@ -29,20 +34,26 @@ class StepFactory
      * @param SelectGameStep $selectGameStep
      * @param RunGameStep $runGameStep
      * @param GameSelectedStep $gameSelectedStep
+     * @param LoggerInterface $logger
      */
     public function __construct(
         ShowMenuStep $showMenuStep,
         SelectGameStep $selectGameStep,
         RunGameStep $runGameStep,
-        GameSelectedStep $gameSelectedStep
+        GameSelectedStep $gameSelectedStep,
+        LoggerInterface $logger
     ) {
         $this->showMenuStep = $showMenuStep;
         $this->selectGameStep = $selectGameStep;
         $this->runGameStep = $runGameStep;
         $this->gameSelectedStep = $gameSelectedStep;
+        $this->logger = $logger;
     }
 
-
+    /**
+     * @param User $user
+     * @return GameSelectedStep|RunGameStep|SelectGameStep|ShowMenuStep
+     */
     public function getStep(User $user)
     {
         if ($user->getContext()->isStart()) {
@@ -54,6 +65,9 @@ class StepFactory
         } elseif ($user->getContext()->isGameRunning()) {
             return $this->runGameStep;
         }
-        throw new \RuntimeException('');
+        $this->logger->error('Step not found', [
+            'userId' => $user->getId()
+        ]);
+        throw new \OutOfBoundsException('Step not found');
     }
 }

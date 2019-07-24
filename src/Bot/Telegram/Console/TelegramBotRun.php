@@ -33,6 +33,10 @@ class TelegramBotRun extends Command
      * @var StepFactory
      */
     private $stepFactory;
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
 
     /**
      * TelegramBotRun constructor.
@@ -40,18 +44,21 @@ class TelegramBotRun extends Command
      * @param UserRepository $userRepository
      * @param UpdateRepository $updateRepository
      * @param StepFactory $stepFactory
+     * @param LoggerInterface $logger
      */
     public function __construct(
         TelegramService $telegramService,
         UserRepository $userRepository,
         UpdateRepository $updateRepository,
-        StepFactory $stepFactory
+        StepFactory $stepFactory,
+        LoggerInterface $logger
     ) {
         parent::__construct();
         $this->telegramService = $telegramService;
         $this->userRepository = $userRepository;
         $this->updateRepository = $updateRepository;
         $this->stepFactory = $stepFactory;
+        $this->logger = $logger;
     }
 
 
@@ -80,6 +87,7 @@ class TelegramBotRun extends Command
                 if (!$userFromTelegram) {
                     throw new \RuntimeException('User from telegram is null');
                 }
+                // TODO выпилить
                 if ($userFromTelegram->getUsername() === 'kentforth') {
                     continue;
                 }
@@ -90,7 +98,7 @@ class TelegramBotRun extends Command
                 try {
                     $showMenuStep = $this->stepFactory->getStep($user);
                 } catch (\Throwable $exception) {
-                    // todo logger
+                    $this->logger->error($exception->getMessage());
                     continue;
                 }
 
