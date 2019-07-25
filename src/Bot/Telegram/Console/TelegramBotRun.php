@@ -96,13 +96,13 @@ class TelegramBotRun extends Command
                     $user = $this->createNewUser($userFromTelegram);
                 }
                 try {
-                    $showMenuStep = $this->stepFactory->getStep($user);
+                    $step = $this->stepFactory->getStep($user, $message);
                 } catch (\Throwable $exception) {
                     $this->logger->error($exception->getMessage());
                     continue;
                 }
 
-                $showMenuStep->run($user, $message);
+                $step->run($user, $message);
                 $this->createUpdate($update->getUpdateId());
                 $this->userRepository->save($user);
             }

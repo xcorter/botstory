@@ -20,8 +20,8 @@ class ResponseConverter
                 $interactionResponse->getText()
             );
 
+            $replyKeyboardMarkupBuilder = new ReplyKeyboardMarkupBuilder();
             if ($interactionResponse->getKeyboard()) {
-                $replyKeyboardMarkupBuilder = new ReplyKeyboardMarkupBuilder();
                 foreach ($interactionResponse->getKeyboard() as $row) {
                     $arrayKeyboardButtonBuilder = new ArrayKeyboardButtonBuilder();
                     foreach ($row as $cell) {
@@ -31,11 +31,8 @@ class ResponseConverter
                     }
                     $replyKeyboardMarkupBuilder->addArrayOfKeyboardButton($arrayKeyboardButtonBuilder->build());
                 }
-                $sendMessageBuilder->setReplyMarkup(
-                    $replyKeyboardMarkupBuilder->build()
-                );
             }
-
+            $sendMessageBuilder->setReplyMarkup($replyKeyboardMarkupBuilder->build());
             return $sendMessageBuilder->build();
         }
         throw new \RuntimeException('wring');

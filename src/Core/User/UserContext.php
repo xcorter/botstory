@@ -47,15 +47,38 @@ class UserContext
         return $this->step === UserConstant::STEP_SELECT_GAME;
     }
 
+    /**
+     * @return int|null
+     */
+    public function getCurrentGame(): ?int
+    {
+        return $this->currentGame;
+    }
+
     public function runGame(int $game): void
     {
         $this->currentGame = $game;
         $this->step = UserConstant::STEP_RUN;
     }
 
+    public function backToGame(): void
+    {
+        $this->step = UserConstant::STEP_RUN;
+    }
+
     public function isGameRunning(): bool
     {
         return $this->step === UserConstant::STEP_RUN;
+    }
+
+    public function selectSettingsMenu(): void
+    {
+        $this->step = UserConstant::STEP_SETTINGS;
+    }
+
+    public function isSettingMenu():bool
+    {
+        return $this->step === UserConstant::STEP_SETTINGS;
     }
 
     public function serialize(): string
@@ -81,11 +104,8 @@ class UserContext
         return $this->scriptId;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getCurrentGame(): ?int
+    public function resetScriptId(): void
     {
-        return $this->currentGame;
+        $this->scriptId = null;
     }
 }

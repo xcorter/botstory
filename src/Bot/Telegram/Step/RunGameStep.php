@@ -86,12 +86,13 @@ class RunGameStep implements StepInterface
             $currentScript = $this->scriptRepository->getScript($game, $currentScriptId);
             $answers = $this->answerRepository->findByScript($currentScript);
             $answer = $this->getAnswer($message, $answers);
-            if (!$answer) {
-                return;
+            if ($answer) {
+                $this->actionApplier->apply($answer->getAction());
+                $nextScript = $currentScriptId + 1;
+                $script = $this->scriptRepository->getScript($game, $nextScript);
+            } else {
+                $script = $currentScript;
             }
-            $this->actionApplier->apply($answer->getAction());
-            $nextScript = $currentScriptId + 1;
-            $script = $this->scriptRepository->getScript($game, $nextScript);
         }
 
         $user->getContext()->setCurrentScript($script->getId());

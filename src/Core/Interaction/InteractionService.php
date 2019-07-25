@@ -67,8 +67,30 @@ class InteractionService
             foreach ($answers as $answer) {
                 $keyboard[] = [$answer->getText()];
             }
+            $keyboard = $this->addSettings($keyboard);
             $interactionResponse->setKeyboard($keyboard);
         }
         return $interactionResponse;
+    }
+
+    public function showSettings(string $chatId): InteractionResponse
+    {
+        $interactionResponse = new InteractionResponse($chatId, 'В меню настроек вы можете настроить игру');
+
+        $interactionResponse->setKeyboard([
+            [Command::BACK_TO_GAME],
+            [Command::RESET_GAME],
+        ]);
+        return $interactionResponse;
+    }
+
+    /**
+     * @param array $keyboard
+     * @return array
+     */
+    private function addSettings(array $keyboard): array
+    {
+        $keyboard[] = [Command::SETTINGS];
+        return $keyboard;
     }
 }

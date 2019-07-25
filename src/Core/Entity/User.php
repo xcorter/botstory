@@ -187,9 +187,27 @@ class User
         $this->serializeContext();
     }
 
+    public function backToGame(): void
+    {
+        $this->contextObject->backToGame();
+        $this->serializeContext();
+    }
+
     public function setCurrentScript(int $scriptId): void
     {
         $this->contextObject->setCurrentScript($scriptId);
+        $this->serializeContext();
+    }
+
+    public function selectSettingsMenu(): void
+    {
+        $this->contextObject->selectSettingsMenu();
+        $this->serializeContext();
+    }
+
+    public function resetScriptId(): void
+    {
+        $this->contextObject->resetScriptId();
         $this->serializeContext();
     }
 }
