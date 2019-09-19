@@ -22,4 +22,3 @@ services:
     $config: '@SimpleTelegramBotClient\Config'
     $client: '@GuzzleHttp\Client'
     $serializer: '@jms_serializer'
-    $arrayTransformer: '@jms_serializer'

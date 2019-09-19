@@ -79,7 +79,7 @@
         "version": "v1.0.0"
     },
     "franchuk/simple-telegram-client": {
-        "version": "dev-master"
+        "version": "0.1.2"
     },
     "guzzlehttp/guzzle": {
         "version": "6.3.3"
@@ -88,7 +88,7 @@
         "version": "v1.3.1"
     },
     "guzzlehttp/psr7": {
-        "version": "1.6.0"
+        "version": "1.6.1"
     },
     "hoa/compiler": {
         "version": "3.17.08.08"
