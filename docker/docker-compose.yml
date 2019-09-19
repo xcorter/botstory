@@ -1,14 +1,14 @@
 version: '3.7'
 
 services:
-  botstory-php:
+  php:
 #    container_name: php
 #    image: php
     build:
       context: ./php
     volumes:
       - ../:/srv/botstory/current
-  botstory-nginx:
+  nginx:
 #    container_name: nginx
 #    image: nginx
     build:
@@ -19,11 +19,11 @@ services:
       - ./nginx/sites/:/etc/nginx/sites-available
       - ./nginx/conf.d/:/etc/nginx/conf.d
     depends_on:
-      - botstory-php
+      - php
     ports:
       - "80:80"
 
-  botstory-mysql:
+  mysql:
     image: mysql:8.0
 #    container_name: mysql
     environment:
