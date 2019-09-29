@@ -5,7 +5,7 @@ namespace App\Bot\Telegram\Step;
 use App\Bot\Telegram\Transform\ResponseConverter;
 use App\Core\Entity\User;
 use App\Core\Interaction\InteractionService;
-use SimpleTelegramBotClient\Dto\Message;
+use SimpleTelegramBotClient\Dto\Type\Message;
 use SimpleTelegramBotClient\TelegramService;
 
 class SettingsStep implements StepInterface

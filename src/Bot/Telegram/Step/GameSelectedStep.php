@@ -5,7 +5,7 @@ namespace App\Bot\Telegram\Step;
 use App\Bot\Telegram\Util\Helper;
 use App\Core\Entity\User;
 use App\Core\Game\GameRepository;
-use SimpleTelegramBotClient\Dto\Message;
+use SimpleTelegramBotClient\Dto\Type\Message;
 
 class GameSelectedStep implements StepInterface
 {

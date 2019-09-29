@@ -13,7 +13,7 @@ use SimpleTelegramBotClient\TelegramService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use SimpleTelegramBotClient\Dto\User as TelegramUser;
+use SimpleTelegramBotClient\Dto\Type\User as TelegramUser;
 
 class TelegramBotRun extends Command
 {

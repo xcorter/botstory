@@ -8,7 +8,7 @@ use App\Core\Entity\User;
 use App\Core\Game\GameRepository;
 use App\Core\Interaction\Command;
 use App\Core\Interaction\InteractionService;
-use SimpleTelegramBotClient\Dto\Message;
+use SimpleTelegramBotClient\Dto\Type\Message;
 use SimpleTelegramBotClient\TelegramService;
 
 class SelectGameStep implements StepInterface

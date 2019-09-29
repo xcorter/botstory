@@ -3,7 +3,7 @@
 namespace App\Bot\Telegram\Step;
 
 use App\Core\Entity\User;
-use SimpleTelegramBotClient\Dto\Message;
+use SimpleTelegramBotClient\Dto\Type\Message;
 
 class ResetGameStep implements StepInterface
 {

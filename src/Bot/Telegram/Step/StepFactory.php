@@ -5,7 +5,7 @@ namespace App\Bot\Telegram\Step;
 use App\Core\Entity\User;
 use App\Core\Interaction\Command;
 use Psr\Log\LoggerInterface;
-use SimpleTelegramBotClient\Dto\Message;
+use SimpleTelegramBotClient\Dto\Type\Message;
 
 class StepFactory
 {
