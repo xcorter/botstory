@@ -2,7 +2,7 @@
 
 namespace App\Web\Controller\Admin;
 
-use App\Core\Game\GameRepository;
+use App\Core\Game\GameRepositoryInterface;
 use App\Core\Script\ScriptRepository;
 use Knp\Component\Pager\PaginatorInterface;
 use Psr\Log\LoggerInterface;
@@ -20,7 +20,7 @@ class Detail
     private $twig;
 
     /**
-     * @var GameRepository
+     * @var GameRepositoryInterface
      */
     private $gameRepository;
 
@@ -37,13 +37,13 @@ class Detail
     /**
      * IndexAction constructor.
      * @param Environment $twig
-     * @param GameRepository $gameRepository
+     * @param GameRepositoryInterface $gameRepository
      * @param ScriptRepository $scriptRepository
      * @param LoggerInterface $logger
      */
     public function __construct(
         Environment $twig,
-        GameRepository $gameRepository,
+        GameRepositoryInterface $gameRepository,
         ScriptRepository $scriptRepository,
         LoggerInterface $logger
     ) {
@@ -65,7 +65,7 @@ class Detail
      */
     public function showGame(int $gameId, Request $request, PaginatorInterface $paginator): Response
     {
-        $game = $this->gameRepository->findGameById($gameId);
+        $game = $this->gameRepository->findById($gameId);
 
         if (!$game) {
             $this->logger->error('Game not found');

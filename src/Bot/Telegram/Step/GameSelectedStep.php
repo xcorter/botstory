@@ -4,13 +4,13 @@ namespace App\Bot\Telegram\Step;
 
 use App\Bot\Telegram\Util\Helper;
 use App\Core\Entity\User;
-use App\Core\Game\GameRepository;
+use App\Core\Game\GameRepositoryInterface;
 use SimpleTelegramBotClient\Dto\Type\Message;
 
 class GameSelectedStep implements StepInterface
 {
     /**
-     * @var GameRepository
+     * @var GameRepositoryInterface
      */
     private $gameRepository;
     /**
@@ -20,10 +20,10 @@ class GameSelectedStep implements StepInterface
 
     /**
      * GameSelectedStep constructor.
-     * @param GameRepository $gameRepository
+     * @param GameRepositoryInterface $gameRepository
      * @param RunGameStep $runGameStep
      */
-    public function __construct(GameRepository $gameRepository, RunGameStep $runGameStep)
+    public function __construct(GameRepositoryInterface $gameRepository, RunGameStep $runGameStep)
     {
         $this->gameRepository = $gameRepository;
         $this->runGameStep = $runGameStep;

@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Core\Game;
+namespace App\Infrastructure\Persistance\Doctrine\Repository\Game;
 
 use App\Core\Entity\Game;
+use App\Core\Game\GameRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
-class GameRepository
+class GameRepository implements GameRepositoryInterface
 {
     /**
      * @var EntityManagerInterface

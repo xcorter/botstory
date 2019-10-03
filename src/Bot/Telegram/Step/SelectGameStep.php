@@ -5,7 +5,7 @@ namespace App\Bot\Telegram\Step;
 use App\Bot\Telegram\Transform\ResponseConverter;
 use App\Bot\Telegram\Util\Helper;
 use App\Core\Entity\User;
-use App\Core\Game\GameRepository;
+use App\Core\Game\GameRepositoryInterface;
 use App\Core\Interaction\Command;
 use App\Core\Interaction\InteractionService;
 use SimpleTelegramBotClient\Dto\Type\Message;
@@ -14,7 +14,7 @@ use SimpleTelegramBotClient\TelegramService;
 class SelectGameStep implements StepInterface
 {
     /**
-     * @var GameRepository
+     * @var GameRepositoryInterface
      */
     private $gameRepository;
     /**
@@ -32,13 +32,13 @@ class SelectGameStep implements StepInterface
 
     /**
      * SelectGameStep constructor.
-     * @param GameRepository $gameRepository
+     * @param GameRepositoryInterface $gameRepository
      * @param InteractionService $interactionService
      * @param ResponseConverter $responseConverter
      * @param TelegramService $telegramService
      */
     public function __construct(
-        GameRepository $gameRepository,
+        GameRepositoryInterface $gameRepository,
         InteractionService $interactionService,
         ResponseConverter $responseConverter,
         TelegramService $telegramService

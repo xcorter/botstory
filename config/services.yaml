@@ -25,6 +25,9 @@ services:
         resource: '../src/Core/*'
         exclude: '../src/Core/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
 
+    App\Infrastructure\:
+        resource: '../src/Infrastructure/*'
+
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
     App\Web\Controller\:

@@ -7,7 +7,7 @@ use App\Bot\Telegram\Util\Helper;
 use App\Core\Answer\AnswerRepository;
 use App\Core\Entity\Answer;
 use App\Core\Entity\User;
-use App\Core\Game\GameRepository;
+use App\Core\Game\GameRepositoryInterface;
 use App\Core\Interaction\ActionApplier;
 use App\Core\Interaction\InteractionService;
 use App\Core\Script\ScriptRepository;
@@ -17,7 +17,7 @@ use SimpleTelegramBotClient\TelegramService;
 class RunGameStep implements StepInterface
 {
     /**
-     * @var GameRepository
+     * @var GameRepositoryInterface
      */
     private $gameRepository;
     /**
@@ -47,7 +47,7 @@ class RunGameStep implements StepInterface
 
     /**
      * RunGameStep constructor.
-     * @param GameRepository $gameRepository
+     * @param GameRepositoryInterface $gameRepository
      * @param ScriptRepository $scriptRepository
      * @param InteractionService $interactionService
      * @param ResponseConverter $responseConverter
@@ -56,7 +56,7 @@ class RunGameStep implements StepInterface
      * @param ActionApplier $actionApplier
      */
     public function __construct(
-        GameRepository $gameRepository,
+        GameRepositoryInterface $gameRepository,
         ScriptRepository $scriptRepository,
         InteractionService $interactionService,
         ResponseConverter $responseConverter,

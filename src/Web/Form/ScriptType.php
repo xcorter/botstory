@@ -4,7 +4,7 @@ namespace App\Web\Form;
 
 use App\Core\Entity\Game;
 use App\Core\Entity\Script;
-use App\Core\Game\GameRepository;
+use App\Core\Game\GameRepositoryInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\DataMapperInterface;
 use Symfony\Component\Form\Exception\UnexpectedTypeException;
@@ -20,15 +20,15 @@ class ScriptType extends AbstractType implements DataMapperInterface
 {
 
     /**
-     * @var GameRepository
+     * @var GameRepositoryInterface
      */
     private $gameRepository;
 
     /**
      * ScriptType constructor.
-     * @param GameRepository $gameRepository
+     * @param GameRepositoryInterface $gameRepository
      */
-    public function __construct(GameRepository $gameRepository)
+    public function __construct(GameRepositoryInterface $gameRepository)
     {
         $this->gameRepository = $gameRepository;
     }

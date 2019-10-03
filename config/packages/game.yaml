@@ -1,0 +1,10 @@
+services:
+  # default configuration for services in *this* file
+  _defaults:
+    autowire: true      # Automatically injects dependencies in your services.
+    autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+  App\Infrastructure\Persistance\Doctrine\Repository\Game\GameRepository: ~
+
+  App\Core\Game\GameRepositoryInterface:
+    alias: App\Infrastructure\Persistance\Doctrine\Repository\Game\GameRepository

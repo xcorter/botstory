@@ -3,7 +3,7 @@
 namespace App\Web\Controller\Admin;
 
 use App\Core\Entity\Script;
-use App\Core\Game\GameRepository;
+use App\Core\Game\GameRepositoryInterface;
 use App\Core\Script\ScriptRepository;
 use App\Web\Form\ScriptType;
 use Psr\Log\LoggerInterface;
@@ -21,7 +21,7 @@ class AddScript extends AbstractController
     private $twig;
 
     /**
-     * @var GameRepository
+     * @var GameRepositoryInterface
      */
     private $gameRepository;
 
@@ -37,13 +37,13 @@ class AddScript extends AbstractController
     /**
      * AddScript constructor.
      * @param Environment $twig
-     * @param GameRepository $gameRepository
+     * @param GameRepositoryInterface $gameRepository
      * @param ScriptRepository $scriptRepository
      * @param LoggerInterface $logger
      */
     public function __construct(
         Environment $twig,
-        GameRepository $gameRepository,
+        GameRepositoryInterface $gameRepository,
         ScriptRepository $scriptRepository,
         LoggerInterface $logger
     ) {
@@ -64,7 +64,7 @@ class AddScript extends AbstractController
      */
     public function showNewScriptFields(int $gameId): Response
     {
-        $game = $this->gameRepository->findGameById($gameId);
+        $game = $this->gameRepository->findById($gameId);
 
         if (!$game) {
             $this->logger->error('Game not found');

@@ -2,7 +2,7 @@
 
 namespace App\Web\Controller\Admin;
 
-use App\Core\Game\GameRepository;
+use App\Core\Game\GameRepositoryInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Twig\Environment;
@@ -16,16 +16,16 @@ class IndexAction
     private $twig;
 
     /**
-     * @var GameRepository
+     * @var GameRepositoryInterface
      */
     private $gameRepository;
 
     /**
      * IndexAction constructor.
      * @param Environment $twig
-     * @param GameRepository $gameRepository
+     * @param GameRepositoryInterface $gameRepository
      */
-    public function __construct(Environment $twig, GameRepository $gameRepository)
+    public function __construct(Environment $twig, GameRepositoryInterface $gameRepository)
     {
         $this->twig = $twig;
         $this->gameRepository = $gameRepository;
