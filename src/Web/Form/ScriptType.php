@@ -94,7 +94,7 @@ class ScriptType extends AbstractType implements DataMapperInterface
         if (!$game) {
             throw new \InvalidArgumentException('Wrong game');
         }
-        $game = $this->gameRepository->findGameById($game);
+        $game = $this->gameRepository->findById($game);
         $data = new Script(
             $forms['text']->getData(),
             $forms['step']->getData(),

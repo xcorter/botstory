@@ -7,7 +7,7 @@ services:
     build:
       context: ./php
     volumes:
-      - ../:/srv/botstory/current
+      - ../:/srv/botstory/current:cached
   nginx:
 #    container_name: nginx
 #    image: nginx
