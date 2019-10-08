@@ -62,14 +62,14 @@ class InteractionService
         $interactionResponse = new InteractionResponse($chatId, $script->getText());
 
         $answers = $this->answerRepository->findByScript($script);
+        $keyboard = [];
         if ($answers) {
-            $keyboard = [];
             foreach ($answers as $answer) {
                 $keyboard[] = [$answer->getText()];
             }
-            $keyboard = $this->addSettings($keyboard);
-            $interactionResponse->setKeyboard($keyboard);
         }
+        $keyboard = $this->addSettings($keyboard);
+        $interactionResponse->setKeyboard($keyboard);
         return $interactionResponse;
     }
 

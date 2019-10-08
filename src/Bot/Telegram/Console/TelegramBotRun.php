@@ -72,6 +72,7 @@ class TelegramBotRun extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $output->writeln('Telegram bot is running');
         while (true) {
             $response = $this->telegramService->getUpdates();
             $updates = $response->getResult();
