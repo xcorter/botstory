@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Core\Script;
+namespace App\Infrastructure\Persistance\Doctrine\Repository\Script;
 
 use App\Core\Entity\Game;
 use App\Core\Entity\Script;
+use App\Core\Script\ScriptRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query;
 
 /**
  * @method createQueryBuilder(string $string)
  */
-class ScriptRepository
+class ScriptRepository implements ScriptRepositoryInterface
 {
-    public const FIRST_STEP = 1;
 
     /**
      * @var EntityManagerInterface

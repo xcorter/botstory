@@ -15,6 +15,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use SimpleTelegramBotClient\Dto\Type\User as TelegramUser;
+use Throwable;
 
 class TelegramBotRun extends Command
 {
@@ -99,7 +100,7 @@ class TelegramBotRun extends Command
                 }
                 try {
                     $step = $this->stepFactory->getStep($user, $message);
-                } catch (\Throwable $exception) {
+                } catch (Throwable $exception) {
                     $this->logger->error($exception->getMessage());
                     continue;
                 }

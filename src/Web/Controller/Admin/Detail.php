@@ -3,7 +3,7 @@
 namespace App\Web\Controller\Admin;
 
 use App\Core\Game\GameRepositoryInterface;
-use App\Core\Script\ScriptRepository;
+use App\Core\Script\ScriptRepositoryInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,7 +25,7 @@ class Detail
     private $gameRepository;
 
     /**
-     * @var ScriptRepository
+     * @var ScriptRepositoryInterface
      */
     private $scriptRepository;
 
@@ -38,13 +38,13 @@ class Detail
      * IndexAction constructor.
      * @param Environment $twig
      * @param GameRepositoryInterface $gameRepository
-     * @param ScriptRepository $scriptRepository
+     * @param ScriptRepositoryInterface $scriptRepository
      * @param LoggerInterface $logger
      */
     public function __construct(
         Environment $twig,
         GameRepositoryInterface $gameRepository,
-        ScriptRepository $scriptRepository,
+        ScriptRepositoryInterface $scriptRepository,
         LoggerInterface $logger
     ) {
         $this->twig = $twig;

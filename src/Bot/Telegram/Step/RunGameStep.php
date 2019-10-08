@@ -10,7 +10,7 @@ use App\Core\Entity\User;
 use App\Core\Game\GameRepositoryInterface;
 use App\Core\Interaction\ActionApplier;
 use App\Core\Interaction\InteractionService;
-use App\Core\Script\ScriptRepository;
+use App\Core\Script\ScriptRepositoryInterface;
 use SimpleTelegramBotClient\Dto\Type\Message;
 use SimpleTelegramBotClient\TelegramService;
 
@@ -21,7 +21,7 @@ class RunGameStep implements StepInterface
      */
     private $gameRepository;
     /**
-     * @var ScriptRepository
+     * @var ScriptRepositoryInterface
      */
     private $scriptRepository;
     /**
@@ -48,7 +48,7 @@ class RunGameStep implements StepInterface
     /**
      * RunGameStep constructor.
      * @param GameRepositoryInterface $gameRepository
-     * @param ScriptRepository $scriptRepository
+     * @param ScriptRepositoryInterface $scriptRepository
      * @param InteractionService $interactionService
      * @param ResponseConverter $responseConverter
      * @param TelegramService $telegramService
@@ -57,7 +57,7 @@ class RunGameStep implements StepInterface
      */
     public function __construct(
         GameRepositoryInterface $gameRepository,
-        ScriptRepository $scriptRepository,
+        ScriptRepositoryInterface $scriptRepository,
         InteractionService $interactionService,
         ResponseConverter $responseConverter,
         TelegramService $telegramService,
@@ -81,7 +81,7 @@ class RunGameStep implements StepInterface
         $game = $this->gameRepository->findById($gameId);
         if (!$currentScriptId) {
             $user->runGame($gameId);
-            $script = $this->scriptRepository->getScript($game, ScriptRepository::FIRST_STEP);
+            $script = $this->scriptRepository->getScript($game, ScriptRepositoryInterface::FIRST_STEP);
         } else {
             $currentScript = $this->scriptRepository->getScript($game, $currentScriptId);
             $answers = $this->answerRepository->findByScript($currentScript);

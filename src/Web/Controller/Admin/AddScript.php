@@ -4,7 +4,7 @@ namespace App\Web\Controller\Admin;
 
 use App\Core\Entity\Script;
 use App\Core\Game\GameRepositoryInterface;
-use App\Core\Script\ScriptRepository;
+use App\Core\Script\ScriptRepositoryInterface;
 use App\Web\Form\ScriptType;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,7 +26,7 @@ class AddScript extends AbstractController
     private $gameRepository;
 
     /**
-     * @var ScriptRepository
+     * @var ScriptRepositoryInterface
      */
     private $scriptRepository;
     /**
@@ -38,13 +38,13 @@ class AddScript extends AbstractController
      * AddScript constructor.
      * @param Environment $twig
      * @param GameRepositoryInterface $gameRepository
-     * @param ScriptRepository $scriptRepository
+     * @param ScriptRepositoryInterface $scriptRepository
      * @param LoggerInterface $logger
      */
     public function __construct(
         Environment $twig,
         GameRepositoryInterface $gameRepository,
-        ScriptRepository $scriptRepository,
+        ScriptRepositoryInterface $scriptRepository,
         LoggerInterface $logger
     ) {
         $this->twig = $twig;
