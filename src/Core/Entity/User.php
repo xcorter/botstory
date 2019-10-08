@@ -30,18 +30,18 @@ class User
      */
     private $providerName;
     /**
-     * @ORM\Column(type="string", length=255)
-     * @var string $firstName
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @var string|null $firstName
      */
     private $firstName;
     /**
-     * @ORM\Column(type="string", length=255)
-     * @var string $lastName
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @var string|null $lastName
      */
     private $lastName;
     /**
-     * @ORM\Column(type="string", length=255)
-     * @var string $username
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @var string|null $username
      */
     private $username;
     /**
@@ -101,30 +101,30 @@ class User
     }
 
     /**
-     * @param string $firstName
+     * @param string|null $firstName
      * @return User
      */
-    public function setFirstName(string $firstName): User
+    public function setFirstName(?string $firstName): User
     {
         $this->firstName = $firstName;
         return $this;
     }
 
     /**
-     * @param string $lastName
+     * @param string|null $lastName
      * @return User
      */
-    public function setLastName(string $lastName): User
+    public function setLastName(?string $lastName): User
     {
         $this->lastName = $lastName;
         return $this;
     }
 
     /**
-     * @param string $username
+     * @param string|null $username
      * @return User
      */
-    public function setUsername(string $username): User
+    public function setUsername(?string $username): User
     {
         $this->username = $username;
         return $this;

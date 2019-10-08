@@ -9,6 +9,7 @@ use App\Core\Update\UpdateRepository;
 use App\Core\User\UserConstant;
 use App\Core\User\UserRepository;
 use Psr\Log\LoggerInterface;
+use SimpleTelegramBotClient\Exception\ClientException;
 use SimpleTelegramBotClient\TelegramService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -102,7 +103,16 @@ class TelegramBotRun extends Command
                     continue;
                 }
 
-                $step->run($user, $message);
+                try {
+                    $step->run($user, $message);
+                } catch (ClientException $exception) {
+                    $response = $exception->getResponse();
+                    if ($response && $response->getErrorCode() === 403) {
+                        // TODO user blocks the bot
+                        continue;
+                    }
+                }
+
                 $this->createUpdate($update->getUpdateId());
                 $this->userRepository->save($user);
             }

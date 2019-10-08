@@ -18,7 +18,7 @@ class InteractionResponse
     /**
      * @var array
      */
-    private $keyboard;
+    private $keyboard = [];
 
     /**
      * InteractionResponse constructor.

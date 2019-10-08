@@ -21,16 +21,14 @@ class ResponseConverter
             );
 
             $replyKeyboardMarkupBuilder = new ReplyKeyboardMarkupBuilder();
-            if ($interactionResponse->getKeyboard()) {
-                foreach ($interactionResponse->getKeyboard() as $row) {
-                    $arrayKeyboardButtonBuilder = new ArrayKeyboardButtonBuilder();
-                    foreach ($row as $cell) {
-                        $arrayKeyboardButtonBuilder
-                            ->add((new InlineKeyboardButtonBuilder($cell))->build())
-                        ;
-                    }
-                    $replyKeyboardMarkupBuilder->addArrayOfKeyboardButton($arrayKeyboardButtonBuilder->build());
+            foreach ($interactionResponse->getKeyboard() as $row) {
+                $arrayKeyboardButtonBuilder = new ArrayKeyboardButtonBuilder();
+                foreach ($row as $cell) {
+                    $arrayKeyboardButtonBuilder
+                        ->add((new InlineKeyboardButtonBuilder($cell))->build())
+                    ;
                 }
+                $replyKeyboardMarkupBuilder->addArrayOfKeyboardButton($arrayKeyboardButtonBuilder->build());
             }
             $sendMessageBuilder->setReplyMarkup($replyKeyboardMarkupBuilder->build());
             return $sendMessageBuilder->build();
