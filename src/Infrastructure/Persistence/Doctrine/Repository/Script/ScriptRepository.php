@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Infrastructure\Persistance\Doctrine\Repository\Script;
+namespace App\Infrastructure\Persistence\Doctrine\Repository\Script;
 
 use App\Core\Entity\Game;
 use App\Core\Entity\Script;

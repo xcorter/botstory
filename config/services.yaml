@@ -19,14 +19,15 @@ services:
 
     App\Web\:
         resource: '../src/Web/*'
-        exclude: '../src/Web/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
+        exclude: '../src/Web/{DependencyInjection,Entity,Tests,Kernel.php}'
 
     App\Core\:
         resource: '../src/Core/*'
-        exclude: '../src/Core/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
+        exclude: '../src/Core/{DependencyInjection,Entity,Tests,Kernel.php}'
 
-    App\Infrastructure\:
-        resource: '../src/Infrastructure/*'
+    App\Infrastructure\Persistence\Doctrine\:
+        resource: '../src/Infrastructure/Persistence/Doctrine/*'
+        exclude: '../src/Infrastructure/Persistence/Doctrine/{Migrations}'
 
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class

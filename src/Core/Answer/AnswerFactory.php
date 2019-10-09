@@ -7,6 +7,6 @@ class AnswerFactory
 
     public function build()
     {
-        
+
     }
 }

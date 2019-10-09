@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Infrastructure\Persistance\Doctrine\Repository\Game;
+namespace App\Infrastructure\Persistence\Doctrine\Repository\Game;
 
 use App\Core\Entity\Game;
 use App\Core\Game\GameRepositoryInterface;
