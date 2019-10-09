@@ -16,5 +16,7 @@ interface ScriptRepositoryInterface
 
     public function save(Script $script): void;
 
+    public function findNextScript(Game $game, Script $currentScript): ?Script;
+
     public function getScript(Game $game, int $step): Script;
 }

@@ -67,6 +67,8 @@ class InteractionService
             foreach ($answers as $answer) {
                 $keyboard[] = [$answer->getText()];
             }
+        } else {
+            $keyboard[] = ['...'];
         }
         $keyboard = $this->addSettings($keyboard);
         $interactionResponse->setKeyboard($keyboard);

@@ -6,6 +6,7 @@ use App\Bot\Telegram\Transform\ResponseConverter;
 use App\Bot\Telegram\Util\Helper;
 use App\Core\Answer\AnswerRepository;
 use App\Core\Entity\Answer;
+use App\Core\Entity\Script;
 use App\Core\Entity\User;
 use App\Core\Game\GameRepositoryInterface;
 use App\Core\Interaction\ActionApplier;
@@ -84,15 +85,16 @@ class RunGameStep implements StepInterface
             $script = $this->scriptRepository->getScript($game, ScriptRepositoryInterface::FIRST_STEP);
         } else {
             $currentScript = $this->scriptRepository->getScript($game, $currentScriptId);
-            $answers = $this->answerRepository->findByScript($currentScript);
-            $answer = $this->getAnswer($message, $answers);
+            $answer = $this->getAnswer($message, $currentScript);
             if ($answer) {
                 $this->actionApplier->apply($answer->getAction());
-                $nextScript = $currentScriptId + 1;
-                $script = $this->scriptRepository->getScript($game, $nextScript);
+                $script = $this->scriptRepository->findNextScript($game, $currentScript);
             } else {
                 $script = $currentScript;
             }
+        }
+        if (!$script) {
+            return;
         }
 
         $user->getContext()->setCurrentScript($script->getId());
@@ -105,15 +107,20 @@ class RunGameStep implements StepInterface
 
     /**
      * @param Message $message
-     * @param Answer[] $answers
+     * @param Script $script
      * @return Answer|null
      */
-    private function getAnswer(Message $message, array $answers): ?Answer
+    private function getAnswer(Message $message, Script $script): ?Answer
     {
+        $answers = $this->answerRepository->findByScript($script);
+        $normalizedAnswer = Helper::trim($message->getText());
         foreach ($answers as $answer) {
-            if ($answer->getText() === Helper::trim($message->getText())) {
+            if ($answer->getText() === $normalizedAnswer) {
                 return $answer;
             }
+        }
+        if ($normalizedAnswer === '...') {
+            return new Answer($script, '...', null);
         }
         return null;
     }
