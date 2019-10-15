@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Bot\Telegram\Step;
+namespace App\Core\Step;
 
 use App\Core\Entity\User;
 use App\Core\Interaction\Command;

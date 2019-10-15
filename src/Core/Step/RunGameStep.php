@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Bot\Telegram\Step;
+namespace App\Core\Step;
 
 use App\Bot\Telegram\Transform\ResponseConverter;
 use App\Bot\Telegram\Util\Helper;

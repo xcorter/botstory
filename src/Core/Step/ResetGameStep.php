@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Bot\Telegram\Step;
+namespace App\Core\Step;
 
 use App\Core\Entity\User;
 use SimpleTelegramBotClient\Dto\Type\Message;
 
-class BackToGameStep implements StepInterface
+class ResetGameStep implements StepInterface
 {
     /**
      * @var RunGameStep
@@ -13,7 +13,7 @@ class BackToGameStep implements StepInterface
     private $runGameStep;
 
     /**
-     * BackToGameStep constructor.
+     * ResetGameStep constructor.
      * @param RunGameStep $runGameStep
      */
     public function __construct(RunGameStep $runGameStep)
@@ -23,8 +23,7 @@ class BackToGameStep implements StepInterface
 
     public function run(User $user, Message $message): void
     {
-        $user->backToGame();
+        $user->resetScriptId();
         $this->runGameStep->run($user, $message);
     }
-
 }

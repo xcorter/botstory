@@ -2,7 +2,7 @@
 
 namespace App\Bot\Telegram\Console;
 
-use App\Bot\Telegram\Step\StepFactory;
+use App\Core\Step\StepFactory;
 use App\Core\Entity\UpdateLog;
 use App\Core\Entity\User;
 use App\Core\Update\UpdateRepository;
