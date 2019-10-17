@@ -18,5 +18,7 @@ interface ScriptRepositoryInterface
 
     public function findNextScript(Game $game, Script $currentScript): ?Script;
 
-    public function getScript(Game $game, int $step): Script;
+    public function getScriptByStep(Game $game, int $step): Script;
+
+    public function findScript(int $id): ?Script;
 }

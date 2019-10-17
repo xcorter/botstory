@@ -57,9 +57,9 @@ class ScriptRepository implements ScriptRepositoryInterface
         $this->entityManager->flush();
     }
 
-    public function getScript(Game $game, int $step): Script
+    public function getScriptByStep(Game $game, int $step): Script
     {
-        $script = $this->findScript($game, $step);
+        $script = $this->findScriptByStep($game, $step);
         if (!$script) {
             throw new \RangeException('Script not found');
         }
@@ -69,10 +69,15 @@ class ScriptRepository implements ScriptRepositoryInterface
     public function findNextScript(Game $game, Script $currentScript): ?Script
     {
         $step = $currentScript->getStep() + 1;
-        return $this->findScript($game, $step);
+        return $this->findScriptByStep($game, $step);
     }
 
-    private function findScript(Game $game, int $step): ?Script
+    public function findScript(int $id): ?Script
+    {
+        return $this->entityManager->getRepository(Script::class)->find($id);
+    }
+
+    private function findScriptByStep(Game $game, int $step): ?Script
     {
         return $this->entityManager->getRepository(Script::class)
             ->findOneBy([

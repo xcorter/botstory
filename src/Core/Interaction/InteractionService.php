@@ -82,6 +82,7 @@ class InteractionService
         $interactionResponse->setKeyboard([
             [Command::BACK_TO_GAME],
             [Command::RESET_GAME],
+            [Command::SHOW_ALL_GAMES],
         ]);
         return $interactionResponse;
     }

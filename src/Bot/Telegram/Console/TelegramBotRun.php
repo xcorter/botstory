@@ -2,7 +2,7 @@
 
 namespace App\Bot\Telegram\Console;
 
-use App\Core\Step\StepFactory;
+use App\Core\Mode\ModeFactory;
 use App\Core\Entity\UpdateLog;
 use App\Core\Entity\User;
 use App\Core\Update\UpdateRepository;
@@ -32,7 +32,7 @@ class TelegramBotRun extends Command
      */
     private $updateRepository;
     /**
-     * @var StepFactory
+     * @var ModeFactory
      */
     private $stepFactory;
     /**
@@ -45,14 +45,14 @@ class TelegramBotRun extends Command
      * @param TelegramService $telegramService
      * @param UserRepository $userRepository
      * @param UpdateRepository $updateRepository
-     * @param StepFactory $stepFactory
+     * @param ModeFactory $stepFactory
      * @param LoggerInterface $logger
      */
     public function __construct(
         TelegramService $telegramService,
         UserRepository $userRepository,
         UpdateRepository $updateRepository,
-        StepFactory $stepFactory,
+        ModeFactory $stepFactory,
         LoggerInterface $logger
     ) {
         parent::__construct();

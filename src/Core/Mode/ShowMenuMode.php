@@ -1,22 +1,15 @@
 <?php
 
-namespace App\Core\Step;
+namespace App\Core\Mode;
 
 use App\Bot\Telegram\Transform\ResponseConverter;
-use App\Bot\Telegram\Util\Helper;
 use App\Core\Entity\User;
-use App\Core\Game\GameRepositoryInterface;
-use App\Core\Interaction\Command;
 use App\Core\Interaction\InteractionService;
 use SimpleTelegramBotClient\Dto\Type\Message;
 use SimpleTelegramBotClient\TelegramService;
 
-class SelectGameStep implements StepInterface
+class ShowMenuMode implements ModeInterface
 {
-    /**
-     * @var GameRepositoryInterface
-     */
-    private $gameRepository;
     /**
      * @var InteractionService
      */
@@ -31,19 +24,16 @@ class SelectGameStep implements StepInterface
     private $telegramService;
 
     /**
-     * SelectGameStep constructor.
-     * @param GameRepositoryInterface $gameRepository
+     * ShowMenuStep constructor.
      * @param InteractionService $interactionService
      * @param ResponseConverter $responseConverter
      * @param TelegramService $telegramService
      */
     public function __construct(
-        GameRepositoryInterface $gameRepository,
         InteractionService $interactionService,
         ResponseConverter $responseConverter,
         TelegramService $telegramService
     ) {
-        $this->gameRepository = $gameRepository;
         $this->interactionService = $interactionService;
         $this->responseConverter = $responseConverter;
         $this->telegramService = $telegramService;
@@ -51,22 +41,9 @@ class SelectGameStep implements StepInterface
 
     public function run(User $user, Message $message): void
     {
-        $text = $message->getText();
-        if (!$text) {
-            return;
-        }
-        $text = Helper::trim($text);
-        if ($text !== Command::SHOW_ALL_GAMES) {
-            return;
-        }
-        $games = $this->gameRepository->findAll();
-
-        $interactionResponse = $this->interactionService->showAllGames(
-            $message->getChat()->getId(),
-            $games
-        );
+        $user->showMenuStep();
+        $interactionResponse = $this->interactionService->getInfo($message->getChat()->getId());
         $sendMessage = $this->responseConverter->convertToTelegramMessage($interactionResponse);
         $this->telegramService->sendMessage($sendMessage);
-        $user->selectGameStep();
     }
 }

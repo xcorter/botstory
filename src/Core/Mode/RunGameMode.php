@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Core\Step;
+namespace App\Core\Mode;
 
 use App\Bot\Telegram\Transform\ResponseConverter;
 use App\Bot\Telegram\Util\Helper;
@@ -15,7 +15,7 @@ use App\Core\Script\ScriptRepositoryInterface;
 use SimpleTelegramBotClient\Dto\Type\Message;
 use SimpleTelegramBotClient\TelegramService;
 
-class RunGameStep implements StepInterface
+class RunGameMode implements ModeInterface
 {
     /**
      * @var GameRepositoryInterface
@@ -82,9 +82,12 @@ class RunGameStep implements StepInterface
         $game = $this->gameRepository->findById($gameId);
         if (!$currentScriptId) {
             $user->runGame($gameId);
-            $script = $this->scriptRepository->getScript($game, ScriptRepositoryInterface::FIRST_STEP);
+            $script = $this->scriptRepository->getScriptByStep($game, ScriptRepositoryInterface::FIRST_STEP);
         } else {
-            $currentScript = $this->scriptRepository->getScript($game, $currentScriptId);
+            $currentScript = $this->scriptRepository->findScript($currentScriptId);
+            if (!$currentScript) {
+                throw new \RuntimeException('Script not found');
+            }
             $answer = $this->getAnswer($message, $currentScript);
             if ($answer) {
                 $this->actionApplier->apply($answer->getAction());

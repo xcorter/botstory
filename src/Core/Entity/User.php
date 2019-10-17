@@ -156,6 +156,11 @@ class User
      */
     public function deserializeContext(): void
     {
+        if (!$this->context) {
+            $this->contextObject = new UserContext();
+            $this->serializeContext();
+            return;
+        }
         $this->contextObject = UserContext::deserialize($this->context);
     }
 
@@ -208,6 +213,12 @@ class User
     public function resetScriptId(): void
     {
         $this->contextObject->resetScriptId();
+        $this->serializeContext();
+    }
+
+    public function resetContext(): void
+    {
+        $this->contextObject = new UserContext();
         $this->serializeContext();
     }
 }

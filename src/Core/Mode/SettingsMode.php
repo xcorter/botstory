@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Core\Step;
+namespace App\Core\Mode;
 
 use App\Bot\Telegram\Transform\ResponseConverter;
 use App\Core\Entity\User;
@@ -8,7 +8,7 @@ use App\Core\Interaction\InteractionService;
 use SimpleTelegramBotClient\Dto\Type\Message;
 use SimpleTelegramBotClient\TelegramService;
 
-class ShowMenuStep implements StepInterface
+class SettingsMode implements ModeInterface
 {
     /**
      * @var InteractionService
@@ -24,7 +24,7 @@ class ShowMenuStep implements StepInterface
     private $telegramService;
 
     /**
-     * ShowMenuStep constructor.
+     * SettingsStep constructor.
      * @param InteractionService $interactionService
      * @param ResponseConverter $responseConverter
      * @param TelegramService $telegramService
@@ -41,8 +41,8 @@ class ShowMenuStep implements StepInterface
 
     public function run(User $user, Message $message): void
     {
-        $user->showMenuStep();
-        $interactionResponse = $this->interactionService->getInfo($message->getChat()->getId());
+        $user->selectSettingsMenu();
+        $interactionResponse = $this->interactionService->showSettings($message->getChat()->getId());
         $sendMessage = $this->responseConverter->convertToTelegramMessage($interactionResponse);
         $this->telegramService->sendMessage($sendMessage);
     }

@@ -1,30 +1,29 @@
 <?php
 
-namespace App\Core\Step;
+namespace App\Core\Mode;
 
 use App\Core\Entity\User;
 use SimpleTelegramBotClient\Dto\Type\Message;
 
-class BackToGameStep implements StepInterface
+class ResetGameMode implements ModeInterface
 {
     /**
-     * @var RunGameStep
+     * @var RunGameMode
      */
     private $runGameStep;
 
     /**
-     * BackToGameStep constructor.
-     * @param RunGameStep $runGameStep
+     * ResetGameStep constructor.
+     * @param RunGameMode $runGameStep
      */
-    public function __construct(RunGameStep $runGameStep)
+    public function __construct(RunGameMode $runGameStep)
     {
         $this->runGameStep = $runGameStep;
     }
 
     public function run(User $user, Message $message): void
     {
-        $user->backToGame();
+        $user->resetScriptId();
         $this->runGameStep->run($user, $message);
     }
-
 }

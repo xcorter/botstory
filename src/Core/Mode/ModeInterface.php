@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Core\Step;
+namespace App\Core\Mode;
 
 use App\Core\Entity\User;
 use SimpleTelegramBotClient\Dto\Type\Message;
 
-interface StepInterface
+interface ModeInterface
 {
 
     public function run(User $user, Message $message): void;
