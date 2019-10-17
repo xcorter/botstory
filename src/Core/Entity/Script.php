@@ -2,6 +2,7 @@
 
 namespace App\Core\Entity;
 
+use App\Core\Game\Entity\Game;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -30,7 +31,7 @@ class Script
     private $step;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Game")
+     * @ORM\ManyToOne(targetEntity="App\Core\Game\Entity\Game")
      * @ORM\JoinColumn(name="game_id", referencedColumnName="id")
      * @var Game
      */

@@ -2,7 +2,7 @@
 
 namespace App\Core\Script;
 
-use App\Core\Entity\Game;
+use App\Core\Game\Entity\Game;
 use App\Core\Entity\Script;
 use Doctrine\ORM\Query;
 

@@ -3,7 +3,7 @@
 namespace App\Core\Interaction;
 
 use App\Core\Answer\AnswerRepository;
-use App\Core\Entity\Game;
+use App\Core\Game\Entity\Game;
 use App\Core\Entity\Script;
 
 class InteractionService

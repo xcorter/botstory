@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Core\Entity;
+namespace App\Core\Game\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 

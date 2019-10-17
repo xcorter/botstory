@@ -2,7 +2,7 @@
 
 namespace App\Infrastructure\Persistence\Doctrine\Repository\Script;
 
-use App\Core\Entity\Game;
+use App\Core\Game\Entity\Game;
 use App\Core\Entity\Script;
 use App\Core\Script\ScriptRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;

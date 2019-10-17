@@ -2,7 +2,7 @@
 
 namespace App\Web\Form;
 
-use App\Core\Entity\Game;
+use App\Core\Game\Entity\Game;
 use App\Core\Entity\Script;
 use App\Core\Game\GameRepositoryInterface;
 use Symfony\Component\Form\AbstractType;
