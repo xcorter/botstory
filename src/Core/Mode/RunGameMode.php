@@ -8,8 +8,11 @@ use App\Core\Answer\AnswerRepository;
 use App\Core\Entity\Answer;
 use App\Core\Entity\Script;
 use App\Core\Entity\User;
+use App\Core\Game\GameContextRepositoryInterface;
+use App\Core\Game\GameContextService;
 use App\Core\Game\GameRepositoryInterface;
 use App\Core\Interaction\ActionApplier;
+use App\Core\Interaction\ConstraintsFactory;
 use App\Core\Interaction\InteractionService;
 use App\Core\Script\ScriptRepositoryInterface;
 use SimpleTelegramBotClient\Dto\Type\Message;
@@ -45,9 +48,25 @@ class RunGameMode implements ModeInterface
      * @var ActionApplier
      */
     private $actionApplier;
+    /**
+     * @var ConstraintsFactory
+     */
+    private $constraintsFactory;
+    /**
+     * @var GameContextRepositoryInterface
+     */
+    private $gameContextRepository;
+    /**
+     * @var GameOverMode
+     */
+    private $gameOverMode;
+    /**
+     * @var GameContextService
+     */
+    private $gameContextService;
 
     /**
-     * RunGameStep constructor.
+     * RunGameMode constructor.
      * @param GameRepositoryInterface $gameRepository
      * @param ScriptRepositoryInterface $scriptRepository
      * @param InteractionService $interactionService
@@ -55,16 +74,13 @@ class RunGameMode implements ModeInterface
      * @param TelegramService $telegramService
      * @param AnswerRepository $answerRepository
      * @param ActionApplier $actionApplier
+     * @param ConstraintsFactory $constraintsFactory
+     * @param GameContextRepositoryInterface $gameContextRepository
+     * @param GameOverMode $gameOverMode
+     * @param GameContextService $gameContextService
      */
-    public function __construct(
-        GameRepositoryInterface $gameRepository,
-        ScriptRepositoryInterface $scriptRepository,
-        InteractionService $interactionService,
-        ResponseConverter $responseConverter,
-        TelegramService $telegramService,
-        AnswerRepository $answerRepository,
-        ActionApplier $actionApplier
-    ) {
+    public function __construct(GameRepositoryInterface $gameRepository, ScriptRepositoryInterface $scriptRepository, InteractionService $interactionService, ResponseConverter $responseConverter, TelegramService $telegramService, AnswerRepository $answerRepository, ActionApplier $actionApplier, ConstraintsFactory $constraintsFactory, GameContextRepositoryInterface $gameContextRepository, GameOverMode $gameOverMode, GameContextService $gameContextService)
+    {
         $this->gameRepository = $gameRepository;
         $this->scriptRepository = $scriptRepository;
         $this->interactionService = $interactionService;
@@ -72,6 +88,10 @@ class RunGameMode implements ModeInterface
         $this->telegramService = $telegramService;
         $this->answerRepository = $answerRepository;
         $this->actionApplier = $actionApplier;
+        $this->constraintsFactory = $constraintsFactory;
+        $this->gameContextRepository = $gameContextRepository;
+        $this->gameOverMode = $gameOverMode;
+        $this->gameContextService = $gameContextService;
     }
 
     public function run(User $user, Message $message): void
@@ -81,6 +101,7 @@ class RunGameMode implements ModeInterface
 
         $game = $this->gameRepository->findById($gameId);
         if (!$currentScriptId) {
+            // Начало игры
             $user->runGame($gameId);
             $script = $this->scriptRepository->getScriptByStep($game, ScriptRepositoryInterface::FIRST_STEP);
         } else {
@@ -90,10 +111,19 @@ class RunGameMode implements ModeInterface
             }
             $answer = $this->getAnswer($message, $currentScript);
             if ($answer) {
-                $this->actionApplier->apply($answer->getAction());
+                if ($answer->hasAction()) {
+                    $this->actionApplier->apply($user, $answer->getAction());
+                }
                 $script = $this->scriptRepository->findNextScript($game, $currentScript);
             } else {
                 $script = $currentScript;
+            }
+            $constraint = $this->constraintsFactory->createConstraint($game);
+            $gameContext = $this->gameContextRepository->findGameContext($user, $game);
+            if (!$constraint->isSatisfiedBy($gameContext)) {
+                $user->resetContext();
+                $this->gameContextService->removeGameContext($user, $game);
+                return;
             }
         }
         if (!$script) {
@@ -123,6 +153,7 @@ class RunGameMode implements ModeInterface
             }
         }
         if ($normalizedAnswer === '...') {
+            // TODO ploho ploho ploho
             return new Answer($script, '...', null);
         }
         return null;

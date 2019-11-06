@@ -8,3 +8,12 @@ services:
 
   App\Core\Game\GameRepositoryInterface:
     alias: App\Infrastructure\Persistence\Doctrine\Repository\Game\GameRepository
+
+  App\Core\Game\GameContextRepositoryInterface:
+    alias: App\Infrastructure\Persistence\Doctrine\Repository\Game\GameContextRepository
+
+  App\Core\Game\CharacteristicRepositoryInterface:
+    alias: App\Infrastructure\Persistence\Doctrine\Repository\Game\CharacteristicRepository
+
+  App\Core\Game\GameConstraintRepositoryInterface:
+    alias: App\Infrastructure\Persistence\Doctrine\Repository\Game\GameConstraintRepository

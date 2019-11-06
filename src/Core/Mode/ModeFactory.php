@@ -38,6 +38,10 @@ class ModeFactory
      */
     private $backToGameMode;
     /**
+     * @var GameOverMode
+     */
+    private $gameOverMode;
+    /**
      * @var LoggerInterface
      */
     private $logger;
@@ -51,18 +55,11 @@ class ModeFactory
      * @param SettingsMode $settingsMode
      * @param ResetGameMode $resetGameMode
      * @param BackToGameMode $backToGameMode
+     * @param GameOverMode $gameOverMode
      * @param LoggerInterface $logger
      */
-    public function __construct(
-        ShowMenuMode $showMenuStep,
-        SelectGameMode $selectGameMode,
-        RunGameMode $runGameMode,
-        GameSelectedMode $gameSelectedMode,
-        SettingsMode $settingsMode,
-        ResetGameMode $resetGameMode,
-        BackToGameMode $backToGameMode,
-        LoggerInterface $logger
-    ) {
+    public function __construct(ShowMenuMode $showMenuStep, SelectGameMode $selectGameMode, RunGameMode $runGameMode, GameSelectedMode $gameSelectedMode, SettingsMode $settingsMode, ResetGameMode $resetGameMode, BackToGameMode $backToGameMode, GameOverMode $gameOverMode, LoggerInterface $logger)
+    {
         $this->showMenuStep = $showMenuStep;
         $this->selectGameMode = $selectGameMode;
         $this->runGameMode = $runGameMode;
@@ -70,15 +67,16 @@ class ModeFactory
         $this->settingsMode = $settingsMode;
         $this->resetGameMode = $resetGameMode;
         $this->backToGameMode = $backToGameMode;
+        $this->gameOverMode = $gameOverMode;
         $this->logger = $logger;
     }
 
     /**
      * @param User $user
      * @param Message $message
-     * @return BackToGameMode|GameSelectedMode|ResetGameMode|RunGameMode|SelectGameMode|SettingsMode|ShowMenuMode
+     * @return ModeInterface
      */
-    public function getStep(User $user, Message $message)
+    public function getStep(User $user, Message $message): ModeInterface
     {
         if ($message->getText() === Command::SETTINGS) {
             return $this->settingsMode;
@@ -92,10 +90,12 @@ class ModeFactory
 
         if ($user->getContext()->isStart()) {
             return $this->showMenuStep;
-        } elseif ($user->getContext()->isStepShowMenu()) {
+        } elseif ($user->getContext()->isModeShowMenu()) {
             return $this->selectGameMode;
-        } elseif ($user->getContext()->isStepSelectGame()) {
+        } elseif ($user->getContext()->isModeSelectGame()) {
             return $this->gameSelectedMode;
+        } elseif ($user->getContext()->isModeGameOver()) {
+            return $this->gameOverMode;
         } elseif ($user->getContext()->isGameRunning()) {
             return $this->runGameMode;
         }

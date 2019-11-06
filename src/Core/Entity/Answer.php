@@ -77,4 +77,12 @@ class Answer
     {
         return $this->action;
     }
+
+    /**
+     * @return bool
+     */
+    public function hasAction(): bool
+    {
+        return (bool) $this->action;
+    }
 }

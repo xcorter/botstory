@@ -171,13 +171,13 @@ class User
 
     public function showMenuStep(): void
     {
-        $this->contextObject->showMenuStep();
+        $this->contextObject->showMenuMode();
         $this->serializeContext();
     }
 
     public function selectGameStep(): void
     {
-        $this->contextObject->selectGameStep();
+        $this->contextObject->selectGameMode();
         $this->serializeContext();
     }
 
@@ -219,6 +219,12 @@ class User
     public function resetContext(): void
     {
         $this->contextObject = new UserContext();
+        $this->serializeContext();
+    }
+
+    public function gameOver(): void
+    {
+        $this->getContext()->gameOver();
         $this->serializeContext();
     }
 }

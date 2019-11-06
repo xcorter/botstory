@@ -7,7 +7,7 @@ class UserContext
     /**
      * @var int
      */
-    private $step = UserConstant::STEP_START;
+    private $mode = UserConstant::MODE_START;
     /**
      * @var int
      */
@@ -17,15 +17,15 @@ class UserContext
      */
     private $scriptId;
 
-    public function selectGameStep(): UserContext
+    public function selectGameMode(): UserContext
     {
-        $this->step = UserConstant::STEP_SELECT_GAME;
+        $this->mode = UserConstant::MODE_SELECT_GAME;
         return $this;
     }
 
-    public function showMenuStep(): UserContext
+    public function showMenuMode(): UserContext
     {
-        $this->step = UserConstant::STEP_MENU;
+        $this->mode = UserConstant::MODE_MENU;
         return $this;
     }
 
@@ -34,17 +34,22 @@ class UserContext
      */
     public function isStart(): bool
     {
-        return $this->step === UserConstant::STEP_START;
+        return $this->mode === UserConstant::MODE_START;
     }
 
-    public function isStepShowMenu(): bool
+    public function isModeShowMenu(): bool
     {
-        return $this->step === UserConstant::STEP_MENU;
+        return $this->mode === UserConstant::MODE_MENU;
     }
 
-    public function isStepSelectGame(): bool
+    public function isModeSelectGame(): bool
     {
-        return $this->step === UserConstant::STEP_SELECT_GAME;
+        return $this->mode === UserConstant::MODE_SELECT_GAME;
+    }
+
+    public function isModeGameOver(): bool
+    {
+        return $this->mode === UserConstant::MODE_GAME_OVER;
     }
 
     /**
@@ -58,27 +63,32 @@ class UserContext
     public function runGame(int $game): void
     {
         $this->currentGame = $game;
-        $this->step = UserConstant::STEP_RUN;
+        $this->mode = UserConstant::MODE_RUN;
     }
 
     public function backToGame(): void
     {
-        $this->step = UserConstant::STEP_RUN;
+        $this->mode = UserConstant::MODE_RUN;
     }
 
     public function isGameRunning(): bool
     {
-        return $this->step === UserConstant::STEP_RUN;
+        return $this->mode === UserConstant::MODE_RUN;
+    }
+
+    public function gameOver(): void
+    {
+        $this->mode = UserConstant::MODE_GAME_OVER;
     }
 
     public function selectSettingsMenu(): void
     {
-        $this->step = UserConstant::STEP_SETTINGS;
+        $this->mode = UserConstant::MODE_SETTINGS;
     }
 
     public function isSettingMenu():bool
     {
-        return $this->step === UserConstant::STEP_SETTINGS;
+        return $this->mode === UserConstant::MODE_SETTINGS;
     }
 
     public function serialize(): string

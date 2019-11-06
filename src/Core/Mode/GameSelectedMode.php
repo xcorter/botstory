@@ -4,6 +4,7 @@ namespace App\Core\Mode;
 
 use App\Bot\Telegram\Util\Helper;
 use App\Core\Entity\User;
+use App\Core\Game\GameContextService;
 use App\Core\Game\GameRepositoryInterface;
 use SimpleTelegramBotClient\Dto\Type\Message;
 
@@ -17,16 +18,22 @@ class GameSelectedMode implements ModeInterface
      * @var RunGameMode
      */
     private $runGameStep;
+    /**
+     * @var GameContextService
+     */
+    private $gameContextService;
 
     /**
-     * GameSelectedStep constructor.
+     * GameSelectedMode constructor.
      * @param GameRepositoryInterface $gameRepository
      * @param RunGameMode $runGameStep
+     * @param GameContextService $gameContextService
      */
-    public function __construct(GameRepositoryInterface $gameRepository, RunGameMode $runGameStep)
+    public function __construct(GameRepositoryInterface $gameRepository, RunGameMode $runGameStep, GameContextService $gameContextService)
     {
         $this->gameRepository = $gameRepository;
         $this->runGameStep = $runGameStep;
+        $this->gameContextService = $gameContextService;
     }
 
     public function run(User $user, Message $message): void
@@ -41,7 +48,8 @@ class GameSelectedMode implements ModeInterface
             return;
         }
         $user->runGame($game->getId());
+        $this->gameContextService->removeGameContext($user, $game);
+        $this->gameContextService->createGameContext($user, $game);
         $this->runGameStep->run($user, $message);
     }
-
 }
