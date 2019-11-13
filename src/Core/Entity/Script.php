@@ -31,18 +31,23 @@ class Script
     private $step;
 
     /**
+     * @ORM\Column(type="boolean", options={"default":"0"})
+     * @var bool
+     */
+    private $isStart;
+
+    /**
+     * @ORM\Column(type="boolean", options={"default":"0"})
+     * @var bool
+     */
+    private $isFinish;
+
+    /**
      * @ORM\ManyToOne(targetEntity="App\Core\Game\Entity\Game")
      * @ORM\JoinColumn(name="game_id", referencedColumnName="id")
      * @var Game
      */
     private $game;
-
-    public function __construct(string $text, int $step, Game $game)
-    {
-        $this->text = $text;
-        $this->step = $step;
-        $this->game = $game;
-    }
 
     /**
      * @return int
@@ -98,5 +103,21 @@ class Script
     public function setGame(Game $game): void
     {
         $this->game = $game;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isStart(): bool
+    {
+        return $this->isStart;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFinish(): bool
+    {
+        return $this->isFinish;
     }
 }

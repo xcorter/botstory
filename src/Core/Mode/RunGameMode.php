@@ -110,14 +110,7 @@ class RunGameMode implements ModeInterface
                 throw new \RuntimeException('Script not found');
             }
             $answer = $this->getAnswer($message, $currentScript);
-            if ($answer) {
-                if ($answer->hasAction()) {
-                    $this->actionApplier->apply($user, $answer->getAction());
-                }
-                $script = $this->scriptRepository->findNextScript($game, $currentScript);
-            } else {
-                $script = $currentScript;
-            }
+            $script = $answer->getNextScript();
             $constraint = $this->constraintsFactory->createConstraint($game);
             $gameContext = $this->gameContextRepository->findGameContext($user, $game);
             if (!$constraint->isSatisfiedBy($gameContext)) {
@@ -141,9 +134,9 @@ class RunGameMode implements ModeInterface
     /**
      * @param Message $message
      * @param Script $script
-     * @return Answer|null
+     * @return Answer
      */
-    private function getAnswer(Message $message, Script $script): ?Answer
+    private function getAnswer(Message $message, Script $script): Answer
     {
         $answers = $this->answerRepository->findByScript($script);
         $normalizedAnswer = Helper::trim($message->getText());
@@ -152,10 +145,6 @@ class RunGameMode implements ModeInterface
                 return $answer;
             }
         }
-        if ($normalizedAnswer === '...') {
-            // TODO ploho ploho ploho
-            return new Answer($script, '...', null);
-        }
-        return null;
+        throw new \LogicException('Answer not found');
     }
 }

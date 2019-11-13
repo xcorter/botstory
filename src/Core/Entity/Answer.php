@@ -32,6 +32,12 @@ class Answer
      * @var string|null $action
      */
     private $action;
+    /**
+     * @ORM\ManyToOne(targetEntity="Script")
+     * @ORM\JoinColumn(name="next_script_id", referencedColumnName="id", nullable=true)
+     * @var Script|null
+     */
+    private $nextScript;
 
     /**
      * Answer constructor.
@@ -84,5 +90,13 @@ class Answer
     public function hasAction(): bool
     {
         return (bool) $this->action;
+    }
+
+    /**
+     * @return Script|null
+     */
+    public function getNextScript(): ?Script
+    {
+        return $this->nextScript;
     }
 }
