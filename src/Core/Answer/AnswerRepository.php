@@ -3,7 +3,7 @@
 namespace App\Core\Answer;
 
 use App\Core\Entity\Answer;
-use App\Core\Entity\Script;
+use App\Core\Entity\Question;
 use Doctrine\ORM\EntityManagerInterface;
 
 class AnswerRepository
@@ -23,13 +23,13 @@ class AnswerRepository
     }
 
     /**
-     * @param Script $script
+     * @param Question $question
      * @return Answer[]
      */
-    public function findByScript(Script $script): array
+    public function findByQuestion(Question $question): array
     {
         return $this->entityManager->getRepository(Answer::class)->findBy([
-            'script' => $script,
+            'question' => $question,
         ]);
     }
 }

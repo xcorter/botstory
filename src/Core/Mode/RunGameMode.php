@@ -6,7 +6,7 @@ use App\Bot\Telegram\Transform\ResponseConverter;
 use App\Bot\Telegram\Util\Helper;
 use App\Core\Answer\AnswerRepository;
 use App\Core\Entity\Answer;
-use App\Core\Entity\Script;
+use App\Core\Entity\Question;
 use App\Core\Entity\User;
 use App\Core\Game\GameContextRepositoryInterface;
 use App\Core\Game\GameContextService;
@@ -14,7 +14,7 @@ use App\Core\Game\GameRepositoryInterface;
 use App\Core\Interaction\ActionApplier;
 use App\Core\Interaction\ConstraintsFactory;
 use App\Core\Interaction\InteractionService;
-use App\Core\Script\ScriptRepositoryInterface;
+use App\Core\Question\QuestionRepositoryInterface;
 use SimpleTelegramBotClient\Dto\Type\Message;
 use SimpleTelegramBotClient\TelegramService;
 
@@ -25,9 +25,9 @@ class RunGameMode implements ModeInterface
      */
     private $gameRepository;
     /**
-     * @var ScriptRepositoryInterface
+     * @var QuestionRepositoryInterface
      */
-    private $scriptRepository;
+    private $questionRepository;
     /**
      * @var InteractionService
      */
@@ -68,7 +68,7 @@ class RunGameMode implements ModeInterface
     /**
      * RunGameMode constructor.
      * @param GameRepositoryInterface $gameRepository
-     * @param ScriptRepositoryInterface $scriptRepository
+     * @param QuestionRepositoryInterface $questionRepository
      * @param InteractionService $interactionService
      * @param ResponseConverter $responseConverter
      * @param TelegramService $telegramService
@@ -79,10 +79,10 @@ class RunGameMode implements ModeInterface
      * @param GameOverMode $gameOverMode
      * @param GameContextService $gameContextService
      */
-    public function __construct(GameRepositoryInterface $gameRepository, ScriptRepositoryInterface $scriptRepository, InteractionService $interactionService, ResponseConverter $responseConverter, TelegramService $telegramService, AnswerRepository $answerRepository, ActionApplier $actionApplier, ConstraintsFactory $constraintsFactory, GameContextRepositoryInterface $gameContextRepository, GameOverMode $gameOverMode, GameContextService $gameContextService)
+    public function __construct(GameRepositoryInterface $gameRepository, QuestionRepositoryInterface $questionRepository, InteractionService $interactionService, ResponseConverter $responseConverter, TelegramService $telegramService, AnswerRepository $answerRepository, ActionApplier $actionApplier, ConstraintsFactory $constraintsFactory, GameContextRepositoryInterface $gameContextRepository, GameOverMode $gameOverMode, GameContextService $gameContextService)
     {
         $this->gameRepository = $gameRepository;
-        $this->scriptRepository = $scriptRepository;
+        $this->questionRepository = $questionRepository;
         $this->interactionService = $interactionService;
         $this->responseConverter = $responseConverter;
         $this->telegramService = $telegramService;
@@ -96,21 +96,30 @@ class RunGameMode implements ModeInterface
 
     public function run(User $user, Message $message): void
     {
-        $currentScriptId = $user->getContext()->getCurrentScript();
+        $currentQuestionId = $user->getContext()->getCurrentQuestion();
         $gameId = $user->getContext()->getCurrentGame();
+        if (!$gameId) {
+            return;
+        }
 
         $game = $this->gameRepository->findById($gameId);
-        if (!$currentScriptId) {
+        if (!$currentQuestionId) {
             // Начало игры
             $user->runGame($gameId);
-            $script = $this->scriptRepository->getScriptByStep($game, ScriptRepositoryInterface::FIRST_STEP);
+            $question = $this->questionRepository->getStartQuestion($game->getId());
         } else {
-            $currentScript = $this->scriptRepository->findScript($currentScriptId);
-            if (!$currentScript) {
-                throw new \RuntimeException('Script not found');
+            $currentQuestion = $this->questionRepository->findQuestion($currentQuestionId);
+            if (!$currentQuestion) {
+                throw new \RuntimeException('Question not found');
             }
-            $answer = $this->getAnswer($message, $currentScript);
-            $script = $answer->getNextScript();
+            $answer = $this->getAnswer($message, $currentQuestion);
+            $question = $answer->getNextQuestion();
+            if ($question->isFinish()) {
+                $this->sendMessage($message, $question);
+                $user->resetContext();
+                $this->gameContextService->removeGameContext($user, $game);
+                return;
+            }
             $constraint = $this->constraintsFactory->createConstraint($game);
             $gameContext = $this->gameContextRepository->findGameContext($user, $game);
             if (!$constraint->isSatisfiedBy($gameContext)) {
@@ -119,26 +128,30 @@ class RunGameMode implements ModeInterface
                 return;
             }
         }
-        if (!$script) {
+        if (!$question) {
             return;
         }
 
-        $user->getContext()->setCurrentScript($script->getId());
+        $user->setCurrentQuestion($question->getId());
+        $this->sendMessage($message, $question);
+    }
 
+    private function sendMessage(Message $message, Question $question)
+    {
         $chatId = $message->getChat()->getId();
-        $interactionResponse = $this->interactionService->showScript($chatId, $script);
+        $interactionResponse = $this->interactionService->showQuestion($chatId, $question);
         $sendMessage = $this->responseConverter->convertToTelegramMessage($interactionResponse);
         $this->telegramService->sendMessage($sendMessage);
     }
 
     /**
      * @param Message $message
-     * @param Script $script
+     * @param Question $question
      * @return Answer
      */
-    private function getAnswer(Message $message, Script $script): Answer
+    private function getAnswer(Message $message, Question $question): Answer
     {
-        $answers = $this->answerRepository->findByScript($script);
+        $answers = $this->answerRepository->findByQuestion($question);
         $normalizedAnswer = Helper::trim($message->getText());
         foreach ($answers as $answer) {
             if ($answer->getText() === $normalizedAnswer) {

@@ -4,7 +4,7 @@ services:
     autowire: true      # Automatically injects dependencies in your services.
     autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
 
-  App\Infrastructure\Persistence\Doctrine\Repository\Script\ScriptRepository: ~
+  App\Infrastructure\Persistence\Doctrine\Repository\Question\QuestionRepository: ~
 
-  App\Core\Script\ScriptRepositoryInterface:
-    alias: App\Infrastructure\Persistence\Doctrine\Repository\Script\ScriptRepository
+  App\Core\Question\QuestionRepositoryInterface:
+    alias: App\Infrastructure\Persistence\Doctrine\Repository\Question\QuestionRepository

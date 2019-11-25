@@ -9,13 +9,13 @@ class UserContext
      */
     private $mode = UserConstant::MODE_START;
     /**
-     * @var int
+     * @var int|null
      */
     private $currentGame;
     /**
      * @var int|null
      */
-    private $scriptId;
+    private $questionId;
 
     public function selectGameMode(): UserContext
     {
@@ -101,21 +101,21 @@ class UserContext
         return unserialize($serialized, [__CLASS__]);
     }
 
-    public function setCurrentScript(int $scriptId): void
+    public function setCurrentQuestion(int $questionId): void
     {
-        $this->scriptId = $scriptId;
+        $this->questionId = $questionId;
     }
 
     /**
      * @return int|null
      */
-    public function getCurrentScript(): ?int
+    public function getCurrentQuestion(): ?int
     {
-        return $this->scriptId;
+        return $this->questionId;
     }
 
-    public function resetScriptId(): void
+    public function resetQuestionId(): void
     {
-        $this->scriptId = null;
+        $this->questionId = null;
     }
 }

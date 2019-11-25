@@ -82,6 +82,7 @@ class TelegramBotRun extends Command
                 if ($this->updateRepository->updateExists($updateId, UserConstant::PROVIDER_TELEGRAM)) {
                     continue;
                 }
+                echo $updateId . "\n";
                 $message = $update->getMessage();
                 if (!$message) {
                     continue;
@@ -90,10 +91,7 @@ class TelegramBotRun extends Command
                 if (!$userFromTelegram) {
                     throw new \RuntimeException('User from telegram is null');
                 }
-                // TODO выпилить
-                if ($userFromTelegram->getUsername() === 'kentforth') {
-                    continue;
-                }
+
                 $user = $this->userRepository->findProviderUserId($userFromTelegram->getId(), UserConstant::PROVIDER_TELEGRAM);
                 if (!$user) {
                     $user = $this->createNewUser($userFromTelegram);

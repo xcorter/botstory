@@ -4,7 +4,7 @@ namespace App\Core\Interaction;
 
 use App\Core\Answer\AnswerRepository;
 use App\Core\Game\Entity\Game;
-use App\Core\Entity\Script;
+use App\Core\Entity\Question;
 
 class InteractionService
 {
@@ -54,14 +54,14 @@ class InteractionService
 
     /**
      * @param string $chatId
-     * @param Script $script
+     * @param Question $question
      * @return InteractionResponse
      */
-    public function showScript(string $chatId, Script $script): InteractionResponse
+    public function showQuestion(string $chatId, Question $question): InteractionResponse
     {
-        $interactionResponse = new InteractionResponse($chatId, $script->getText());
+        $interactionResponse = new InteractionResponse($chatId, $question->getText());
 
-        $answers = $this->answerRepository->findByScript($script);
+        $answers = $this->answerRepository->findByQuestion($question);
         $keyboard = [];
         if ($answers) {
             foreach ($answers as $answer) {

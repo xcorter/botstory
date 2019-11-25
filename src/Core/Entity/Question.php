@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity()
  */
-class Script
+class Question
 {
     /**
      * @ORM\Column(type="integer", options={"unsigned"=true})
@@ -23,12 +23,6 @@ class Script
      * @var string $text
      */
     private $text;
-
-    /**
-     * @ORM\Column(type="integer")
-     * @var integer $step
-     */
-    private $step;
 
     /**
      * @ORM\Column(type="boolean", options={"default":"0"})
@@ -63,14 +57,6 @@ class Script
     public function getText(): string
     {
         return $this->text;
-    }
-
-    /**
-     * @return int
-     */
-    public function getStep(): int
-    {
-        return $this->step;
     }
 
     /**

@@ -23,7 +23,7 @@ class ResetGameMode implements ModeInterface
 
     public function run(User $user, Message $message): void
     {
-        $user->resetScriptId();
+        $user->resetQuestionId();
         $this->runGameStep->run($user, $message);
     }
 }

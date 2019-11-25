@@ -17,11 +17,11 @@ class Answer
      */
     private $id;
     /**
-     * @ORM\ManyToOne(targetEntity="Script")
-     * @ORM\JoinColumn(name="script_id", referencedColumnName="id")
-     * @var Script
+     * @ORM\ManyToOne(targetEntity="Question")
+     * @ORM\JoinColumn(name="question_id", referencedColumnName="id")
+     * @var Question
      */
-    private $script;
+    private $question;
     /**
      * @ORM\Column(type="string", length=255)
      * @var string $text
@@ -33,21 +33,21 @@ class Answer
      */
     private $action;
     /**
-     * @ORM\ManyToOne(targetEntity="Script")
-     * @ORM\JoinColumn(name="next_script_id", referencedColumnName="id", nullable=true)
-     * @var Script|null
+     * @ORM\ManyToOne(targetEntity="Question")
+     * @ORM\JoinColumn(name="next_question_id", referencedColumnName="id", nullable=true)
+     * @var Question|null
      */
-    private $nextScript;
+    private $nextQuestion;
 
     /**
      * Answer constructor.
-     * @param Script $script
+     * @param Question $question
      * @param string $text
      * @param string|null $action
      */
-    public function __construct(Script $script, string $text, ?string $action)
+    public function __construct(Question $question, string $text, ?string $action)
     {
-        $this->script = $script;
+        $this->question = $question;
         $this->text = $text;
         $this->action = $action;
     }
@@ -61,11 +61,11 @@ class Answer
     }
 
     /**
-     * @return Script
+     * @return Question
      */
-    public function getScript(): Script
+    public function getQuestion(): Question
     {
-        return $this->script;
+        return $this->question;
     }
 
     /**
@@ -93,10 +93,10 @@ class Answer
     }
 
     /**
-     * @return Script|null
+     * @return Question|null
      */
-    public function getNextScript(): ?Script
+    public function getNextQuestion(): ?Question
     {
-        return $this->nextScript;
+        return $this->nextQuestion;
     }
 }

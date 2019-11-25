@@ -198,9 +198,9 @@ class User
         $this->serializeContext();
     }
 
-    public function setCurrentScript(int $scriptId): void
+    public function setCurrentQuestion(int $questionId): void
     {
-        $this->contextObject->setCurrentScript($scriptId);
+        $this->contextObject->setCurrentQuestion($questionId);
         $this->serializeContext();
     }
 
@@ -210,9 +210,9 @@ class User
         $this->serializeContext();
     }
 
-    public function resetScriptId(): void
+    public function resetQuestionId(): void
     {
-        $this->contextObject->resetScriptId();
+        $this->contextObject->resetQuestionId();
         $this->serializeContext();
     }
 
