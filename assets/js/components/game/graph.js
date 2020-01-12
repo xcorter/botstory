@@ -22,6 +22,8 @@ class GameGraph {
             }
         });
         this.graph.on('change:position', (cell) => this.onMoveEvent(cell));
+        this.paper.on('element:pointerdblclick', (cell) => this.showQuestionModal(cell));
+        this.paper.on('link:pointerdblclick', (cell) => this.showAnswerModal(cell));
     }
 
     createRect() {
@@ -99,6 +101,16 @@ class GameGraph {
                 })
             });
         }, 2000);
+    }
+
+    showQuestionModal(cell) {
+        console.log('question dbl clicked');
+        console.log(cell.id)
+
+    }
+
+    showAnswerModal() {
+        console.log('answer dbl clicked');
     }
 
     showGraph() {
