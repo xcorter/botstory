@@ -39,7 +39,6 @@ class GameService
     {
         $questions = $this->questionRepository->findAllQuestionsByGameId($gameId);
         $result = [];
-        $y = 20;
         foreach ($questions as $question) {
             $data = [
                 'id' => $question->getId(),
@@ -58,7 +57,6 @@ class GameService
                 ];
             }
             $result[] = $data;
-            $y += 100;
         }
         return $result;
     }
