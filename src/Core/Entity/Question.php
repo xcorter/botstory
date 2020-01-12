@@ -126,4 +126,24 @@ class Question
     {
         return $this->locationY;
     }
+
+    /**
+     * @param int $locationX
+     * @return Question
+     */
+    public function setLocationX(int $locationX): Question
+    {
+        $this->locationX = $locationX;
+        return $this;
+    }
+
+    /**
+     * @param int $locationY
+     * @return Question
+     */
+    public function setLocationY(int $locationY): Question
+    {
+        $this->locationY = $locationY;
+        return $this;
+    }
 }

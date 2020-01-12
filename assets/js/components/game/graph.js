@@ -1,6 +1,7 @@
 import GraphConfig from './graphConfig'
 import {dia, shapes} from 'jointjs';
 import logger from '../core/logger/error';
+import Runner from '../core/helper/singleRun'
 
 class GameGraph {
 
@@ -8,6 +9,7 @@ class GameGraph {
         this.graphUrl = targetElement.dataset.url;
         this.graph = new dia.Graph;
         this.tree = {};
+        this.linkFromCidToQuestionId = {};
         this.paper = new dia.Paper({
             el: targetElement,
             model: this.graph,
@@ -19,6 +21,7 @@ class GameGraph {
                 color: 'rgba(0, 255, 0, 0.3)'
             }
         });
+        this.graph.on('change:position', (cell) => this.onMoveEvent(cell));
     }
 
     createRect() {
@@ -47,7 +50,9 @@ class GameGraph {
             this.tree[el.id] = {
                 rect: rect,
                 el: el,
+                cid: rect.id
             };
+            this.linkFromCidToQuestionId[rect.id] = el.id;
         }
         return this.tree;
     }
@@ -78,6 +83,22 @@ class GameGraph {
                 link.addTo(this.graph);
             }
         }
+    }
+
+    onMoveEvent(cell) {
+        const questionId = this.linkFromCidToQuestionId[cell.id];
+        Runner.run(questionId, () => {
+            fetch('/admin/game/question/' + questionId, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify({
+                    locationX: cell.position().x,
+                    locationY: cell.position().y,
+                })
+            });
+        }, 2000);
     }
 
     showGraph() {
