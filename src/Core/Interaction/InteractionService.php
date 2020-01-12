@@ -2,22 +2,22 @@
 
 namespace App\Core\Interaction;
 
-use App\Core\Answer\AnswerRepository;
+use App\Core\Answer\AnswerRepositoryInterface;
 use App\Core\Game\Entity\Game;
 use App\Core\Entity\Question;
 
 class InteractionService
 {
     /**
-     * @var AnswerRepository
+     * @var AnswerRepositoryInterface
      */
     private $answerRepository;
 
     /**
      * InteractionService constructor.
-     * @param AnswerRepository $answerRepository
+     * @param AnswerRepositoryInterface $answerRepository
      */
-    public function __construct(AnswerRepository $answerRepository)
+    public function __construct(AnswerRepositoryInterface $answerRepository)
     {
         $this->answerRepository = $answerRepository;
     }

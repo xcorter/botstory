@@ -1,18 +1,16 @@
 <?php
 
+
 namespace App\Web\Controller\Admin;
+
 
 use App\Core\Game\GameRepositoryInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Twig\Environment;
-use Twig\Error\LoaderError;
-use Twig\Error\RuntimeError;
-use Twig\Error\SyntaxError;
 
-class IndexAction
+class ShowGamesAction
 {
-
     /**
      * @var Environment
      */
@@ -35,23 +33,20 @@ class IndexAction
     }
 
     /**
-     * @Route("/admin/")
+     * @Route("/admin/game/{gameId}", name="game")
      * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
      */
-    public function __invoke(): Response
+    public function __invoke(int $gameId)
     {
-       $games =  $this->gameRepository->findAll();
+        $game = $this->gameRepository->findById($gameId);
 
         return new Response(
-            $this->twig->render('@web/index.html.twig', [
-                'text' => 'this is template',
-                'games' => $games
+            $this->twig->render('@web/game.html.twig', [
+                'game' => $game
             ])
         );
     }
-
-
 }

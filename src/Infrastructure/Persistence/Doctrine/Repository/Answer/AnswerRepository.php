@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Core\Answer;
+namespace App\Infrastructure\Persistence\Doctrine\Repository\Answer;
 
+use App\Core\Answer\AnswerRepositoryInterface;
 use App\Core\Entity\Answer;
 use App\Core\Entity\Question;
 use Doctrine\ORM\EntityManagerInterface;
 
-class AnswerRepository
+class AnswerRepository implements AnswerRepositoryInterface
 {
     /**
      * @var EntityManagerInterface

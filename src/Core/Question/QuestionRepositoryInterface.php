@@ -8,7 +8,10 @@ use Doctrine\ORM\Query;
 
 interface QuestionRepositoryInterface
 {
-
+    /**
+     * @param int $gameId
+     * @return Question[]
+     */
     public function findAllQuestionsByGameId(int $gameId): array;
 
     public function getPaginatorQuery(int $gameId): Query;

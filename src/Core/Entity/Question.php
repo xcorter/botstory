@@ -76,14 +76,6 @@ class Question
     }
 
     /**
-     * @param int $step
-     */
-    public function setStep(int $step): void
-    {
-        $this->step = $step;
-    }
-
-    /**
      * @param Game $game
      */
     public function setGame(Game $game): void

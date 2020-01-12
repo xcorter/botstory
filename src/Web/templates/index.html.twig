@@ -22,9 +22,9 @@
     <div class="container text-center pt-5">
         <div>{{ text }}</div>
 
-        {% for user in texts %}
+        {% for game in games %}
         <div class="list-group">
-            <p><a href="{{ path('game', {'gameId': user.id}) }}" class="list-group-item list-group-item-action">{{ user.name }}</a></p>
+            <p><a href="{{ path('game', {'gameId': game.id}) }}" class="list-group-item list-group-item-action">{{ game.name }}</a></p>
         </div>
         {% endfor %}
     </div>

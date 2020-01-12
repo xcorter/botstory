@@ -8,3 +8,8 @@ services:
 
   App\Core\Question\QuestionRepositoryInterface:
     alias: App\Infrastructure\Persistence\Doctrine\Repository\Question\QuestionRepository
+
+  App\Infrastructure\Persistence\Doctrine\Repository\Answer\AnswerRepository: ~
+
+  App\Core\Answer\AnswerRepositoryInterface:
+    alias: App\Infrastructure\Persistence\Doctrine\Repository\Answer\AnswerRepository

@@ -2,23 +2,18 @@
 
 {% block title %}Game{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('jointjs_css') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('graph') }}
+{% endblock %}
+
 {% block content %}
     <h2>{{ game.name }}</h2>
-    <ul>
-    {% for script in scripts %}
-        <div>
-            <p>{{script.text}}</p>
-        </div>
-    {% endfor %}
-    </ul>
-
-    <div class="navigation">
-        {{ knp_pagination_render(scripts) }}
-    </div>
-
-
-    <a href="{{ path('addScript', {'gameId': game.id}) }}" target="_blank" class="btn btn-success ml-5 mb-3" role="button">Добавить сценарий</a>
-
+    <div class="graph" data-url="{{ path('graph_game', {'gameId': game.id}) }}"></div>
 {% endblock %}
 
 

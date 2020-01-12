@@ -33,9 +33,6 @@ class QuestionRepository implements QuestionRepositoryInterface
         return $this->entityManager->getRepository(Question::class)->findBy(
             [
                 'game' => $gameId
-            ],
-            [
-                'step' => 'ASC'
             ]
         );
     }
@@ -47,7 +44,6 @@ class QuestionRepository implements QuestionRepositoryInterface
             ->from(Question::class, 'q')
             ->andWhere('q.game = :gameId')
             ->setParameter('gameId', $gameId)
-            ->orderBy('q.step', 'ASC')
             ->getQuery();
     }
 

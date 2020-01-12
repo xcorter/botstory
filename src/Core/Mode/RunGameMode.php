@@ -4,7 +4,7 @@ namespace App\Core\Mode;
 
 use App\Bot\Telegram\Transform\ResponseConverter;
 use App\Bot\Telegram\Util\Helper;
-use App\Core\Answer\AnswerRepository;
+use App\Core\Answer\AnswerRepositoryInterface;
 use App\Core\Entity\Answer;
 use App\Core\Entity\Question;
 use App\Core\Entity\User;
@@ -41,7 +41,7 @@ class RunGameMode implements ModeInterface
      */
     private $telegramService;
     /**
-     * @var AnswerRepository
+     * @var AnswerRepositoryInterface
      */
     private $answerRepository;
     /**
@@ -72,14 +72,14 @@ class RunGameMode implements ModeInterface
      * @param InteractionService $interactionService
      * @param ResponseConverter $responseConverter
      * @param TelegramService $telegramService
-     * @param AnswerRepository $answerRepository
+     * @param AnswerRepositoryInterface $answerRepository
      * @param ActionApplier $actionApplier
      * @param ConstraintsFactory $constraintsFactory
      * @param GameContextRepositoryInterface $gameContextRepository
      * @param GameOverMode $gameOverMode
      * @param GameContextService $gameContextService
      */
-    public function __construct(GameRepositoryInterface $gameRepository, QuestionRepositoryInterface $questionRepository, InteractionService $interactionService, ResponseConverter $responseConverter, TelegramService $telegramService, AnswerRepository $answerRepository, ActionApplier $actionApplier, ConstraintsFactory $constraintsFactory, GameContextRepositoryInterface $gameContextRepository, GameOverMode $gameOverMode, GameContextService $gameContextService)
+    public function __construct(GameRepositoryInterface $gameRepository, QuestionRepositoryInterface $questionRepository, InteractionService $interactionService, ResponseConverter $responseConverter, TelegramService $telegramService, AnswerRepositoryInterface $answerRepository, ActionApplier $actionApplier, ConstraintsFactory $constraintsFactory, GameContextRepositoryInterface $gameContextRepository, GameOverMode $gameOverMode, GameContextService $gameContextService)
     {
         $this->gameRepository = $gameRepository;
         $this->questionRepository = $questionRepository;
