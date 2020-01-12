@@ -45,8 +45,8 @@ class GameService
                 'id' => $question->getId(),
                 'text' => $question->getText(),
                 'position' => [
-                    'x' => 150,
-                    'y' => $y
+                    'x' => $question->getLocationX(),
+                    'y' => $question->getLocationY(),
                 ],
                 'answers' => []
             ];

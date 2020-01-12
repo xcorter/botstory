@@ -44,6 +44,18 @@ class Question
     private $game;
 
     /**
+     * @ORM\Column(type="integer", options={"default":"0"})
+     * @var int $locationX
+     */
+    private $locationX;
+
+    /**
+     * @ORM\Column(type="integer", options={"default":"0"})
+     * @var int $locationX
+     */
+    private $locationY;
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -97,5 +109,21 @@ class Question
     public function isFinish(): bool
     {
         return $this->isFinish;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLocationX(): int
+    {
+        return $this->locationX;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLocationY(): int
+    {
+        return $this->locationY;
     }
 }
