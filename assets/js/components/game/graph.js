@@ -122,15 +122,27 @@ class GameGraph {
         event.target.removeEventListener('click', this.saveQuestion);
         const questionId = document.getElementById('modal-question-id').innerText;
         const text = document.getElementById('modal-question-text').value;
-        this.save(questionId, {
-            text: text
+        fetch('/admin/game/question/' + questionId, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: JSON.stringify({
+                text: text
+            })
+        }).then(() => {
+            this.tree[questionId].rect.attr({
+                label: {
+                    text: text
+                }
+            });
+            const modalEl = document.getElementsByClassName('question-modal')[0];
+            Modal.close(modalEl)
         });
-        const modalEl = document.getElementsByClassName('question-modal')[0];
-        Modal.close(modalEl)
     }
 
     showAnswerModal() {
-        const modalEl = document.getElementsByClassName('question-modal')[0];
+        const modalEl = document.getElementsByClassName('answer-modal')[0];
         Modal.show(modalEl);
     }
 
