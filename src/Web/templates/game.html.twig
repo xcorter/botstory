@@ -15,19 +15,43 @@
     <h2>{{ game.name }}</h2>
     <div class="graph" data-url="{{ path('graph_game', {'gameId': game.id}) }}"></div>
 
-
-    <div class="modal fade question-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+    <div class="modal question-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
-                Its about question
+                <div class="modal-header">
+                    <h5 class="modal-title">Редатировать вопрос #<span id="modal-question-id"></span></h5>
+                    <button type="button" class="close action-close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <textarea id="modal-question-text"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary action-close">Закрыть</button>
+                    <button type="button" class="btn btn-primary action-save">Сохранить</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="modal fade answer-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+
+    <div class="modal answer-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
-                Its about question
+                <div class="modal-header">
+                    <h5 class="modal-title">Редатировать ответ</h5>
+                    <button type="button" class="close action-close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary action-close">Закрыть</button>
+                    <button type="button" class="btn btn-primary">Сохранить</button>
+                </div>
             </div>
         </div>
     </div>

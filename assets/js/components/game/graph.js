@@ -2,6 +2,7 @@ import GraphConfig from './graphConfig'
 import {dia, shapes} from 'jointjs';
 import logger from '../core/logger/error';
 import Runner from '../core/helper/singleRun'
+import Modal from '../core/modal/index';
 
 class GameGraph {
 
@@ -52,7 +53,8 @@ class GameGraph {
             this.tree[el.id] = {
                 rect: rect,
                 el: el,
-                cid: rect.id
+                cid: rect.id,
+                text: el.text
             };
             this.linkFromCidToQuestionId[rect.id] = el.id;
         }
@@ -68,7 +70,6 @@ class GameGraph {
 
     showLinks(tree) {
         for (let key in tree) {
-            console.log(key)
             let source = tree[key].rect;
 
             for (let answerKey in tree[key].el.answers) {
@@ -89,28 +90,48 @@ class GameGraph {
 
     onMoveEvent(cell) {
         const questionId = this.linkFromCidToQuestionId[cell.id];
+        this.save(questionId, {
+            locationX: cell.position().x,
+            locationY: cell.position().y,
+        });
+    }
+
+    save(questionId, data) {
         Runner.run(questionId, () => {
             fetch('/admin/game/question/' + questionId, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json;charset=utf-8'
                 },
-                body: JSON.stringify({
-                    locationX: cell.position().x,
-                    locationY: cell.position().y,
-                })
+                body: JSON.stringify(data)
             });
-        }, 2000);
+        }, 1000);
     }
 
-    showQuestionModal(cell) {
-        console.log('question dbl clicked');
-        console.log(cell.id)
+    showQuestionModal(cellView) {
+        const cell = cellView.model;
+        const modalEl = document.getElementsByClassName('question-modal')[0];
+        const questionId = this.linkFromCidToQuestionId[cell.id];
+        document.getElementById('modal-question-text').value = this.tree[questionId].text;
+        Modal.show(modalEl);
+        document.getElementById('modal-question-id').innerText = questionId;
+        modalEl.getElementsByClassName('action-save')[0].addEventListener('click', this.saveQuestion.bind(this));
+    }
 
+    saveQuestion(event) {
+        event.target.removeEventListener('click', this.saveQuestion);
+        const questionId = document.getElementById('modal-question-id').innerText;
+        const text = document.getElementById('modal-question-text').value;
+        this.save(questionId, {
+            text: text
+        });
+        const modalEl = document.getElementsByClassName('question-modal')[0];
+        Modal.close(modalEl)
     }
 
     showAnswerModal() {
-        console.log('answer dbl clicked');
+        const modalEl = document.getElementsByClassName('question-modal')[0];
+        Modal.show(modalEl);
     }
 
     showGraph() {
