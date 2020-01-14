@@ -1,4 +1,4 @@
-import GameGraph from "./graph";
+import GameGraph from './graph';
 
 const target = document.getElementsByClassName('graph')[0];
 

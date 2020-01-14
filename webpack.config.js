@@ -25,7 +25,7 @@ Encore
      */
     .addEntry('app', './assets/js/app.js')
     // .addEntry('jointjs', './node_modules/jointjs/dist/joint.js')
-    .addEntry('graph', './assets/js/components/game/index.js')
+    .addEntry('graph', './assets/js/components/game/index.ts')
     .addEntry('jointjs_css', './node_modules/jointjs/dist/joint.css')
     //.addEntry('page2', './assets/js/page2.js')
 
@@ -59,7 +59,8 @@ Encore
     .enableSassLoader()
 
     // uncomment if you use TypeScript
-    //.enableTypeScriptLoader()
+    .enableTypeScriptLoader()
+    // .enableForkedTypeScriptTypesChecking()
 
     // uncomment to get integrity="..." attributes on your script & link tags
     // requires WebpackEncoreBundle 1.4 or higher

@@ -1,5 +1,5 @@
 class Logger {
-    error(err) {
+    error(err: any) {
         console.log(err);
     }
 }

@@ -3,10 +3,19 @@ import {dia, shapes} from 'jointjs';
 import logger from '../core/logger/error';
 import Runner from '../core/helper/singleRun'
 import Modal from '../core/modal/index';
+import LinkView = dia.LinkView;
+import CellView = dia.CellView;
+import Rectangle = shapes.standard.Rectangle;
 
 class GameGraph {
 
-    constructor(targetElement) {
+    graphUrl: string;
+    graph: any;
+    tree: any;
+    linkFromCidToQuestionId: any;
+    paper: any;
+
+    constructor(targetElement: any) {
         this.graphUrl = targetElement.dataset.url;
         this.graph = new dia.Graph;
         this.tree = {};
@@ -22,9 +31,9 @@ class GameGraph {
                 color: 'rgba(0, 255, 0, 0.3)'
             }
         });
-        this.graph.on('change:position', (cell) => this.onMoveEvent(cell));
-        this.paper.on('element:pointerdblclick', (cell) => this.showQuestionModal(cell));
-        this.paper.on('link:pointerdblclick', (cell) => this.showAnswerModal(cell));
+        this.graph.on('change:position', (cell: Rectangle) => this.onMoveEvent(cell));
+        this.paper.on('element:pointerdblclick', (cellView: CellView) => this.showQuestionModal(cellView));
+        this.paper.on('link:pointerdblclick', (linkView: LinkView) => this.showAnswerModal(linkView));
     }
 
     createRect() {
@@ -39,7 +48,7 @@ class GameGraph {
         return rect;
     }
 
-    showButtons(data) {
+    showButtons(data: any) {
         for (let i = 0; i < data.length; i++) {
             let el = data[i];
             let rect = this.createRect();
@@ -61,14 +70,14 @@ class GameGraph {
         return this.tree;
     }
 
-    createLink(source, target) {
+    createLink(source: any, target: any) {
         let link = new shapes.standard.Link();
         link.source(source);
         link.target(target);
         return link;
     }
 
-    showLinks(tree) {
+    showLinks(tree: any) {
         for (let key in tree) {
             let source = tree[key].rect;
 
@@ -88,7 +97,7 @@ class GameGraph {
         }
     }
 
-    onMoveEvent(cell) {
+    onMoveEvent(cell: Rectangle) {
         const questionId = this.linkFromCidToQuestionId[cell.id];
         this.save(questionId, {
             locationX: cell.position().x,
@@ -96,7 +105,7 @@ class GameGraph {
         });
     }
 
-    save(questionId, data) {
+    save(questionId: any, data: any) {
         Runner.run(questionId, () => {
             fetch('/admin/game/question/' + questionId, {
                 method: 'POST',
@@ -108,20 +117,20 @@ class GameGraph {
         }, 1000);
     }
 
-    showQuestionModal(cellView) {
+    showQuestionModal(cellView: CellView) {
         const cell = cellView.model;
-        const modalEl = document.getElementsByClassName('question-modal')[0];
+        const modalEl = document.getElementsByClassName('question-modal')[0] as HTMLElement;
         const questionId = this.linkFromCidToQuestionId[cell.id];
-        document.getElementById('modal-question-text').value = this.tree[questionId].text;
+        (<HTMLInputElement>document.getElementById('modal-question-text')).value = this.tree[questionId].text;
         Modal.show(modalEl);
         document.getElementById('modal-question-id').innerText = questionId;
         modalEl.getElementsByClassName('action-save')[0].addEventListener('click', this.saveQuestion.bind(this));
     }
 
-    saveQuestion(event) {
+    saveQuestion(event: any) {
         event.target.removeEventListener('click', this.saveQuestion);
         const questionId = document.getElementById('modal-question-id').innerText;
-        const text = document.getElementById('modal-question-text').value;
+        const text = (<HTMLInputElement>document.getElementById('modal-question-text')).value;
         fetch('/admin/game/question/' + questionId, {
             method: 'POST',
             headers: {
@@ -136,14 +145,25 @@ class GameGraph {
                     text: text
                 }
             });
-            const modalEl = document.getElementsByClassName('question-modal')[0];
+            const modalEl = document.getElementsByClassName('question-modal')[0] as HTMLElement;
             Modal.close(modalEl)
         });
     }
 
-    showAnswerModal() {
-        const modalEl = document.getElementsByClassName('answer-modal')[0];
+    showAnswerModal(linkView: LinkView) {
+        const cell = linkView.model;
+        const modalEl = document.getElementsByClassName('answer-modal')[0] as HTMLElement;
+        const questionId = this.linkFromCidToQuestionId[cell.id];
+
         Modal.show(modalEl);
+
+
+        // const modalEl = document.getElementsByClassName('question-modal')[0];
+
+        // document.getElementById('modal-question-text').value = this.tree[questionId].text;
+        // Modal.show(modalEl);
+        // document.getElementById('modal-question-id').innerText = questionId;
+        // modalEl.getElementsByClassName('action-save')[0].addEventListener('click', this.saveQuestion.bind(this));
     }
 
     showGraph() {

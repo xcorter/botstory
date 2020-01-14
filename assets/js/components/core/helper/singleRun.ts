@@ -1,10 +1,12 @@
 class Runner {
 
+    queue: any;
+
     constructor() {
         this.queue = {};
     }
 
-    run(id, callback, time) {
+    run(id: number, callback: any, time: number) {
 
         if (this.queue[id] != null) {
             clearTimeout(this.queue[id]);

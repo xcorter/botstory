@@ -1,5 +1,8 @@
 class GraphConfig {
 
+    labelStyle: object;
+    bodyStyle: object;
+
     constructor() {
         this.labelStyle = {
             fill: '#3498DB',
