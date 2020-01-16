@@ -27,6 +27,7 @@ RUN set -xe \
     && docker-php-ext-install zip \
     && docker-php-ext-install bcmath \
     && docker-php-ext-install gd \
+    && docker-php-ext-install opcache \
     && pecl clear-cache \
     && apk del .build-deps
 
@@ -40,6 +41,9 @@ RUN echo 'xdebug.remote_autostart=true' >> /usr/local/etc/php/php.ini && \
     echo 'xdebug.remote_host=172.18.0.1' >> /usr/local/etc/php/php.ini && \
     echo 'upload_max_filesize=10M' >> /usr/local/etc/php/php.ini && \
     echo 'post_max_size=10M' >> /usr/local/etc/php/php.ini
+
+ENV PHP_OPCACHE_VALIDATE_TIMESTAMPS="0"
+ADD opcache.ini "$PHP_INI_DIR/conf.d/opcache.ini"
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
