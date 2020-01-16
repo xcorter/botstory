@@ -33,4 +33,22 @@ class AnswerRepository implements AnswerRepositoryInterface
             'question' => $question,
         ]);
     }
+
+    /**
+     * @param int $id
+     * @return Answer|null
+     */
+    public function find(int $id): ?Answer
+    {
+        return $this->entityManager->getRepository(Answer::class)->find($id);
+    }
+
+    /**
+     * @param Answer $answer
+     */
+    public function save(Answer $answer): void
+    {
+        $this->entityManager->persist($answer);
+        $this->entityManager->flush();
+    }
 }

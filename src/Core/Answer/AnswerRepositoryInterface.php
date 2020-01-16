@@ -12,4 +12,15 @@ interface AnswerRepositoryInterface
      * @return Answer[]
      */
     public function findByQuestion(Question $question): array;
+
+    /**
+     * @param int $id
+     * @return Answer|null
+     */
+    public function find(int $id): ?Answer;
+
+    /**
+     * @param Answer $answer
+     */
+    public function save(Answer $answer): void;
 }

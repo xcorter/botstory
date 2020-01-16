@@ -99,4 +99,14 @@ class Answer
     {
         return $this->nextQuestion;
     }
+
+    /**
+     * @param string $text
+     * @return Answer
+     */
+    public function setText(string $text): Answer
+    {
+        $this->text = $text;
+        return $this;
+    }
 }

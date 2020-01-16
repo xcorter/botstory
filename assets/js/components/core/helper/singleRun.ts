@@ -6,7 +6,7 @@ class Runner {
         this.queue = {};
     }
 
-    run(id: number, callback: any, time: number) {
+    run(id: number, callback: () => void, time: number) {
 
         if (this.queue[id] != null) {
             clearTimeout(this.queue[id]);

@@ -39,18 +39,18 @@ services:
     expose:
       - '3306'
 
-  frontend:
-    build:
-      context: ./../
-      dockerfile: docker/frontend/Dockerfile
-    volumes:
-      - ./../assets:/usr/src/frontend/assets:rw,cached
-      - ./../webpack.config.js:/usr/src/frontend/webpack.config.js
-      - ./../public/build:/usr/src/frontend/public/build:rw,cached
-      - ./../node_modules:/usr/src/frontend/node_modules:rw,cached
-      - ./../package.json:/usr/src/frontend/package.json
-      - ./../yarn.lock:/usr/src/frontend/yarn.lock
-      - ./../.yarnrc:/usr/src/frontend/.yarnrc
+#  frontend:
+#    build:
+#      context: ./../
+#      dockerfile: docker/frontend/Dockerfile
+#    volumes:
+#      - ./../assets:/usr/src/frontend/assets:rw,cached
+#      - ./../webpack.config.js:/usr/src/frontend/webpack.config.js
+#      - ./../public/build:/usr/src/frontend/public/build:rw,cached
+#      - ./../node_modules:/usr/src/frontend/node_modules:rw,cached
+#      - ./../package.json:/usr/src/frontend/package.json
+#      - ./../yarn.lock:/usr/src/frontend/yarn.lock
+#      - ./../.yarnrc:/usr/src/frontend/.yarnrc
 
 volumes:
   db-data-botstory: {}
