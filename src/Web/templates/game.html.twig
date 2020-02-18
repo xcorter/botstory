@@ -4,7 +4,7 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    {{ encore_entry_link_tags('jointjs_css') }}
+    {{ encore_entry_link_tags('graph_css') }}
 {% endblock %}
 
 {% block javascripts %}
@@ -12,7 +12,6 @@
 {% endblock %}
 
 {% block content %}
-    <h2>{{ game.name }}</h2>
     <div class="graph" data-url="{{ path('graph_game', {'gameId': game.id}) }}"></div>
 
     <div class="modal question-modal" tabindex="-1" role="dialog">

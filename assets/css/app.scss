@@ -5,7 +5,9 @@ $primary: darken(#428bca, 20%);
 
 
 body {
-    background-color: lightgray;
+    font-family: sans-serif;
+    background: -webkit-linear-gradient(45deg,#ddc9b9,#daf0f2);
+    transform-style: preserve-3d;
 }
 
 

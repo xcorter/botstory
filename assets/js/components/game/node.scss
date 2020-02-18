@@ -1,0 +1,46 @@
+.graph {
+  position: relative;
+}
+
+.node {
+  position: absolute;
+  border: 1px solid #fff;
+  border-radius: 3px;
+  background-color: #fff;
+  width: 200px;
+  min-height: 200px;
+
+  &:hover {
+    border: 1px solid #49eff1;
+  }
+
+  .title {
+    cursor: default;
+    user-select: none;
+    background-color: rgb(238, 238, 238);
+    font-weight: 700;
+    color: #666;
+    padding: 0 10px;
+    height: 40px;
+    line-height: 40px;
+  }
+
+  .text {
+    //border: 1px solid #828282;
+    //background-color: aliceblue;
+    height: 90px;
+    padding: 8px;
+    border-bottom: 1px solid #eeeeee;
+    margin-bottom: 5px;
+  }
+
+  .options {
+    padding: 2px 8px;
+    border-bottom: 1px solid #eeeeee;
+  }
+
+  .option-title {
+    padding: 2px 8px;
+    text-align: center;
+  }
+}

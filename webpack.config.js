@@ -26,7 +26,7 @@ Encore
     .addEntry('app', './assets/js/app.js')
     // .addEntry('jointjs', './node_modules/jointjs/dist/joint.js')
     .addEntry('graph', './assets/js/components/game/index.ts')
-    .addEntry('jointjs_css', './node_modules/jointjs/dist/joint.css')
+    .addEntry('graph_css', './assets/js/components/game/node.scss')
     //.addEntry('page2', './assets/js/page2.js')
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.

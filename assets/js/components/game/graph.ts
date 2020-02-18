@@ -1,124 +1,108 @@
-import GraphConfig from './graphConfig'
-import {dia, shapes} from 'jointjs';
 import logger from '../core/logger/error';
 import Runner from '../core/helper/singleRun'
-import Modal from '../core/modal/index';
-import QuestionRepository from '../repository/questionRepository'
-import AnswerRepository from '../repository/answerRepository'
-import LinkView = dia.LinkView;
-import CellView = dia.CellView;
-import Rectangle = shapes.standard.Rectangle;
+import NodeRepository from '../repository/nodeRepository'
 import {Tree} from "./tree";
 import {Node} from "./node";
+import nodeRepository from "../repository/nodeRepository";
 
 class GameGraph {
 
     graphUrl: string;
     graph: any;
     tree: Tree;
-    paper: any;
+    graphNode: HTMLElement;
 
-    constructor(targetElement: any) {
+    constructor(targetElement: HTMLElement) {
         this.graphUrl = targetElement.dataset.url;
-        this.graph = new dia.Graph;
         this.tree = new Tree();
-        this.paper = new dia.Paper({
-            el: targetElement,
-            model: this.graph,
-            width: 600,
-            height: 800,
-            gridSize: 10,
-            drawGrid: true,
-            background: {
-                color: 'rgba(0, 255, 0, 0.3)'
-            }
-        });
-        this.graph.on('change:position', (cell: Rectangle) => this.onMoveEvent(cell));
-        this.paper.on('element:pointerdblclick', (cellView: CellView) => this.showQuestionModal(cellView));
-        this.paper.on('link:pointerdblclick', (linkView: LinkView) => this.showAnswerModal(linkView));
+        this.graphNode = targetElement;
+        this.configureGraphArea();
     }
 
-    createRect() {
-        let rect = new shapes.standard.Rectangle();
-        rect.resize(100, 40);
-        rect.attr({
-            body: GraphConfig.bodyStyle,
-            label: {
-                ...GraphConfig.labelStyle
-            }
-        });
-        return rect;
+    configureGraphArea() {
+        this.graphNode.style.width = '100%';
+        this.graphNode.style.height = '1024px';
     }
 
-    showButtons(data: any): Tree {
+    showNodes(data: any): Tree {
         for (let i = 0; i < data.length; i++) {
             let el = data[i];
-            let rect = this.createRect();
-            rect.attr({
-                label: {
-                    text: el.text
-                }
-            });
-            rect.position(el.position.x, el.position.y);
-            rect.addTo(this.graph);
-            const node = new Node(rect, el, rect.id, el.text);
+            const node = new Node(el);
+            let view = node.render();
+            this.graphNode.insertAdjacentHTML('beforeend', view);
             this.tree.addNode(el.id, node);
+            this.addMove(node);
+            this.setListeners(node);
         }
         return this.tree;
     }
 
-    createLink(source: any, target: any) {
-        let link = new shapes.standard.Link();
-        link.source(source);
-        link.target(target);
-        return link;
+    setListeners(node: Node) {
+        const options = <HTMLElement>node.getEl().getElementsByClassName('options')[0];
+        options.childNodes.forEach((option: HTMLElement) =>{
+            option.addEventListener('input', (e) => {
+                const target = <HTMLElement> e.target;
+                const id = parseInt(target.dataset.id);
+                node.updateAnswer(id);
+                Runner.run(id, () => {
+                    NodeRepository.save(node);
+                }, 1000);
+            })
+        })
     }
 
-    showLinks(tree: Tree) {
-        for (let key in tree.nodes) {
-            const node = tree.getNode(key);
-            let source = node.rect;
+    addMove(node: Node) {
+        const graphNode: HTMLElement = this.graphNode;
+        const title = <HTMLElement>node.getEl().getElementsByClassName('title')[0];
+        title.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            // подготовить к перемещению
+            const coords = node.getCoords();
+            const shiftX = e.pageX - coords.x;
+            const shiftY = e.pageY - coords.y;
+            // 2. разместить на том же месте, но в абсолютных координатах
+            moveAt(e);
+            // переместим в body, чтобы мяч был точно не внутри position:relative
+            graphNode.appendChild(node.getEl());
 
-            for (let answerKey in node.el.answers) {
-                let answer = node.el.answers[answerKey];
-                let target = tree.getNode(answer.id).rect;
-                let link = this.createLink(source, target);
-                link.appendLabel({
-                    attrs: {
-                        text: {
-                            text: answer.text
-                        }
-                    }
-                });
-                answer.cid = link.id;
-                link.addTo(this.graph);
+            node.getEl().style.zIndex = '1000'; // показывать мяч над другими элементами
+
+            // передвинуть мяч под координаты курсора
+            // и сдвинуть на половину ширины/высоты для центрирования
+            function moveAt(e: any) {
+                node.getEl().style.left = e.pageX - shiftX + 'px';
+                node.getEl().style.top = e.pageY - shiftY + 'px';
             }
-        }
-    }
 
-    onMoveEvent(cell: Rectangle) {
-        const questionId = this.tree.getNodeByCellId(<string>cell.id).el.id;
-        this.save(questionId, {
-            locationX: cell.position().x,
-            locationY: cell.position().y,
+            // 3, перемещать по экрану
+            document.onmousemove = (e) => {
+                moveAt(e);
+            };
+
+            // 4. отследить окончание переноса
+            title.onmouseup = () => {
+                document.onmousemove = null;
+                title.onmouseup = null;
+                node.updatePosition();
+                NodeRepository.save(node);
+            }
+        });
+
+        title.addEventListener('dragstart', () => {
+            return false;
         });
     }
 
-    save(questionId: any, data: any) {
-        Runner.run(questionId, () => {
-            QuestionRepository.save(questionId, data);
-        }, 1000);
-    }
-
-    showQuestionModal(cellView: CellView) {
-        const cell = cellView.model;
-        const modalEl = document.getElementsByClassName('question-modal')[0] as HTMLElement;
-        const questionId = this.tree.getNodeByCellId(<string>cell.id).el.id;
-        (<HTMLInputElement>document.getElementById('modal-question-text')).value = this.tree.getNode(questionId).text;
-        Modal.show(modalEl);
-        document.getElementById('modal-question-id').innerText = questionId;
-        modalEl.getElementsByClassName('action-save')[0].addEventListener('click', this.saveQuestion.bind(this));
-    }
+    // showQuestionModal(cellView: CellView) {
+    //     const cell = cellView.model;
+    //     const modalEl = document.getElementsByClassName('question-modal')[0] as HTMLElement;
+    //     const questionId = this.tree.getNodeByCellId(<string>cell.id).el.id;
+    //     // (<HTMLInputElement>document.getElementById('modal-question-text')).value = this.tree.getNode(questionId).text;
+    //     // Modal.show(modalEl);
+    //     // document.getElementById('modal-question-id').innerText = questionId;
+    //     // modalEl.getElementsByClassName('action-save')[0].addEventListener('click', this.saveQuestion.bind(this));
+    // }
 
     saveQuestion(event: any) {
         event.target.removeEventListener('click', this.saveQuestion);
@@ -127,47 +111,13 @@ class GameGraph {
         const data = {
             text
         };
-        QuestionRepository.save(questionId, data).then(() => {
-            this.tree.getNode(questionId).rect.attr({
-                label: {
-                    text: text
-                }
-            });
-            const modalEl = document.getElementsByClassName('question-modal')[0] as HTMLElement;
-            Modal.close(modalEl)
-        });
-    }
-
-    showAnswerModal(linkView: LinkView) {
-        const cell = linkView.model;
-        const modalEl = document.getElementsByClassName('answer-modal')[0] as HTMLElement;
-        const answer = this.tree.getAnswer(cell);
-        (<HTMLInputElement>document.getElementById('modal-answer-text')).value = answer.text;
-        document.getElementById('modal-answer-id').innerText = answer.id;
-        Modal.show(modalEl);
-        modalEl.getElementsByClassName('action-save')[0].addEventListener('click', this.saveAnswer.bind(this));
-    }
-
-    saveAnswer(event: any) {
-        event.target.removeEventListener('click', this.saveAnswer);
-        const answerId = document.getElementById('modal-answer-id').innerText;
-        const text = (<HTMLInputElement>document.getElementById('modal-answer-text')).value;
-        AnswerRepository.save(answerId, {text}).then(() => {
-            // this.tree.getNode(questionId).rect.attr({
-            //     label: {
-            //         text: text
-            //     }
-            // });
-            const modalEl = document.getElementsByClassName('answer-modal')[0] as HTMLElement;
-            Modal.close(modalEl)
-        });
     }
 
     showGraph() {
         fetch(this.graphUrl)
             .then(res => res.json())
-            .then((data) => this.showButtons(data))
-            .then((data) => this.showLinks(data))
+            .then((data) => this.showNodes(data))
+            // .then((data) => this.showLinks(data))
             .catch(logger.error);
     }
 }
