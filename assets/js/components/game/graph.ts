@@ -107,25 +107,6 @@ class GameGraph {
         });
     }
 
-    // showQuestionModal(cellView: CellView) {
-    //     const cell = cellView.model;
-    //     const modalEl = document.getElementsByClassName('question-modal')[0] as HTMLElement;
-    //     const questionId = this.tree.getNodeByCellId(<string>cell.id).el.id;
-    //     // (<HTMLInputElement>document.getElementById('modal-question-text')).value = this.tree.getNode(questionId).text;
-    //     // Modal.show(modalEl);
-    //     // document.getElementById('modal-question-id').innerText = questionId;
-    //     // modalEl.getElementsByClassName('action-save')[0].addEventListener('click', this.saveQuestion.bind(this));
-    // }
-
-    saveQuestion(event: any) {
-        event.target.removeEventListener('click', this.saveQuestion);
-        const questionId = document.getElementById('modal-question-id').innerText;
-        const text = (<HTMLInputElement>document.getElementById('modal-question-text')).value;
-        const data = {
-            text
-        };
-    }
-
     showGraph() {
         fetch(this.graphUrl)
             .then(res => res.json())
