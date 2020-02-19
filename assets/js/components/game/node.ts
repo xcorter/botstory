@@ -1,8 +1,3 @@
-import {dia, shapes, util} from "jointjs";
-import Rectangle = shapes.standard.Rectangle;
-import graphConfig from "./graphConfig";
-import * as _ from "lodash";
-
 interface Position {
     x: number;
     y: number;
