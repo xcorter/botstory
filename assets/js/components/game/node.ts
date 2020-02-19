@@ -1,3 +1,5 @@
+import * as _ from 'lodash';
+
 interface Position {
     x: number;
     y: number;
@@ -16,6 +18,10 @@ interface Element {
     answers: Answer[];
 }
 
+class Templates {
+    static node: string = document.getElementById('node-template').innerHTML;
+}
+
 export class Node {
 
     el: Element;
@@ -27,25 +33,12 @@ export class Node {
     }
 
     public render(): string {
-        const position = 'top: ' + this.el.position.y + 'px; left: ' + this.el.position.x + 'px;';
-        let answers: string[];
-        answers = [];
-        this.el.answers.forEach((el) => {
-            let answer = '<div contenteditable="true" data-id="' + el.id +'">' + el.text + '</div>';
-            answers.push(answer);
+        return _.template(Templates.node)({
+            id: this.getId(),
+            position: this.el.position,
+            text: this.el.text,
+            answers: this.el.answers
         });
-        const answersHtml = answers.join('');
-
-        const id = this.getId();
-        const template = [
-            '<div class="node detached" id="' + id + '" style="' + position + '">',
-            '<div class="title">Node</div>',
-            '<div class="text">' + this.el.text + '</div>',
-            '<div class="options">' + answersHtml + '</div>',
-            '<div class="option-title">Добавить</div>',
-            '</div>'
-        ].join('');
-        return template;
     }
 
     getId(): string {
@@ -100,5 +93,13 @@ export class Node {
 
     toJson(): string {
         return JSON.stringify(this.el)
+    }
+
+    addNewAnswer() {
+        this.el.answers.push({
+            id: null,
+            text: '',
+            next_question_id: null
+        });
     }
 }

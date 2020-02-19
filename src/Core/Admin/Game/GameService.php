@@ -51,8 +51,10 @@ class GameService
             ];
             $answers = $this->answerRepository->findByQuestion($question);
             foreach ($answers as $answer) {
+                $nextQuestionId =
+                    $answer->getNextQuestion() ? $answer->getNextQuestion()->getId() : null;
                 $data['answers'][] = [
-                    'next_question_id' => $answer->getNextQuestion()->getId(),
+                    'next_question_id' => $nextQuestionId,
                     'id' => $answer->getId(),
                     'text' => $answer->getText()
                 ];

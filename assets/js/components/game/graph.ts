@@ -3,7 +3,6 @@ import Runner from '../core/helper/singleRun'
 import NodeRepository from '../repository/nodeRepository'
 import {Tree} from "./tree";
 import {Node} from "./node";
-import nodeRepository from "../repository/nodeRepository";
 
 class GameGraph {
 
@@ -48,7 +47,12 @@ class GameGraph {
                     NodeRepository.save(node);
                 }, 1000);
             })
-        })
+        });
+
+        const addButton = <HTMLElement>node.getEl().getElementsByClassName('option-title')[0];
+        addButton.addEventListener('click', (e) => {
+            node.addNewAnswer();
+        });
     }
 
     addMove(node: Node) {
@@ -117,7 +121,6 @@ class GameGraph {
         fetch(this.graphUrl)
             .then(res => res.json())
             .then((data) => this.showNodes(data))
-            // .then((data) => this.showLinks(data))
             .catch(logger.error);
     }
 }
