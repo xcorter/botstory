@@ -56,12 +56,12 @@
     </div>
 
     <script type="text/template" id="node-template">
-        <div class="node detached" id="<%-id%>" style="top: <%-position.y%>px; left: <%-position.x%>px; ">
+        <div class="node detached" id="<%-id%>" style="top: <%-position.y%>px; left: <%-position.x%>px;" data-view-id="<%-viewId%>">
             <div class="title">Node</div>
             <div class="text"><%-text%></div>
             <div class="options">
                 <% answers.forEach(function(answer) { %>
-                    <div contenteditable="true" data-id="<%-answer.id%>"><%-answer.text%></div>
+                    <div contenteditable="true" data-id="<%-answer.id%>" data-view-id="<%-answersViewIds.get(answer.id)%>"><%-answer.text%></div>
                 <% }) %>
             </div>
             <div class="option-title">Добавить</div>

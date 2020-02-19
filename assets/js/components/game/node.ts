@@ -26,10 +26,18 @@ export class Node {
 
     el: Element;
     nodePrefix: string;
+    viewId: string;
+    answerViewIds: Map<number, string>;
 
     public constructor(el: Element ) {
         this.el = el;
         this.nodePrefix = 'node-';
+        this.viewId = _.uniqueId('node');
+        this.answerViewIds = new Map();
+        this.el.answers.forEach((item: Answer) => {
+            this.answerViewIds.set(item.id, _.uniqueId('answer'));
+        })
+
     }
 
     public render(): string {
@@ -37,7 +45,9 @@ export class Node {
             id: this.getId(),
             position: this.el.position,
             text: this.el.text,
-            answers: this.el.answers
+            answers: this.el.answers,
+            viewId: this.viewId,
+            answersViewIds: this.answerViewIds
         });
     }
 

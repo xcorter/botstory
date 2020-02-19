@@ -27,13 +27,21 @@ class GameGraph {
         for (let i = 0; i < data.length; i++) {
             let el = data[i];
             const node = new Node(el);
-            let view = node.render();
-            this.graphNode.insertAdjacentHTML('beforeend', view);
-            this.tree.addNode(el.id, node);
-            this.addMove(node);
-            this.setListeners(node);
+            this.renderNode(node);
         }
         return this.tree;
+    }
+
+    renderNode(node: Node) {
+        const element = <HTMLElement>node.getEl();
+        if (element) {
+            element.remove();
+        }
+        let view = node.render();
+        this.graphNode.insertAdjacentHTML('beforeend', view);
+        this.tree.addNode(node.el.id, node);
+        this.addMove(node);
+        this.setListeners(node);
     }
 
     setListeners(node: Node) {
@@ -52,6 +60,7 @@ class GameGraph {
         const addButton = <HTMLElement>node.getEl().getElementsByClassName('option-title')[0];
         addButton.addEventListener('click', (e) => {
             node.addNewAnswer();
+            this.renderNode(node);
         });
     }
 
