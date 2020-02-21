@@ -3,6 +3,7 @@
 namespace App\Core\Admin\Game;
 
 use App\Core\Answer\AnswerRepositoryInterface;
+use App\Core\Entity\Answer;
 use App\Core\Entity\Question;
 use App\Core\Question\QuestionRepositoryInterface;
 use App\Editor\DTO\Node;
@@ -57,14 +58,27 @@ class QuestionService
         $this->questionRepository->save($question);
 
         $answers = $this->answerRepository->findByQuestion($question);
-        foreach ($answers as $answer) {
-            $nodeAnswers = $node->getAnswers();
-            foreach ($nodeAnswers as $nodeAnswer) {
-                if ($nodeAnswer->getId() === $answer->getId()) {
-                    $answer->setText($nodeAnswer->getText());
-                    $this->answerRepository->save($answer);
+        $nodeAnswers = $node->getAnswers();
+        foreach ($nodeAnswers as $nodeAnswer) {
+            $answer = null;
+            if ($nodeAnswer->getId()) {
+                foreach ($answers as $answer) {
+                    if ($nodeAnswer->getId() === $answer->getId()) {
+                        $answer->setText($nodeAnswer->getText());
+                        break;
+                    }
                 }
+                if (!$answer) {
+                    throw new \OutOfBoundsException('Answer not found');
+                }
+            } else {
+                $answer = new Answer(
+                    $question,
+                    $nodeAnswer->getText(),
+                    null
+                );
             }
+            $this->answerRepository->save($answer);
         }
     }
 }

@@ -28,6 +28,7 @@ class GameGraph {
             let el = data[i];
             const node = new Node(el);
             this.renderNode(node);
+            this.tree.addNode(node.el.id, node);
         }
         return this.tree;
     }
@@ -49,9 +50,9 @@ class GameGraph {
         options.childNodes.forEach((option: HTMLElement) =>{
             option.addEventListener('input', (e) => {
                 const target = <HTMLElement> e.target;
-                const id = parseInt(target.dataset.id);
-                node.updateAnswer(id);
-                Runner.run(id, () => {
+                const answerViewId = target.dataset.viewId;
+                node.updateAnswer(answerViewId, target.innerText);
+                Runner.run(node.el.id, () => {
                     NodeRepository.save(node);
                 }, 1000);
             })

@@ -9,6 +9,7 @@ interface Answer {
     next_question_id: number;
     id: number;
     text: string;
+    viewId: string;
 }
 
 interface Element {
@@ -27,7 +28,7 @@ export class Node {
     el: Element;
     nodePrefix: string;
     viewId: string;
-    answerViewIds: Map<number, string>;
+    answerViewIds: Map<string, number>;
 
     public constructor(el: Element ) {
         this.el = el;
@@ -35,14 +36,21 @@ export class Node {
         this.viewId = _.uniqueId('node');
         this.answerViewIds = new Map();
         this.el.answers.forEach((item: Answer) => {
-            this.answerViewIds.set(item.id, _.uniqueId('answer'));
+            const viewId = this.generateAnswerId();
+            this.answerViewIds.set(viewId, item.id);
+            item.viewId = viewId;
         })
 
+    }
+
+    public generateAnswerId(): string {
+        return _.uniqueId('answer');
     }
 
     public render(): string {
         return _.template(Templates.node)({
             id: this.getId(),
+            nodeId: this.el.id,
             position: this.el.position,
             text: this.el.text,
             answers: this.el.answers,
@@ -72,22 +80,15 @@ export class Node {
         this.el.position = this.getCurrentPosition();
     }
 
-    updateAnswer(id: number): void {
-        const options = <HTMLElement>this.getEl().getElementsByClassName('options')[0];
-        const answer = this.getAnswerById(id);
-        for (let i = 0; i < options.childNodes.length; i++) {
-            const option = <HTMLElement>options.childNodes.item(i);
-            const optionAnswerId = parseInt(option.dataset.id);
-            if (answer.id == optionAnswerId) {
-                answer.text = option.innerText;
-            }
-        }
+    updateAnswer(viewId: string, text: string): void {
+        const answer = this.getAnswerById(viewId);
+        answer.text = text;
     }
 
-    getAnswerById(id: number): Answer {
+    getAnswerById(viewId: string): Answer {
         for (let i = 0; i < this.el.answers.length; i++) {
-            if (this.el.answers[0].id === id) {
-                return this.el.answers[0];
+            if (this.el.answers[i].viewId === viewId) {
+                return this.el.answers[i];
             }
         }
         return null;
@@ -106,10 +107,14 @@ export class Node {
     }
 
     addNewAnswer() {
-        this.el.answers.push({
+        const viewId = this.generateAnswerId();
+        const answer = <Answer> {
             id: null,
             text: '',
-            next_question_id: null
-        });
+            next_question_id: null,
+            viewId: viewId
+        };
+        this.el.answers.push(answer);
+        this.answerViewIds.set(viewId, null);
     }
 }

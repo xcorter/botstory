@@ -7,13 +7,13 @@ use JMS\Serializer\Annotation\Type;
 class Answer
 {
     /**
-     * @var int
+     * @var null|int
      * @Type("int")
      */
     private $id;
 
     /**
-     * @var int
+     * @var null|int
      * @Type("int")
      */
     private $nextQuestionId;
@@ -25,17 +25,17 @@ class Answer
     private $text;
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getNextQuestionId(): int
+    public function getNextQuestionId(): ?int
     {
         return $this->nextQuestionId;
     }
