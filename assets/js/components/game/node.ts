@@ -85,6 +85,13 @@ export class Node {
         answer.text = text;
     }
 
+    removeAnswer(viewId: string): void {
+        this.el.answers = this.el.answers.filter(function (value: Answer) {
+            return value.viewId !== viewId;
+        });
+        this.answerViewIds.delete(viewId);
+    }
+
     getAnswerById(viewId: string): Answer {
         for (let i = 0; i < this.el.answers.length; i++) {
             if (this.el.answers[i].viewId === viewId) {

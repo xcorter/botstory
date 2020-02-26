@@ -23,4 +23,6 @@ interface AnswerRepositoryInterface
      * @param Answer $answer
      */
     public function save(Answer $answer): void;
+
+    public function remove(Answer $answer): void;
 }

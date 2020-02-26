@@ -37,6 +37,19 @@
   .options {
     padding: 2px 8px;
     border-bottom: 1px solid #eeeeee;
+
+    .answer {
+      display: flex;
+
+      .answer-text {
+        flex: 1;
+      }
+
+      .answer-remove {
+        width: 10px;
+        cursor: pointer;
+      }
+    }
   }
 
   .option-title {

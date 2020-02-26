@@ -51,4 +51,10 @@ class AnswerRepository implements AnswerRepositoryInterface
         $this->entityManager->persist($answer);
         $this->entityManager->flush();
     }
+
+    public function remove(Answer $answer): void
+    {
+        $this->entityManager->remove($answer);
+        $this->entityManager->flush();
+    }
 }

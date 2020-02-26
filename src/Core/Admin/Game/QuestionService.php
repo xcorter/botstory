@@ -80,5 +80,26 @@ class QuestionService
             }
             $this->answerRepository->save($answer);
         }
+        $answers = $this->answerRepository->findByQuestion($question);
+        $this->removeAnswers($nodeAnswers, $answers);
+    }
+
+    /**
+     * @param \App\Editor\DTO\Answer[] $nodeAnswers
+     * @param Answer[] $answers
+     */
+    private function removeAnswers(array $nodeAnswers, array $answers)
+    {
+        $deletedAnswers = array_filter($answers, function (Answer $answer) use ($nodeAnswers) {
+            foreach ($nodeAnswers as $nodeAnswer) {
+                if ($nodeAnswer->getId() === null || $nodeAnswer->getId() === $answer->getId()) {
+                    return false;
+                }
+            }
+            return true;
+        });
+        foreach ($deletedAnswers as $answer) {
+            $this->answerRepository->remove($answer);
+        }
     }
 }

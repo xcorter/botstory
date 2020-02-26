@@ -16,6 +16,7 @@ class GameGraph {
         this.tree = new Tree();
         this.graphNode = targetElement;
         this.configureGraphArea();
+        // window.tree = this.tree;
     }
 
     configureGraphArea() {
@@ -50,7 +51,7 @@ class GameGraph {
         options.childNodes.forEach((option: HTMLElement) =>{
             option.addEventListener('input', (e) => {
                 const target = <HTMLElement> e.target;
-                const answerViewId = target.dataset.viewId;
+                const answerViewId = target.parentElement.dataset.viewId;
                 node.updateAnswer(answerViewId, target.innerText);
                 Runner.run(node.el.id, () => {
                     NodeRepository.save(node);
@@ -63,6 +64,21 @@ class GameGraph {
             node.addNewAnswer();
             this.renderNode(node);
         });
+
+        const removeAnswerButtons =
+            <HTMLCollectionOf<HTMLElement>>node.getEl().getElementsByClassName('answer-remove');
+        for (let removeAnswerButton of Array.from(removeAnswerButtons)) {
+            removeAnswerButton.addEventListener('click', (e) => {
+                const target = <HTMLElement> e.target;
+                const answerViewId = target.parentElement.dataset.viewId;
+                node.removeAnswer(answerViewId);
+                this.renderNode(node);
+                Runner.run(node.el.id, () => {
+                    NodeRepository.save(node);
+                }, 1000);
+            });
+        }
+
     }
 
     addMove(node: Node) {
