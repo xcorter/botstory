@@ -2,7 +2,8 @@ import logger from '../core/logger/error';
 import Runner from '../core/helper/singleRun'
 import NodeRepository from '../repository/nodeRepository'
 import {Tree} from "./tree";
-import {Node} from "./node";
+import {Node, Answer} from "./node";
+import * as _ from 'lodash';
 
 class GameGraph {
 
@@ -124,10 +125,45 @@ class GameGraph {
         });
     }
 
+    drawLines() {
+        for (let nodesKey in this.tree.nodes) {
+            const node = this.tree.nodes[nodesKey];
+            node.getAnswers().forEach((answer) => this.drawLine(answer))
+        }
+    }
+
+    drawLine(answer: Answer) {
+        const answerEl = <HTMLElement> document.querySelector('[data-view-id=' + answer.viewId + ']');
+        const answerPinEl = <HTMLElement> answerEl.querySelector('.pin');
+        const answerPinPosition = answerPinEl.getBoundingClientRect();
+
+        if (!answer.next_question_id) {
+            return;
+        }
+        const nextNode = this.tree.getNode(answer.next_question_id);
+        if (!nextNode) {
+            logger.error("Node for pin not found");
+            return;
+        }
+        const nextPinEl = nextNode.getEl().querySelector('.pin-node');
+        const nodePinPosition = nextPinEl.getBoundingClientRect();
+
+        const link = _.template('<line x1="<%-x1%>" y1="<%-y1%>" x2="<%-x2%>" y2="<%-y2%>" style="stroke:rgb(255,0,0);stroke-width:2" />')({
+            x1: answerPinPosition.x,
+            y1: answerPinPosition.y,
+            x2: nodePinPosition.x,
+            y2: nodePinPosition.y
+        });
+
+        console.log(link);
+        this.graphNode.querySelector('svg').insertAdjacentHTML('beforeend', link);
+    }
+
     showGraph() {
         fetch(this.graphUrl)
             .then(res => res.json())
             .then((data) => this.showNodes(data))
+            .then((tree) => this.drawLines())
             .catch(logger.error);
     }
 }

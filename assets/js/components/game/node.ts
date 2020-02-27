@@ -5,7 +5,7 @@ interface Position {
     y: number;
 }
 
-interface Answer {
+export interface Answer {
     next_question_id: number;
     id: number;
     text: string;
@@ -123,5 +123,9 @@ export class Node {
         };
         this.el.answers.push(answer);
         this.answerViewIds.set(viewId, null);
+    }
+
+    getAnswers(): Answer[] {
+        return this.el.answers;
     }
 }

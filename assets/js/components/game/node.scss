@@ -40,6 +40,7 @@
 
     .answer {
       display: flex;
+      position: relative;
 
       .answer-text {
         flex: 1;
@@ -56,4 +57,24 @@
     padding: 2px 8px;
     text-align: center;
   }
+
+  .pin-node {
+    position: absolute;
+    top: 43%;
+    left: -5px;
+  }
+
+  .pin-answer {
+    position: absolute;
+    top: 7px;
+    right: -15px;
+  }
+}
+
+.pin {
+  height: 10px;
+  width: 10px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
 }
