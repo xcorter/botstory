@@ -109,6 +109,8 @@ class GameGraph {
             // 3, перемещать по экрану
             document.onmousemove = (e) => {
                 moveAt(e);
+                node.getAnswers().forEach((answer) => this.drawLine(answer));
+                this.updateNodeLine(node);
             };
 
             // 4. отследить окончание переноса
@@ -117,7 +119,7 @@ class GameGraph {
                 title.onmouseup = null;
                 node.updatePosition();
                 NodeRepository.save(node);
-            }
+            };
         });
 
         title.addEventListener('dragstart', () => {
@@ -132,9 +134,22 @@ class GameGraph {
         }
     }
 
+    updateNodeLine(node: Node) {
+        const nodeLineId = this.getNodeLineId(node);
+        const lineEl = <HTMLElement> this.graphNode.querySelector('.' + nodeLineId);
+        if (!lineEl) {
+            return;
+        }
+        const pinNode = <HTMLElement> node.getEl().querySelector('.pin-node');
+        const nodePinPosition = pinNode.getBoundingClientRect();
+        lineEl.setAttribute('x2', nodePinPosition.x.toString());
+        lineEl.setAttribute('y2', nodePinPosition.y.toString());
+    }
+
     drawLine(answer: Answer) {
         const answerEl = <HTMLElement> document.querySelector('[data-view-id=' + answer.viewId + ']');
         const answerPinEl = <HTMLElement> answerEl.querySelector('.pin');
+
         const answerPinPosition = answerPinEl.getBoundingClientRect();
 
         if (!answer.next_question_id) {
@@ -148,15 +163,35 @@ class GameGraph {
         const nextPinEl = nextNode.getEl().querySelector('.pin-node');
         const nodePinPosition = nextPinEl.getBoundingClientRect();
 
-        const link = _.template('<line x1="<%-x1%>" y1="<%-y1%>" x2="<%-x2%>" y2="<%-y2%>" style="stroke:rgb(255,0,0);stroke-width:2" />')({
+        const answerLineId = this.getAnswerLineId(answer);
+
+        const linkEl = <HTMLElement> this.graphNode.querySelector('.' + answerLineId);
+
+        if (linkEl) {
+            linkEl.setAttribute('x1', answerPinPosition.x.toString());
+            linkEl.setAttribute('y1', answerPinPosition.y.toString());
+            return;
+        }
+
+        const nodeLineId = this.getNodeLineId(nextNode);
+        const link = _.template('<line class="<%-answerLineId%> <%-nodeLineId%>" data-view-id="<%-answerLineId%>" x1="<%-x1%>" y1="<%-y1%>" x2="<%-x2%>" y2="<%-y2%>" style="stroke:rgb(255,0,0);stroke-width:2" />')({
             x1: answerPinPosition.x,
             y1: answerPinPosition.y,
             x2: nodePinPosition.x,
-            y2: nodePinPosition.y
+            y2: nodePinPosition.y,
+            answerLineId: answerLineId,
+            nodeLineId: nodeLineId
         });
 
-        console.log(link);
         this.graphNode.querySelector('svg').insertAdjacentHTML('beforeend', link);
+    }
+
+    getAnswerLineId(answer: Answer): string {
+        return 'line-' + answer.viewId;
+    }
+
+    getNodeLineId(node: Node): string {
+        return 'node-line-' + node.viewId;
     }
 
     showGraph() {

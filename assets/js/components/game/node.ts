@@ -128,4 +128,14 @@ export class Node {
     getAnswers(): Answer[] {
         return this.el.answers;
     }
+
+    getLinks() {
+        const links = [];
+        this.el.answers.forEach((answer: Answer) => {
+            const viewId = answer.viewId;
+            const selector = '.link' + viewId;
+            const link = <HTMLElement> this.getEl().querySelector(selector);
+            link.dataset.viewId;
+        });
+    }
 }
