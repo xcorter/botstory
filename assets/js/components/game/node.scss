@@ -69,6 +69,12 @@
     top: 7px;
     right: -15px;
   }
+
+  &.isStart {
+    .title {
+      background-color: #bebebe;
+    }
+  }
 }
 
 .pin {

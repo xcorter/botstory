@@ -17,7 +17,7 @@ class GameGraph {
         this.tree = new Tree();
         this.graphNode = targetElement;
         this.configureGraphArea();
-        // window.tree = this.tree;
+        window.tree = this.tree;
     }
 
     configureGraphArea() {

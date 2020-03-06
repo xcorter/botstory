@@ -43,6 +43,7 @@ class GameService
             $data = [
                 'id' => $question->getId(),
                 'text' => $question->getText(),
+                'isStart' => $question->isStart(),
                 'position' => [
                     'x' => $question->getLocationX(),
                     'y' => $question->getLocationY(),

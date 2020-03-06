@@ -16,6 +16,7 @@ interface Element {
     id: number;
     position: Position;
     text: string;
+    isStart: boolean;
     answers: Answer[];
 }
 
@@ -30,7 +31,7 @@ export class Node {
     viewId: string;
     answerViewIds: Map<string, number>;
 
-    public constructor(el: Element ) {
+    public constructor(el: Element) {
         this.el = el;
         this.nodePrefix = 'node-';
         this.viewId = _.uniqueId('node');
@@ -55,7 +56,8 @@ export class Node {
             text: this.el.text,
             answers: this.el.answers,
             viewId: this.viewId,
-            answersViewIds: this.answerViewIds
+            answersViewIds: this.answerViewIds,
+            isStart: this.el.isStart
         });
     }
 
