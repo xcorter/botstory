@@ -2,17 +2,25 @@ import {Node} from './node'
 
 export class Tree {
 
-    nodes: { [questionId: number]: Node; };
+    nodes: { [viewId: string]: Node; };
+    nodesQuestionId: { [questionId: number]: string; };
 
     constructor() {
         this.nodes = {};
+        this.nodesQuestionId = {};
     }
 
     addNode(questionId: number, node: Node): void {
-        this.nodes[questionId] = node;
+        this.nodes[node.viewId] = node;
+        this.nodesQuestionId[questionId] = node.viewId;
     }
 
     getNode(questionId: number): Node {
-        return this.nodes[questionId];
+        const viewId = this.nodesQuestionId[questionId];
+        return this.getNodeByViewId(viewId);
+    }
+
+    getNodeByViewId(viewId: string): Node {
+        return this.nodes[viewId];
     }
 }

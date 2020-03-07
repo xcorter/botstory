@@ -2,8 +2,9 @@ import logger from '../core/logger/error';
 import Runner from '../core/helper/singleRun'
 import NodeRepository from '../repository/nodeRepository'
 import {Tree} from "./tree";
-import {Node, Answer} from "./node";
+import {Node, Answer, Templates} from "./node";
 import * as _ from 'lodash';
+import {AnswerHelper} from "./answer";
 
 class GameGraph {
 
@@ -17,7 +18,7 @@ class GameGraph {
         this.tree = new Tree();
         this.graphNode = targetElement;
         this.configureGraphArea();
-        window.tree = this.tree;
+        // window.tree = this.tree;
     }
 
     configureGraphArea() {
@@ -80,6 +81,76 @@ class GameGraph {
             });
         }
 
+        const pins = <HTMLCollectionOf<HTMLElement>>node.getEl().getElementsByClassName('pin');
+        for (let pin of Array.from(pins)) {
+            this.addPinMove(pin, node);
+        }
+    }
+
+    addPinMove(pin: HTMLElement, node: Node) {
+        pin.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const coords = pin.getBoundingClientRect();
+            const position = {
+                y: coords.top + pageYOffset,
+                x: coords.left + pageXOffset
+            };
+            const startShiftX = e.pageX - position.x;
+            const startShiftY = e.pageY - position.y;
+            const answerEl = this.getAnswerByPin(pin);
+            const answerLineId = AnswerHelper.getAnswerLineIdByHTML(answerEl);
+            const line = this.addLine(position, answerLineId);
+
+            function moveAt(e: any) {
+                line.setAttribute('x2', e.pageX);
+                line.setAttribute('y2', e.pageY);
+            }
+
+            // 3, перемещать по экрану
+            document.onmousemove = (e) => {
+                moveAt(e);
+            };
+
+            document.onmouseup = (e: MouseEvent) => {
+                document.onmousemove = null;
+                document.onmouseup = null;
+                pin.onmouseup = null;
+                const nodePin = <HTMLElement>e.target;
+                if (!nodePin.classList.contains('pin-node')) {
+                    line.remove();
+                }
+                const nodeEl = <HTMLElement>nodePin.closest('.node');
+                const targetNode = this.tree.getNodeByViewId(nodeEl.dataset.viewId);
+                const nodeLineId = this.getNodeLineId(targetNode);
+                line.classList.add(nodeLineId);
+                const answer = node.getAnswerById(answerEl.dataset.viewId);
+                answer.next_question_id = targetNode.el.id;
+                NodeRepository.save(node);
+            };
+        });
+    }
+
+    getAnswerByPin(pin: HTMLElement): HTMLElement {
+        return <HTMLElement>pin.closest('.answer');
+    }
+
+    addLine(position: any, answerLineId: string): HTMLElement {
+        const linkEl = <HTMLElement> this.graphNode.querySelector('.' + answerLineId);
+        if (linkEl) {
+            return linkEl;
+        }
+        const link = _.template(Templates.line)({
+            x1: position.x,
+            y1: position.y,
+            x2: position.x,
+            y2: position.y,
+            answerLineId: answerLineId,
+            nodeLineId: null
+        });
+        this.graphNode.querySelector('svg').insertAdjacentHTML('beforeend', link);
+        return this.graphNode.querySelector('.' + answerLineId);
     }
 
     addMove(node: Node) {
@@ -163,7 +234,7 @@ class GameGraph {
         const nextPinEl = nextNode.getEl().querySelector('.pin-node');
         const nodePinPosition = nextPinEl.getBoundingClientRect();
 
-        const answerLineId = this.getAnswerLineId(answer);
+        const answerLineId = AnswerHelper.getAnswerLineId(answer);
 
         const linkEl = <HTMLElement> this.graphNode.querySelector('.' + answerLineId);
 
@@ -174,7 +245,7 @@ class GameGraph {
         }
 
         const nodeLineId = this.getNodeLineId(nextNode);
-        const link = _.template('<line class="<%-answerLineId%> <%-nodeLineId%>" data-view-id="<%-answerLineId%>" x1="<%-x1%>" y1="<%-y1%>" x2="<%-x2%>" y2="<%-y2%>" style="stroke:rgb(255,0,0);stroke-width:2" />')({
+        const link = _.template(Templates.line)({
             x1: answerPinPosition.x,
             y1: answerPinPosition.y,
             x2: nodePinPosition.x,

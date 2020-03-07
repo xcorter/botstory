@@ -64,6 +64,7 @@ class QuestionService
             if ($nodeAnswer->getId()) {
                 foreach ($answers as $answer) {
                     if ($nodeAnswer->getId() === $answer->getId()) {
+
                         $answer->setText($nodeAnswer->getText());
                         break;
                     }
@@ -78,6 +79,11 @@ class QuestionService
                     null
                 );
             }
+            $nextQuestion = null;
+            if ($nodeAnswer->getNextQuestionId()) {
+                $nextQuestion = $this->questionRepository->findQuestion($nodeAnswer->getNextQuestionId());
+            }
+            $answer->setNextQuestion($nextQuestion);
             $this->answerRepository->save($answer);
         }
         $answers = $this->answerRepository->findByQuestion($question);

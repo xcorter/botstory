@@ -20,8 +20,9 @@ interface Element {
     answers: Answer[];
 }
 
-class Templates {
+export class Templates {
     static node: string = document.getElementById('node-template').innerHTML;
+    static line: string = document.getElementById('line-template').innerHTML;
 }
 
 export class Node {

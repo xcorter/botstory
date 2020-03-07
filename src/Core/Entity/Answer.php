@@ -109,4 +109,14 @@ class Answer
         $this->text = $text;
         return $this;
     }
+
+    /**
+     * @param Question|null $nextQuestion
+     * @return Answer
+     */
+    public function setNextQuestion(?Question $nextQuestion): Answer
+    {
+        $this->nextQuestion = $nextQuestion;
+        return $this;
+    }
 }
