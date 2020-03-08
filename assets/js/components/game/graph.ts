@@ -247,21 +247,20 @@ class GameGraph {
 
         const linkEl = <SVGElement> this.graphNode.querySelector('.' + answerLineId);
 
+        const x1 = answerPinPosition.x;
+        const y1 = answerPinPosition.y;
+        const x2 = nodePinPosition.x;
+        const y2 = nodePinPosition.y;
         if (linkEl) {
-            const lineEl = <SVGElement> linkEl.querySelector('line');
-            const x1 = answerPinPosition.x;
-            const y1 = answerPinPosition.y;
-            const x2 = Number(lineEl.getAttribute('x2'));
-            const y2 = Number(lineEl.getAttribute('y2'));
             LinkHelper.updateCoordinates(linkEl, x1, x2, y1, y2);
             return;
         }
 
         const link = _.template(Templates.line)({
-            x1: answerPinPosition.x,
-            y1: answerPinPosition.y,
-            x2: nodePinPosition.x,
-            y2: nodePinPosition.y,
+            x1,
+            y1,
+            x2,
+            y2,
             answerLineId: answerLineId,
             nodeLineId: nextNode.getNodeLineId(),
             answerViewId: answer.viewId
