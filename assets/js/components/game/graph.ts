@@ -5,6 +5,7 @@ import {Tree} from "./tree";
 import {Node, Answer, Templates} from "./node";
 import * as _ from 'lodash';
 import {AnswerHelper} from "./answer";
+import {LinkHelper} from "./link";
 
 class GameGraph {
 
@@ -100,12 +101,15 @@ class GameGraph {
             const startShiftX = e.pageX - position.x;
             const startShiftY = e.pageY - position.y;
             const answerEl = this.getAnswerByPin(pin);
-            const answerLineId = AnswerHelper.getAnswerLineIdByHTML(answerEl);
-            const line = this.addLine(position, answerLineId);
+            const link = this.addLink(position, answerEl);
 
             function moveAt(e: any) {
-                line.setAttribute('x2', e.pageX);
-                line.setAttribute('y2', e.pageY);
+                const lineEl = <SVGElement> link.querySelector('.line');
+                const x1 = Number(lineEl.getAttribute('x1'));
+                const y1 = Number(lineEl.getAttribute('y1'));
+                const x2 = e.pageX;
+                const y2 = e.pageY;
+                LinkHelper.updateCoordinates(link, x1, x2, y1, y2);
             }
 
             // 3, перемещать по экрану
@@ -119,12 +123,13 @@ class GameGraph {
                 pin.onmouseup = null;
                 const nodePin = <HTMLElement>e.target;
                 if (!nodePin.classList.contains('pin-node')) {
-                    line.remove();
+                    link.remove();
+                    return;
                 }
                 const nodeEl = <HTMLElement>nodePin.closest('.node');
                 const targetNode = this.tree.getNodeByViewId(nodeEl.dataset.viewId);
-                const nodeLineId = this.getNodeLineId(targetNode);
-                line.classList.add(nodeLineId);
+                const nodeLineId = targetNode.getNodeLineId();
+                link.classList.add(nodeLineId);
                 const answer = node.getAnswerById(answerEl.dataset.viewId);
                 answer.next_question_id = targetNode.el.id;
                 NodeRepository.save(node);
@@ -136,8 +141,9 @@ class GameGraph {
         return <HTMLElement>pin.closest('.answer');
     }
 
-    addLine(position: any, answerLineId: string): HTMLElement {
-        const linkEl = <HTMLElement> this.graphNode.querySelector('.' + answerLineId);
+    addLink(position: any, answerEl: HTMLElement): SVGElement {
+        const answerLineId = AnswerHelper.getAnswerLineIdByHTML(answerEl);
+        const linkEl = <SVGElement> this.graphNode.querySelector('.' + answerLineId);
         if (linkEl) {
             return linkEl;
         }
@@ -147,10 +153,12 @@ class GameGraph {
             x2: position.x,
             y2: position.y,
             answerLineId: answerLineId,
-            nodeLineId: null
+            nodeLineId: null,
+            answerViewId: answerEl.dataset.viewId
         });
         this.graphNode.querySelector('svg').insertAdjacentHTML('beforeend', link);
-        return this.graphNode.querySelector('.' + answerLineId);
+        this.setRemoveLineListener(answerLineId);
+        return <SVGElement> this.graphNode.querySelector('.' + answerLineId);
     }
 
     addMove(node: Node) {
@@ -206,15 +214,16 @@ class GameGraph {
     }
 
     updateNodeLine(node: Node) {
-        const nodeLineId = this.getNodeLineId(node);
-        const lineEl = <HTMLElement> this.graphNode.querySelector('.' + nodeLineId);
-        if (!lineEl) {
+        const nodeLineId = node.getNodeLineId();
+        const linkEl = <SVGElement> this.graphNode.querySelector('.' + nodeLineId);
+        if (!linkEl) {
             return;
         }
         const pinNode = <HTMLElement> node.getEl().querySelector('.pin-node');
         const nodePinPosition = pinNode.getBoundingClientRect();
-        lineEl.setAttribute('x2', nodePinPosition.x.toString());
-        lineEl.setAttribute('y2', nodePinPosition.y.toString());
+        const x1 = Number(linkEl.querySelector('line').getAttribute('x1'));
+        const y1 = Number(linkEl.querySelector('line').getAttribute('y1'));
+        LinkHelper.updateCoordinates(linkEl, x1, nodePinPosition.x, y1, nodePinPosition.y);
     }
 
     drawLine(answer: Answer) {
@@ -236,33 +245,41 @@ class GameGraph {
 
         const answerLineId = AnswerHelper.getAnswerLineId(answer);
 
-        const linkEl = <HTMLElement> this.graphNode.querySelector('.' + answerLineId);
+        const linkEl = <SVGElement> this.graphNode.querySelector('.' + answerLineId);
 
         if (linkEl) {
-            linkEl.setAttribute('x1', answerPinPosition.x.toString());
-            linkEl.setAttribute('y1', answerPinPosition.y.toString());
+            const lineEl = <SVGElement> linkEl.querySelector('line');
+            const x1 = answerPinPosition.x;
+            const y1 = answerPinPosition.y;
+            const x2 = Number(lineEl.getAttribute('x2'));
+            const y2 = Number(lineEl.getAttribute('y2'));
+            LinkHelper.updateCoordinates(linkEl, x1, x2, y1, y2);
             return;
         }
 
-        const nodeLineId = this.getNodeLineId(nextNode);
         const link = _.template(Templates.line)({
             x1: answerPinPosition.x,
             y1: answerPinPosition.y,
             x2: nodePinPosition.x,
             y2: nodePinPosition.y,
             answerLineId: answerLineId,
-            nodeLineId: nodeLineId
+            nodeLineId: nextNode.getNodeLineId(),
+            answerViewId: answer.viewId
         });
-
         this.graphNode.querySelector('svg').insertAdjacentHTML('beforeend', link);
+        this.setRemoveLineListener(answerLineId);
     }
 
-    getAnswerLineId(answer: Answer): string {
-        return 'line-' + answer.viewId;
-    }
-
-    getNodeLineId(node: Node): string {
-        return 'node-line-' + node.viewId;
+    setRemoveLineListener(answerLineId: string) {
+        const linkEl = <HTMLElement>this.graphNode.querySelector('.' + answerLineId);
+        linkEl.querySelector('.remove-link').addEventListener('click', (e) => {
+            const answerViewId = linkEl.dataset.answerViewId;
+            const nodeEl = <HTMLElement>document.querySelector('[data-view-id="' + answerViewId + '"]').closest('.node');
+            const node = this.tree.getNodeByViewId(nodeEl.dataset.viewId);
+            node.removeAnswerLink(answerViewId);
+            linkEl.remove();
+            NodeRepository.save(node);
+        });
     }
 
     showGraph() {

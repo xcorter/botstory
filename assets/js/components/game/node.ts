@@ -141,4 +141,13 @@ export class Node {
             link.dataset.viewId;
         });
     }
+
+    removeAnswerLink(answerViewId: string) {
+        const answer = this.getAnswerById(answerViewId);
+        answer.next_question_id = null;
+    }
+
+    getNodeLineId(): string {
+        return 'node-line-' + this.viewId;
+    }
 }
