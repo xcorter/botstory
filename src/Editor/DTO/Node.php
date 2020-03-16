@@ -8,6 +8,12 @@ class Node
 {
 
     /**
+     * @var int|null $id
+     * @Type("integer")
+     */
+    private $id;
+
+    /**
      * @var string $text
      * @Type("string")
      */
@@ -24,6 +30,14 @@ class Node
      * @Type("array<App\Editor\DTO\Answer>")
      */
     private $answers;
+
+    /**
+     * @return int|null
+     */
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
     /**
      * @return string

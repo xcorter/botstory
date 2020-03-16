@@ -40,16 +40,7 @@ class GameService
         $questions = $this->questionRepository->findAllQuestionsByGameId($gameId);
         $result = [];
         foreach ($questions as $question) {
-            $data = [
-                'id' => $question->getId(),
-                'text' => $question->getText(),
-                'isStart' => $question->isStart(),
-                'position' => [
-                    'x' => $question->getLocationX(),
-                    'y' => $question->getLocationY(),
-                ],
-                'answers' => []
-            ];
+            $data = $question->toArray();
             $answers = $this->answerRepository->findByQuestion($question);
             foreach ($answers as $answer) {
                 $nextQuestionId =

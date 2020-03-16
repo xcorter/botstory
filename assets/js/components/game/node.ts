@@ -13,7 +13,7 @@ export interface Answer {
 }
 
 interface Element {
-    id: number;
+    id: number | null;
     position: Position;
     text: string;
     isStart: boolean;

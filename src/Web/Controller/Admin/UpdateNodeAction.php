@@ -31,17 +31,19 @@ class UpdateNodeAction
     }
 
     /**
-     * @Route("/admin/game/node/{questionId}", methods={"POST"}, name="update_node")
+     * @Route("/admin/game/{gameId}/node/", methods={"POST"}, name="update_node")
      * @return JsonResponse
      */
-    public function update(int $questionId, Request $request)
+    public function update(int $gameId, Request $request)
     {
         $json = $request->getContent();
         if (!$json) {
             $this->logger->error("Wrong json");
             return JsonResponse::create();
         }
-        $this->questionService->updateQuestion($questionId, $json);
-        return JsonResponse::create();
+        $question = $this->questionService->updateQuestion($gameId, $json);
+        return JsonResponse::create([
+            'data' => $question->toArray(),
+        ]);
     }
 }

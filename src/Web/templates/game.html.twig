@@ -12,10 +12,15 @@
 {% endblock %}
 
 {% block content %}
-    <div class="graph" data-url="{{ path('graph_game', {'gameId': game.id}) }}">
+    <div class="graph"
+         data-url="{{ path('graph_game', {'gameId': game.id}) }}"
+         data-game-id="{{ game.id }}"
+    >
         <svg height="100%" width="100%">
         </svg>
-
+        <div class="menu">
+            <div class="new-node">New</div>
+        </div>
     </div>
 
     <div class="modal question-modal" tabindex="-1" role="dialog">

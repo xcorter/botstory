@@ -6,6 +6,9 @@ import {Node, Answer, Templates} from "./node";
 import * as _ from 'lodash';
 import {AnswerHelper} from "./answer";
 import {LinkHelper} from "./link";
+import {Menu} from "./menu";
+import {EventDispatcher} from "../core/event";
+import {NEW_NODE} from "../core/event/const";
 
 class GameGraph {
 
@@ -13,12 +16,23 @@ class GameGraph {
     graph: any;
     tree: Tree;
     graphNode: HTMLElement;
+    menu: Menu;
+    nodeRepository: NodeRepository;
+    gameId: number;
+    eventDispatcher: EventDispatcher;
 
     constructor(targetElement: HTMLElement) {
         this.graphUrl = targetElement.dataset.url;
+        this.gameId = parseInt(targetElement.dataset.gameId);
         this.tree = new Tree();
         this.graphNode = targetElement;
         this.configureGraphArea();
+
+        this.nodeRepository = new NodeRepository(this.gameId);
+        this.eventDispatcher = new EventDispatcher();
+
+        this.menu = new Menu(this.tree, this.nodeRepository, this.eventDispatcher);
+        this.menu.init();
         // window.tree = this.tree;
     }
 
@@ -57,7 +71,7 @@ class GameGraph {
                 const answerViewId = target.parentElement.dataset.viewId;
                 node.updateAnswer(answerViewId, target.innerText);
                 Runner.run(node.el.id, () => {
-                    NodeRepository.save(node);
+                    this.nodeRepository.save(node);
                 }, 1000);
             })
         });
@@ -77,7 +91,7 @@ class GameGraph {
                 node.removeAnswer(answerViewId);
                 this.renderNode(node);
                 Runner.run(node.el.id, () => {
-                    NodeRepository.save(node);
+                    this.nodeRepository.save(node);
                 }, 1000);
             });
         }
@@ -132,7 +146,7 @@ class GameGraph {
                 link.classList.add(nodeLineId);
                 const answer = node.getAnswerById(answerEl.dataset.viewId);
                 answer.next_question_id = targetNode.el.id;
-                NodeRepository.save(node);
+                this.nodeRepository.save(node);
             };
         });
     }
@@ -197,7 +211,7 @@ class GameGraph {
                 document.onmousemove = null;
                 title.onmouseup = null;
                 node.updatePosition();
-                NodeRepository.save(node);
+                this.nodeRepository.save(node);
             };
         });
 
@@ -277,11 +291,19 @@ class GameGraph {
             const node = this.tree.getNodeByViewId(nodeEl.dataset.viewId);
             node.removeAnswerLink(answerViewId);
             linkEl.remove();
-            NodeRepository.save(node);
+            this.nodeRepository.save(node);
         });
     }
 
+    initEventDispatcher() {
+        this.eventDispatcher.addListener(NEW_NODE, (obj) => {
+            const node = this.tree.getNode(obj.id);
+            this.renderNode(node);
+        })
+    }
+
     showGraph() {
+        this.initEventDispatcher();
         fetch(this.graphUrl)
             .then(res => res.json())
             .then((data) => this.showNodes(data))

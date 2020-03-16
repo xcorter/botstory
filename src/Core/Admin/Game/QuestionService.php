@@ -5,6 +5,7 @@ namespace App\Core\Admin\Game;
 use App\Core\Answer\AnswerRepositoryInterface;
 use App\Core\Entity\Answer;
 use App\Core\Entity\Question;
+use App\Core\Game\GameRepositoryInterface;
 use App\Core\Question\QuestionRepositoryInterface;
 use App\Editor\DTO\Node;
 use JMS\Serializer\SerializerInterface;
@@ -23,31 +24,44 @@ class QuestionService
      * @var SerializerInterface
      */
     private $serializer;
+    /**
+     * @var GameRepositoryInterface
+     */
+    private $gameRepository;
 
     /**
      * QuestionService constructor.
      * @param QuestionRepositoryInterface $questionRepository
      * @param SerializerInterface $serializer
      * @param AnswerRepositoryInterface $answerRepository
+     * @param GameRepositoryInterface $gameRepository
      */
     public function __construct(
         QuestionRepositoryInterface $questionRepository,
         SerializerInterface $serializer,
-        AnswerRepositoryInterface $answerRepository
+        AnswerRepositoryInterface $answerRepository,
+        GameRepositoryInterface $gameRepository
     ) {
         $this->questionRepository = $questionRepository;
         $this->serializer = $serializer;
         $this->answerRepository = $answerRepository;
+        $this->gameRepository = $gameRepository;
     }
 
-    public function updateQuestion(int $questionId, string $json): void
+    public function updateQuestion(int $gameId, string $json): Question
     {
-        $question = $this->questionRepository->findQuestion($questionId);
-        if (!$question) {
-            throw new \OutOfRangeException('Question not found');
-        }
         /** @var Node $node */
         $node = $this->serializer->deserialize($json, Node::class, 'json');
+
+        if ($node->getId()) {
+            $question = $this->questionRepository->findQuestion($node->getId());
+            if (!$question) {
+                throw new \OutOfRangeException('Question not found');
+            }
+        } else {
+            $game = $this->gameRepository->findById($gameId);
+            $question = new Question($game, false);
+        }
 
         $question
             ->setLocationX($node->getPosition()->getX())
@@ -88,6 +102,13 @@ class QuestionService
         }
         $answers = $this->answerRepository->findByQuestion($question);
         $this->removeAnswers($nodeAnswers, $answers);
+
+        return $question;
+    }
+
+    public function serialize(Question $question): string
+    {
+        return $this->serializer->serialize($question, 'json');
     }
 
     /**

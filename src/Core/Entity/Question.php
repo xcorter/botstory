@@ -34,7 +34,7 @@ class Question
      * @ORM\Column(type="boolean", options={"default":"0"})
      * @var bool
      */
-    private $isFinish;
+    private $isFinish = false;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Core\Game\Entity\Game")
@@ -54,6 +54,18 @@ class Question
      * @var int $locationX
      */
     private $locationY;
+
+    /**
+     * Question constructor.
+     * @param Game $game
+     * @param bool $isStart
+     */
+    public function __construct(Game $game, bool $isStart)
+    {
+        $this->game = $game;
+        $this->isStart = $isStart;
+    }
+
 
     /**
      * @return int
@@ -145,5 +157,22 @@ class Question
     {
         $this->locationY = $locationY;
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'text' => $this->getText(),
+            'isStart' => $this->isStart(),
+            'position' => [
+                'x' => $this->getLocationX(),
+                'y' => $this->getLocationY(),
+            ],
+            'answers' => []
+        ];
     }
 }
