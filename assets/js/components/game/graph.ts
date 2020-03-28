@@ -203,7 +203,7 @@ class GameGraph {
             document.onmousemove = (e) => {
                 moveAt(e);
                 node.getAnswers().forEach((answer) => this.drawLine(answer));
-                this.updateNodeLine(node);
+                this.updateLinkIn(node);
             };
 
             // 4. отследить окончание переноса
@@ -227,17 +227,17 @@ class GameGraph {
         }
     }
 
-    updateNodeLine(node: Node) {
+    updateLinkIn(node: Node) {
         const nodeLineId = node.getNodeLineId();
-        const linkEl = <SVGElement> this.graphNode.querySelector('.' + nodeLineId);
-        if (!linkEl) {
-            return;
-        }
-        const pinNode = <HTMLElement> node.getEl().querySelector('.pin-node');
-        const nodePinPosition = pinNode.getBoundingClientRect();
-        const x1 = Number(linkEl.querySelector('line').getAttribute('x1'));
-        const y1 = Number(linkEl.querySelector('line').getAttribute('y1'));
-        LinkHelper.updateCoordinates(linkEl, x1, nodePinPosition.x, y1, nodePinPosition.y);
+        const links = <NodeListOf<SVGElement>> this.graphNode.querySelectorAll('.' + nodeLineId);
+        links.forEach(function(linkEl: SVGElement) {
+            const pinNode = <HTMLElement> node.getEl().querySelector('.pin-node');
+            const nodePinPosition = pinNode.getBoundingClientRect();
+            const x1 = Number(linkEl.querySelector('line').getAttribute('x1'));
+            const y1 = Number(linkEl.querySelector('line').getAttribute('y1'));
+            LinkHelper.updateCoordinates(linkEl, x1, nodePinPosition.x, y1, nodePinPosition.y);
+        })
+
     }
 
     drawLine(answer: Answer) {
