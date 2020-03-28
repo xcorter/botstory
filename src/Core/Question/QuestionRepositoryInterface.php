@@ -21,4 +21,6 @@ interface QuestionRepositoryInterface
     public function findQuestion(int $id): ?Question;
 
     public function getStartQuestion(int $gameId): Question;
+
+    public function remove(Question $question): void;
 }

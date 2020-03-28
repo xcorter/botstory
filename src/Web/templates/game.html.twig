@@ -65,11 +65,20 @@
     </div>
 
     <script type="text/template" id="node-template">
-        <div class="node detached <%= isStart ?  'isStart' : '' %>" id="<%-id%>" data-node-id="<%-nodeId%>" style="top: <%-position.y%>px; left: <%-position.x%>px;" data-view-id="<%-viewId%>">
+        <div
+            class="node detached <%= isStart ?  'isStart' : '' %>"
+            id="<%-id%>"
+            data-node-id="<%-nodeId%>"
+            style="top: <%-position.y%>px; left: <%-position.x%>px;"
+            data-view-id="<%-viewId%>"
+        >
             <% if (!isStart) { %>
                 <div class="pin pin-node"></div>
             <% } %>
-            <div class="title">Node</div>
+            <div class="node-header">
+                <div class="title">Node</div>
+                <div class="node-delete" data-node-delete>x</div>
+            </div>
             <div class="text"><%-text%></div>
             <div class="options">
                 <% answers.forEach(function(answer) { %>

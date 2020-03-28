@@ -9,12 +9,21 @@ export default class NodeRepository {
     }
 
     save(node: Node):  Promise<Response> {
-        return fetch('/admin/game/' + this.gameId + '/node/', {
+        return fetch('/editor/game/' + this.gameId + '/node/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             },
             body: node.toJson()
-        })
+        });
+    }
+
+    delete(node: Node): Promise<Response> {
+        return fetch('/editor/game/' + this.gameId + '/node/' + node.el.id, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            }
+        });
     }
 }

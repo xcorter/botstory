@@ -35,6 +35,17 @@ class AnswerRepository implements AnswerRepositoryInterface
     }
 
     /**
+     * @param Question $question
+     * @return Answer[]
+     */
+    public function findByNextQuestion(Question $question): array
+    {
+        return $this->entityManager->getRepository(Answer::class)->findBy([
+            'nextQuestion' => $question,
+        ]);
+    }
+
+    /**
      * @param int $id
      * @return Answer|null
      */

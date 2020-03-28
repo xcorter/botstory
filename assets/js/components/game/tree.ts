@@ -23,4 +23,9 @@ export class Tree {
     getNodeByViewId(viewId: string): Node {
         return this.nodes[viewId];
     }
+
+    removeNode(node: Node) {
+        delete this.nodes[node.viewId];
+        delete this.nodesQuestionId[node.el.id];
+    }
 }

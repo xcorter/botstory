@@ -8,7 +8,9 @@ use App\Core\Entity\Question;
 use App\Core\Game\GameRepositoryInterface;
 use App\Core\Question\QuestionRepositoryInterface;
 use App\Editor\DTO\Node;
+use DomainException;
 use JMS\Serializer\SerializerInterface;
+use Psr\Log\LoggerInterface;
 
 class QuestionService
 {
@@ -28,6 +30,10 @@ class QuestionService
      * @var GameRepositoryInterface
      */
     private $gameRepository;
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
 
     /**
      * QuestionService constructor.
@@ -35,17 +41,20 @@ class QuestionService
      * @param SerializerInterface $serializer
      * @param AnswerRepositoryInterface $answerRepository
      * @param GameRepositoryInterface $gameRepository
+     * @param LoggerInterface $logger
      */
     public function __construct(
         QuestionRepositoryInterface $questionRepository,
         SerializerInterface $serializer,
         AnswerRepositoryInterface $answerRepository,
-        GameRepositoryInterface $gameRepository
+        GameRepositoryInterface $gameRepository,
+        LoggerInterface $logger
     ) {
         $this->questionRepository = $questionRepository;
         $this->serializer = $serializer;
         $this->answerRepository = $answerRepository;
         $this->gameRepository = $gameRepository;
+        $this->logger = $logger;
     }
 
     public function updateQuestion(int $gameId, string $json): Question
@@ -104,6 +113,27 @@ class QuestionService
         $this->removeAnswers($nodeAnswers, $answers);
 
         return $question;
+    }
+
+    public function deleteQuestion(int $gameId, int $questionId): void
+    {
+        $question = $this->questionRepository->findQuestion($questionId);
+        if (!$question) {
+            $this->logger->error('Question already removed', [
+                'questionId' => $questionId
+            ]);
+            return;
+        }
+        $links = $this->answerRepository->findByNextQuestion($question);
+        foreach ($links as $answer) {
+            $answer->setNextQuestion(null);
+            $this->answerRepository->save($answer);
+        }
+        $answers = $this->answerRepository->findByQuestion($question);
+        foreach ($answers as $answer) {
+            $this->answerRepository->remove($answer);
+        }
+        $this->questionRepository->remove($question);
     }
 
     public function serialize(Question $question): string

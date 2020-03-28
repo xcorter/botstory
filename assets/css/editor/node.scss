@@ -14,15 +14,38 @@
     border: 1px solid #49eff1;
   }
 
-  .title {
+  &.isStart .node-header {
+    background-color: #bebebe;
+  }
+
+  .node-header {
     cursor: default;
     user-select: none;
     background-color: rgb(238, 238, 238);
     font-weight: 700;
     color: #666;
-    padding: 0 10px;
+    padding-left: 10px;
     height: 40px;
-    line-height: 40px;
+    display: flex;
+
+    .title {
+      line-height: 40px;
+      flex: 1;
+    }
+
+    .node-delete {
+      width: 39px;
+      height: 39px;
+      background-color: white;
+      border: 1px solid black;
+      text-align: center;
+      line-height: 39px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #ededed;
+      }
+    }
   }
 
   .text {
@@ -68,12 +91,6 @@
     position: absolute;
     top: 7px;
     right: -15px;
-  }
-
-  &.isStart {
-    .title {
-      background-color: #bebebe;
-    }
   }
 }
 
