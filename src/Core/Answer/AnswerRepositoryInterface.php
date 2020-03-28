@@ -13,6 +13,8 @@ interface AnswerRepositoryInterface
      */
     public function findByQuestion(Question $question): array;
 
+    public function findByNextQuestion(Question $question): array;
+
     /**
      * @param int $id
      * @return Answer|null

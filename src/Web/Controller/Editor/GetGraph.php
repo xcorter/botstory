@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Web\Controller\Admin;
+namespace App\Web\Controller\Editor;
 
 use App\Core\Admin\Game\GameService;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -24,7 +24,7 @@ class GetGraph
     }
 
     /**
-     * @Route("/admin/game/{gameId}/graph", name="graph_game")
+     * @Route("/editor/game/{gameId}/graph", name="graph_game")
      * @return JsonResponse
      */
     public function __invoke(int $gameId): JsonResponse

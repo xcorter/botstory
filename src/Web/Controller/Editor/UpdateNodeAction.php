@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Web\Controller\Admin;
+namespace App\Web\Controller\Editor;
 
 use App\Core\Admin\Game\QuestionService;
 use Psr\Log\LoggerInterface;
@@ -31,10 +31,12 @@ class UpdateNodeAction
     }
 
     /**
-     * @Route("/admin/game/{gameId}/node/", methods={"POST"}, name="update_node")
+     * @Route("/editor/game/{gameId}/node/", methods={"POST"}, name="update_node")
+     * @param int $gameId
+     * @param Request $request
      * @return JsonResponse
      */
-    public function update(int $gameId, Request $request)
+    public function update(int $gameId, Request $request): JsonResponse
     {
         $json = $request->getContent();
         if (!$json) {

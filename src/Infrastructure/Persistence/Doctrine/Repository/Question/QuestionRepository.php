@@ -67,5 +67,9 @@ class QuestionRepository implements QuestionRepositoryInterface
             ]);
     }
 
-
+    public function remove(Question $question): void
+    {
+        $this->entityManager->remove($question);
+        $this->entityManager->flush();
+    }
 }

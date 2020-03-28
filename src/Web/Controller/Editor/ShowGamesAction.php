@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Web\Controller\Admin;
+namespace App\Web\Controller\Editor;
 
 
 use App\Core\Game\GameRepositoryInterface;
@@ -33,7 +33,7 @@ class ShowGamesAction
     }
 
     /**
-     * @Route("/admin/game/{gameId}", name="game")
+     * @Route("/editor/game/{gameId}", name="game")
      * @return Response
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError

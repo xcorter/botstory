@@ -100,6 +100,27 @@ class GameGraph {
         for (let pin of Array.from(pins)) {
             this.addPinMove(pin, node);
         }
+
+        const removeButton = <HTMLElement>node.getEl().querySelector('[data-node-delete]');
+        removeButton.addEventListener('click', (e) => {
+            this.tree.removeNode(node);
+            const linesId = node.getNodeLineId();
+            const elementNodeListOf = this.graphNode.querySelectorAll('.' + linesId);
+            elementNodeListOf.forEach((value) => {
+                value.remove();
+            });
+            node.getAnswers().forEach((answer) => {
+                const selector = '[data-answer-view-id=' + answer.viewId + ']';
+                const link = this.graphNode.querySelector(selector);
+                if (link) {
+                    link.remove();
+                }
+            });
+            node.getEl().remove();
+            Runner.run(node.el.id, () => {
+                this.nodeRepository.delete(node);
+            }, 1000);
+        });
     }
 
     addPinMove(pin: HTMLElement, node: Node) {
