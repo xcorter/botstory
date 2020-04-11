@@ -20,6 +20,7 @@
          data-url="{{ path('graph_game', {'gameId': game.id}) }}"
          data-game-id="{{ game.id }}"
     >
+        <div class="background"></div>
         <svg height="100%" width="100%"></svg>
         <div class="graph">
         </div>
@@ -71,7 +72,6 @@
             class="node detached <%= isStart ?  'isStart' : '' %>"
             id="<%-id%>"
             data-node-id="<%-nodeId%>"
-{#            style="top: <%-position.y%>px; left: <%-position.x%>px;"#}
             style="transform: translate(<%-position.x%>px, <%-position.y%>px);"
             data-view-id="<%-viewId%>"
         >
