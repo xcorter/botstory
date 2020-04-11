@@ -1,6 +1,11 @@
 .menu {
   position: absolute;
+  z-index: 10;
 
   top: 20px;
   right: 50px;
+
+  .new-node {
+    cursor: pointer;
+  }
 }

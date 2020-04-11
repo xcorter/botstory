@@ -71,16 +71,17 @@ export class Node {
         return document.getElementById(id);
     }
 
-    getCurrentPosition(): Position {
-        const  coords = this.getEl().getBoundingClientRect();
+    private getCurrentPosition(): Position {
+        const  matches = this.getEl().style.transform.match(/.*?([\-0-9\.]+).*?([\-0-9\.]+).*/);
         return {
-            x:  coords.x,
-            y:  coords.y,
+            x: parseInt(matches[1]),
+            y: parseInt(matches[2]),
         }
     }
 
     updatePosition(): void {
         this.el.position = this.getCurrentPosition();
+        console.log(this.el.position);
     }
 
     updateAnswer(viewId: string, text: string): void {
@@ -104,14 +105,6 @@ export class Node {
         return null;
     }
 
-    getCoords(): Position {   // кроме IE8-
-        const box = this.getEl().getBoundingClientRect();
-        return {
-            y: box.top + pageYOffset,
-            x: box.left + pageXOffset
-        };
-    }
-
     toJson(): string {
         return JSON.stringify(this.el)
     }
@@ -130,16 +123,6 @@ export class Node {
 
     getAnswers(): Answer[] {
         return this.el.answers;
-    }
-
-    getLinks() {
-        const links = [];
-        this.el.answers.forEach((answer: Answer) => {
-            const viewId = answer.viewId;
-            const selector = '.link' + viewId;
-            const link = <HTMLElement> this.getEl().querySelector(selector);
-            link.dataset.viewId;
-        });
     }
 
     removeAnswerLink(answerViewId: string) {

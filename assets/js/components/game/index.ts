@@ -1,6 +1,6 @@
 import GameGraph from './graph';
 
-const target = <HTMLElement>(document.getElementsByClassName('graph')[0]);
+const target = <HTMLElement>(document.getElementsByClassName('app')[0]);
 
 const gameGraph = new GameGraph(target);
 gameGraph.showGraph();

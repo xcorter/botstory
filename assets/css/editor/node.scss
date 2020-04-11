@@ -1,5 +1,12 @@
-.graph {
-  position: relative;
+body {
+  overflow: hidden;
+}
+
+.app {
+  svg {
+    position: absolute;
+    height: 1000px;
+  }
 }
 
 .node {

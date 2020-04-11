@@ -8,37 +8,38 @@ import {AnswerHelper} from "./answer";
 import {LinkHelper} from "./link";
 import {Menu} from "./menu";
 import {EventDispatcher} from "../core/event";
-import {NEW_NODE} from "../core/event/const";
+import {CHANGE_SCALE, MOVE_SCREEN, NEW_NODE} from "../core/event/const";
+import {Scale} from "./scale";
 
 class GameGraph {
 
     graphUrl: string;
     graph: any;
     tree: Tree;
+    app: HTMLElement;
     graphNode: HTMLElement;
     menu: Menu;
     nodeRepository: NodeRepository;
     gameId: number;
     eventDispatcher: EventDispatcher;
+    scale: Scale;
 
-    constructor(targetElement: HTMLElement) {
-        this.graphUrl = targetElement.dataset.url;
-        this.gameId = parseInt(targetElement.dataset.gameId);
+    constructor(app: HTMLElement) {
+        this.app = app;
+        this.graphUrl = app.dataset.url;
+        this.gameId = parseInt(app.dataset.gameId);
         this.tree = new Tree();
-        this.graphNode = targetElement;
-        this.configureGraphArea();
+        this.graphNode = app.querySelector('.graph');
+        // this.configureGraphArea();
 
         this.nodeRepository = new NodeRepository(this.gameId);
         this.eventDispatcher = new EventDispatcher();
 
         this.menu = new Menu(this.tree, this.nodeRepository, this.eventDispatcher);
         this.menu.init();
-        // window.tree = this.tree;
-    }
 
-    configureGraphArea() {
-        this.graphNode.style.width = '100%';
-        this.graphNode.style.height = '1024px';
+        this.scale = new Scale('[scale-increase]', '[scale-decrease]', this.graphNode, this.eventDispatcher);
+        // window.tree = this.tree;
     }
 
     showNodes(data: any): Tree {
@@ -121,6 +122,12 @@ class GameGraph {
                 this.nodeRepository.delete(node);
             }, 1000);
         });
+        this.eventDispatcher.addListener(MOVE_SCREEN, () => {
+            this.drawLines();
+        })
+        this.eventDispatcher.addListener(CHANGE_SCALE, () => {
+            this.drawLines();
+        })
     }
 
     addPinMove(pin: HTMLElement, node: Node) {
@@ -128,13 +135,10 @@ class GameGraph {
             e.preventDefault();
             e.stopPropagation();
 
-            const coords = pin.getBoundingClientRect();
             const position = {
-                y: coords.top + pageYOffset,
-                x: coords.left + pageXOffset
+                y: e.pageY,
+                x: e.pageX
             };
-            const startShiftX = e.pageX - position.x;
-            const startShiftY = e.pageY - position.y;
             const answerEl = this.getAnswerByPin(pin);
             const link = this.addLink(position, answerEl);
 
@@ -178,7 +182,7 @@ class GameGraph {
 
     addLink(position: any, answerEl: HTMLElement): SVGElement {
         const answerLineId = AnswerHelper.getAnswerLineIdByHTML(answerEl);
-        const linkEl = <SVGElement> this.graphNode.querySelector('.' + answerLineId);
+        const linkEl = <SVGElement> this.app.querySelector('.' + answerLineId);
         if (linkEl) {
             return linkEl;
         }
@@ -191,9 +195,9 @@ class GameGraph {
             nodeLineId: null,
             answerViewId: answerEl.dataset.viewId
         });
-        this.graphNode.querySelector('svg').insertAdjacentHTML('beforeend', link);
+        this.app.querySelector('svg').insertAdjacentHTML('beforeend', link);
         this.setRemoveLineListener(answerLineId);
-        return <SVGElement> this.graphNode.querySelector('.' + answerLineId);
+        return <SVGElement> this.app.querySelector('.' + answerLineId);
     }
 
     addMove(node: Node) {
@@ -203,21 +207,22 @@ class GameGraph {
             e.preventDefault();
             e.stopPropagation();
             // подготовить к перемещению
-            const coords = node.getCoords();
-            const shiftX = e.pageX - coords.x;
-            const shiftY = e.pageY - coords.y;
+            const scale = this.scale.getScale();
+            const coords = node.el.position;
+            const shiftX = (e.pageX) / scale - coords.x;
+            const shiftY = (e.pageY) / scale - coords.y;
             // 2. разместить на том же месте, но в абсолютных координатах
             moveAt(e);
-            // переместим в body, чтобы мяч был точно не внутри position:relative
             graphNode.appendChild(node.getEl());
 
-            node.getEl().style.zIndex = '1000'; // показывать мяч над другими элементами
+            node.getEl().style.zIndex = '1000';
 
             // передвинуть мяч под координаты курсора
             // и сдвинуть на половину ширины/высоты для центрирования
             function moveAt(e: any) {
-                node.getEl().style.left = e.pageX - shiftX + 'px';
-                node.getEl().style.top = e.pageY - shiftY + 'px';
+                const left = e.pageX / scale - shiftX + 'px';
+                const top = e.pageY / scale - shiftY + 'px';
+                node.getEl().style.transform = 'translate(' + left + ', ' + top + ')';
             }
 
             // 3, перемещать по экрану
@@ -250,15 +255,16 @@ class GameGraph {
 
     updateLinkIn(node: Node) {
         const nodeLineId = node.getNodeLineId();
-        const links = <NodeListOf<SVGElement>> this.graphNode.querySelectorAll('.' + nodeLineId);
+        const links = <NodeListOf<SVGElement>> this.app.querySelectorAll('.' + nodeLineId);
         links.forEach(function(linkEl: SVGElement) {
             const pinNode = <HTMLElement> node.getEl().querySelector('.pin-node');
             const nodePinPosition = pinNode.getBoundingClientRect();
             const x1 = Number(linkEl.querySelector('line').getAttribute('x1'));
             const y1 = Number(linkEl.querySelector('line').getAttribute('y1'));
-            LinkHelper.updateCoordinates(linkEl, x1, nodePinPosition.x, y1, nodePinPosition.y);
+            const x2 = nodePinPosition.x;
+            const y2 = nodePinPosition.y;
+            LinkHelper.updateCoordinates(linkEl, x1, x2, y1, y2);
         })
-
     }
 
     drawLine(answer: Answer) {
@@ -280,12 +286,12 @@ class GameGraph {
 
         const answerLineId = AnswerHelper.getAnswerLineId(answer);
 
-        const linkEl = <SVGElement> this.graphNode.querySelector('.' + answerLineId);
+        const linkEl = <SVGElement> this.app.querySelector('.' + answerLineId);
 
         const x1 = answerPinPosition.x;
-        const y1 = answerPinPosition.y;
-        const x2 = nodePinPosition.x;
-        const y2 = nodePinPosition.y;
+        const y1 = answerPinPosition.y ;
+        const x2 = nodePinPosition.x ;
+        const y2 = nodePinPosition.y ;
         if (linkEl) {
             LinkHelper.updateCoordinates(linkEl, x1, x2, y1, y2);
             return;
@@ -300,12 +306,12 @@ class GameGraph {
             nodeLineId: nextNode.getNodeLineId(),
             answerViewId: answer.viewId
         });
-        this.graphNode.querySelector('svg').insertAdjacentHTML('beforeend', link);
+        this.app.querySelector('svg').insertAdjacentHTML('beforeend', link);
         this.setRemoveLineListener(answerLineId);
     }
 
     setRemoveLineListener(answerLineId: string) {
-        const linkEl = <HTMLElement>this.graphNode.querySelector('.' + answerLineId);
+        const linkEl = <HTMLElement>this.app.querySelector('.' + answerLineId);
         linkEl.querySelector('.remove-link').addEventListener('click', (e) => {
             const answerViewId = linkEl.dataset.answerViewId;
             const nodeEl = <HTMLElement>document.querySelector('[data-view-id="' + answerViewId + '"]').closest('.node');

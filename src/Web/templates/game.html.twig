@@ -12,14 +12,16 @@
 {% endblock %}
 
 {% block content %}
-    <div class="graph"
+    <div class="menu">
+        <div class="new-node">New</div>
+    </div>
+
+    <div class="app"
          data-url="{{ path('graph_game', {'gameId': game.id}) }}"
          data-game-id="{{ game.id }}"
     >
-        <svg height="100%" width="100%">
-        </svg>
-        <div class="menu">
-            <div class="new-node">New</div>
+        <svg height="100%" width="100%"></svg>
+        <div class="graph">
         </div>
     </div>
 
@@ -69,7 +71,8 @@
             class="node detached <%= isStart ?  'isStart' : '' %>"
             id="<%-id%>"
             data-node-id="<%-nodeId%>"
-            style="top: <%-position.y%>px; left: <%-position.x%>px;"
+{#            style="top: <%-position.y%>px; left: <%-position.x%>px;"#}
+            style="transform: translate(<%-position.x%>px, <%-position.y%>px);"
             data-view-id="<%-viewId%>"
         >
             <% if (!isStart) { %>
