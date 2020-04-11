@@ -8,8 +8,9 @@ import {AnswerHelper} from "./answer";
 import {LinkHelper} from "./link";
 import {Menu} from "./menu";
 import {EventDispatcher} from "../core/event";
-import {CHANGE_SCALE, MOVE_SCREEN, NEW_NODE} from "../core/event/const";
+import {CHANGE_SCALE, LOADING_RUN, LOADING_STOP, MOVE_SCREEN, NEW_NODE} from "../core/event/const";
 import {Scale} from "./scale";
+import {Loading} from "./loading";
 
 class GameGraph {
 
@@ -23,6 +24,7 @@ class GameGraph {
     gameId: number;
     eventDispatcher: EventDispatcher;
     scale: Scale;
+    loading: Loading;
 
     constructor(app: HTMLElement) {
         this.app = app;
@@ -39,6 +41,7 @@ class GameGraph {
         this.menu.init();
 
         this.scale = new Scale('[scale-increase]', '[scale-decrease]', this.graphNode, this.eventDispatcher);
+        this.loading = new Loading(this.eventDispatcher);
         // window.tree = this.tree;
     }
 
@@ -72,7 +75,8 @@ class GameGraph {
                 const answerViewId = target.parentElement.dataset.viewId;
                 node.updateAnswer(answerViewId, target.innerText);
                 Runner.run(node.el.id, () => {
-                    this.nodeRepository.save(node);
+                    this.eventDispatcher.dispatch(LOADING_RUN);
+                    this.nodeRepository.save(node).then(() => this.eventDispatcher.dispatch(LOADING_STOP));
                 }, 1000);
             })
         });
@@ -124,10 +128,10 @@ class GameGraph {
         });
         this.eventDispatcher.addListener(MOVE_SCREEN, () => {
             this.drawLines();
-        })
+        });
         this.eventDispatcher.addListener(CHANGE_SCALE, () => {
             this.drawLines();
-        })
+        });
     }
 
     addPinMove(pin: HTMLElement, node: Node) {
@@ -171,7 +175,8 @@ class GameGraph {
                 link.classList.add(nodeLineId);
                 const answer = node.getAnswerById(answerEl.dataset.viewId);
                 answer.next_question_id = targetNode.el.id;
-                this.nodeRepository.save(node);
+                this.eventDispatcher.dispatch(LOADING_RUN);
+                this.nodeRepository.save(node).then(() => this.eventDispatcher.dispatch(LOADING_STOP));
             };
         });
     }
@@ -237,7 +242,8 @@ class GameGraph {
                 document.onmousemove = null;
                 title.onmouseup = null;
                 node.updatePosition();
-                this.nodeRepository.save(node);
+                this.eventDispatcher.dispatch(LOADING_RUN)
+                this.nodeRepository.save(node).then(() => this.eventDispatcher.dispatch(LOADING_STOP));
             };
         });
 
