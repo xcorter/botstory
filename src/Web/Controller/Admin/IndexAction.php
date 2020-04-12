@@ -35,7 +35,7 @@ class IndexAction
     }
 
     /**
-     * @Route("/admin/")
+     * @Route("/admin/", name="admin_main_page")
      * @return Response
      * @throws LoaderError
      * @throws RuntimeError
@@ -46,8 +46,7 @@ class IndexAction
        $games =  $this->gameRepository->findAll();
 
         return new Response(
-            $this->twig->render('@web/index.html.twig', [
-                'text' => 'this is template',
+            $this->twig->render('@web/admin/index.html.twig', [
                 'games' => $games
             ])
         );

@@ -49,4 +49,14 @@ class GameRepository implements GameRepositoryInterface
     {
         return $this->entityManager->getRepository(Game::class)->find($id);
     }
+
+    /**
+     * @param Game $game
+     * @return void
+     */
+    public function save(Game $game): void
+    {
+        $this->entityManager->persist($game);
+        $this->entityManager->flush();
+    }
 }

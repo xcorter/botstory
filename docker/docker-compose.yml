@@ -34,8 +34,8 @@ services:
     command: --default-authentication-plugin=mysql_native_password
     volumes:
       - db-data-botstory:/var/lib/mysql:rw
-#    ports:
-#      - '3306:3306'
+    ports:
+      - '3306:3306'
 #    expose:
 #      - '3306'
 

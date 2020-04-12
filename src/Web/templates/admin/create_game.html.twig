@@ -1,0 +1,17 @@
+{% extends "@web/base.html.twig" %}
+
+{% block title %}Создать игру{% endblock %}
+
+{% block content %}
+    {% include '@web/admin/menu.html.twig' %}
+
+    <div class="container pt-5">
+        {{ form_start(form) }}
+            {{ form_widget(form) }}
+
+            <input type="submit"/>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
+
+

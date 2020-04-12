@@ -22,4 +22,10 @@ interface GameRepositoryInterface
      * @return Game
      */
     public function findById(int $id): Game;
+
+    /**
+     * @param Game $game
+     * @return void
+     */
+    public function save(Game $game): void;
 }
