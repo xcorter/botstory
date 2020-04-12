@@ -74,11 +74,14 @@ class GameGraph {
                 const target = <HTMLElement> e.target;
                 const answerViewId = target.parentElement.dataset.viewId;
                 node.updateAnswer(answerViewId, target.innerText);
-                Runner.run(node.el.id, () => {
-                    this.eventDispatcher.dispatch(LOADING_RUN);
-                    this.nodeRepository.save(node).then(() => this.eventDispatcher.dispatch(LOADING_STOP));
-                }, 1000);
+                this.updateNode(node);
             })
+        });
+
+        (<HTMLElement>node.getEl().querySelector('[data-text]')).addEventListener('input', (e) => {
+            const target = <HTMLElement> e.target;
+            node.updateText(target.innerText);
+            this.updateNode(node);
         });
 
         const addButton = <HTMLElement>node.getEl().getElementsByClassName('option-title')[0];
@@ -95,9 +98,7 @@ class GameGraph {
                 const answerViewId = target.parentElement.dataset.viewId;
                 node.removeAnswer(answerViewId);
                 this.renderNode(node);
-                Runner.run(node.el.id, () => {
-                    this.nodeRepository.save(node);
-                }, 1000);
+                this.updateNode(node);
             });
         }
 
@@ -123,9 +124,11 @@ class GameGraph {
             });
             node.getEl().remove();
             Runner.run(node.el.id, () => {
-                this.nodeRepository.delete(node);
+                this.eventDispatcher.dispatch(LOADING_RUN);
+                this.nodeRepository.delete(node).finally(() => this.eventDispatcher.dispatch(LOADING_RUN));
             }, 1000);
         });
+
         this.eventDispatcher.addListener(MOVE_SCREEN, () => {
             this.drawLines();
         });
@@ -242,7 +245,7 @@ class GameGraph {
                 document.onmousemove = null;
                 title.onmouseup = null;
                 node.updatePosition();
-                this.eventDispatcher.dispatch(LOADING_RUN)
+                this.eventDispatcher.dispatch(LOADING_RUN);
                 this.nodeRepository.save(node).then(() => this.eventDispatcher.dispatch(LOADING_STOP));
             };
         });
@@ -337,11 +340,13 @@ class GameGraph {
 
     showGraph() {
         this.initEventDispatcher();
+        this.eventDispatcher.dispatch(LOADING_RUN);
         fetch(this.graphUrl)
             .then(res => res.json())
             .then((data) => this.showNodes(data))
             .then((tree) => this.drawLines())
-            .catch(logger.error);
+            .catch(logger.error)
+            .finally(() => this.eventDispatcher.dispatch(LOADING_STOP));
     }
 
     private getCenter(el: HTMLElement): Position {
@@ -352,6 +357,13 @@ class GameGraph {
             x,
             y
         }
+    }
+
+    private updateNode(node: Node): void {
+        Runner.run(node.el.id, () => {
+            this.eventDispatcher.dispatch(LOADING_RUN);
+            this.nodeRepository.save(node).finally(() => this.eventDispatcher.dispatch(LOADING_STOP));
+        }, 1000);
     }
 }
 

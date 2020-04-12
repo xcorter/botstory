@@ -82,7 +82,7 @@
                 <div class="title">Node</div>
                 <div class="node-delete" data-node-delete>x</div>
             </div>
-            <div class="text"><%-text%></div>
+            <div class="text" contenteditable="true" data-text><%-text%></div>
             <div class="options">
                 <% answers.forEach(function(answer) { %>
                 <div class="answer" data-id="<%-answer.id%>" data-view-id="<%-answer.viewId%>">

@@ -89,6 +89,10 @@ export class Node {
         answer.text = text;
     }
 
+    updateText(text: string): void {
+        this.el.text = text;
+    }
+
     removeAnswer(viewId: string): void {
         this.el.answers = this.el.answers.filter(function (value: Answer) {
             return value.viewId !== viewId;
