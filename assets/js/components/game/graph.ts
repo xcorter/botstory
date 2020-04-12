@@ -2,7 +2,7 @@ import logger from '../core/logger/error';
 import Runner from '../core/helper/singleRun'
 import NodeRepository from '../repository/nodeRepository'
 import {Tree} from "./tree";
-import {Node, Answer, Templates} from "./node";
+import {Node, Answer, Templates, Position} from "./node";
 import * as _ from 'lodash';
 import {AnswerHelper} from "./answer";
 import {LinkHelper} from "./link";
@@ -262,9 +262,9 @@ class GameGraph {
     updateLinkIn(node: Node) {
         const nodeLineId = node.getNodeLineId();
         const links = <NodeListOf<SVGElement>> this.app.querySelectorAll('.' + nodeLineId);
-        links.forEach(function(linkEl: SVGElement) {
+        links.forEach((linkEl: SVGElement) => {
             const pinNode = <HTMLElement> node.getEl().querySelector('.pin-node');
-            const nodePinPosition = pinNode.getBoundingClientRect();
+            const nodePinPosition = this.getCenter(pinNode);
             const x1 = Number(linkEl.querySelector('line').getAttribute('x1'));
             const y1 = Number(linkEl.querySelector('line').getAttribute('y1'));
             const x2 = nodePinPosition.x;
@@ -277,7 +277,7 @@ class GameGraph {
         const answerEl = <HTMLElement> document.querySelector('[data-view-id=' + answer.viewId + ']');
         const answerPinEl = <HTMLElement> answerEl.querySelector('.pin');
 
-        const answerPinPosition = answerPinEl.getBoundingClientRect();
+        const answerPinPosition = this.getCenter(answerPinEl);
 
         if (!answer.next_question_id) {
             return;
@@ -287,8 +287,8 @@ class GameGraph {
             logger.error("Node for pin not found");
             return;
         }
-        const nextPinEl = nextNode.getEl().querySelector('.pin-node');
-        const nodePinPosition = nextPinEl.getBoundingClientRect();
+        const nextPinEl = <HTMLElement>nextNode.getEl().querySelector('.pin-node');
+        const nodePinPosition = this.getCenter(nextPinEl);
 
         const answerLineId = AnswerHelper.getAnswerLineId(answer);
 
@@ -342,6 +342,16 @@ class GameGraph {
             .then((data) => this.showNodes(data))
             .then((tree) => this.drawLines())
             .catch(logger.error);
+    }
+
+    private getCenter(el: HTMLElement): Position {
+        const rect = el.getBoundingClientRect();
+        const x = rect.left + (rect.right - rect.left) / 2;
+        const y = rect.top + (rect.bottom - rect.top) / 2;
+        return {
+            x,
+            y
+        }
     }
 }
 

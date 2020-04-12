@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 
-interface Position {
+export interface Position {
     x: number;
     y: number;
 }
