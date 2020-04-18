@@ -4,7 +4,7 @@ namespace App\Core\Admin\Game;
 
 use App\Core\Answer\AnswerRepositoryInterface;
 use App\Core\Entity\Answer;
-use App\Core\Entity\Question;
+use App\Core\Question\Entity\Question;
 use App\Core\Game\GameRepositoryInterface;
 use App\Core\Question\QuestionRepositoryInterface;
 use App\Editor\DTO\Node;

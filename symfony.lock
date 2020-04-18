@@ -164,10 +164,16 @@
     "ocramius/proxy-manager": {
         "version": "2.2.2"
     },
+    "php": {
+        "version": "7.3"
+    },
     "psr/cache": {
         "version": "1.0.1"
     },
     "psr/container": {
+        "version": "1.0.0"
+    },
+    "psr/event-dispatcher": {
         "version": "1.0.0"
     },
     "psr/http-message": {
@@ -204,9 +210,6 @@
             "config/bootstrap.php"
         ]
     },
-    "symfony/debug": {
-        "version": "v4.3.1"
-    },
     "symfony/dependency-injection": {
         "version": "v4.3.1"
     },
@@ -215,6 +218,9 @@
     },
     "symfony/dotenv": {
         "version": "v4.3.1"
+    },
+    "symfony/error-handler": {
+        "version": "v5.0.7"
     },
     "symfony/event-dispatcher": {
         "version": "v4.3.1"
@@ -371,6 +377,9 @@
             "config/routes/dev/twig.yaml",
             "templates/base.html.twig"
         ]
+    },
+    "symfony/var-dumper": {
+        "version": "v5.0.7"
     },
     "symfony/var-exporter": {
         "version": "v4.3.1"

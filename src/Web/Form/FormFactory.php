@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Editor\Form;
+namespace App\Web\Form;
 
 use Symfony\Component\Form\Extension\HttpFoundation\HttpFoundationExtension;
 use Symfony\Component\Form\Forms;

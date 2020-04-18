@@ -2,12 +2,10 @@
 
 namespace App\Web\Controller\Admin;
 
-use App\Core\Game\Entity\Game;
-use App\Core\Game\GameRepositoryInterface;
-use App\Editor\Form\FormFactory;
-use App\Editor\Form\GameForm;
-use Symfony\Component\Form\Extension\HttpFoundation\HttpFoundationExtension;
-use Symfony\Component\Form\Forms;
+use App\Core\Game\GameService;
+use App\Web\DTO\GameDTO;
+use App\Web\Form\FormFactory;
+use App\Web\Form\GameForm;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,25 +14,25 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class CreateGameAction
 {
-    /**
-     * @var GameRepositoryInterface
-     */
-    private $gameRepository;
 
     /**
      * @var UrlGeneratorInterface
      */
     private $router;
+    /**
+     * @var GameService
+     */
+    private $gameService;
 
     /**
      * CreateGameAction constructor.
-     * @param GameRepositoryInterface $gameRepository
      * @param UrlGeneratorInterface $router
+     * @param GameService $gameService
      */
-    public function __construct(GameRepositoryInterface $gameRepository, UrlGeneratorInterface $router)
+    public function __construct(UrlGeneratorInterface $router, GameService $gameService)
     {
-        $this->gameRepository = $gameRepository;
         $this->router = $router;
+        $this->gameService = $gameService;
     }
 
     /**
@@ -44,12 +42,12 @@ class CreateGameAction
     public function __invoke(Request $request)
     {
         $formFactory = FormFactory::createFormFactory();
-        $form = $formFactory->create(GameForm::class, new Game('', ''));
+        $form = $formFactory->create(GameForm::class, new GameDTO());
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var Game $game */
+            /** @var GameDTO $game */
             $game = $form->getData();
-            $this->gameRepository->save($game);
+            $this->gameService->save($game);
             return new RedirectResponse($this->router->generate('admin_main_page'));
         }
         return new Response([

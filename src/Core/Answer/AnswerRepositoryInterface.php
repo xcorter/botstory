@@ -3,7 +3,7 @@
 namespace App\Core\Answer;
 
 use App\Core\Entity\Answer;
-use App\Core\Entity\Question;
+use App\Core\Question\Entity\Question;
 
 interface AnswerRepositoryInterface
 {

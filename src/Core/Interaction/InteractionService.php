@@ -4,7 +4,7 @@ namespace App\Core\Interaction;
 
 use App\Core\Answer\AnswerRepositoryInterface;
 use App\Core\Game\Entity\Game;
-use App\Core\Entity\Question;
+use App\Core\Question\Entity\Question;
 
 class InteractionService
 {

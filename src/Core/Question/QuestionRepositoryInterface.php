@@ -2,8 +2,7 @@
 
 namespace App\Core\Question;
 
-use App\Core\Game\Entity\Game;
-use App\Core\Entity\Question;
+use App\Core\Question\Entity\Question;
 use Doctrine\ORM\Query;
 
 interface QuestionRepositoryInterface

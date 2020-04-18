@@ -2,6 +2,7 @@
 
 namespace App\Core\Entity;
 
+use App\Core\Question\Entity\Question;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -17,7 +18,7 @@ class Answer
      */
     private $id;
     /**
-     * @ORM\ManyToOne(targetEntity="Question")
+     * @ORM\ManyToOne(targetEntity="App\Core\Question\Entity\Question")
      * @ORM\JoinColumn(name="question_id", referencedColumnName="id")
      * @var Question
      */
@@ -33,7 +34,7 @@ class Answer
      */
     private $action;
     /**
-     * @ORM\ManyToOne(targetEntity="Question")
+     * @ORM\ManyToOne(targetEntity="App\Core\Question\Entity\Question")
      * @ORM\JoinColumn(name="next_question_id", referencedColumnName="id", nullable=true)
      * @var Question|null
      */

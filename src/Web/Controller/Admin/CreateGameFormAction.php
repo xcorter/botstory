@@ -2,8 +2,8 @@
 
 namespace App\Web\Controller\Admin;
 
-use App\Editor\Form\FormFactory;
-use App\Editor\Form\GameForm;
+use App\Web\Form\FormFactory;
+use App\Web\Form\GameForm;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Twig\Environment;

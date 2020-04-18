@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Core\Entity;
+namespace App\Core\Question\Entity;
 
 use App\Core\Game\Entity\Game;
 use Doctrine\ORM\Mapping as ORM;
@@ -67,92 +67,58 @@ class Question
     }
 
 
-    /**
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
     public function getText(): string
     {
         return $this->text;
     }
 
-    /**
-     * @return int
-     */
     public function getGame(): Game
     {
         return $this->game;
     }
 
-    /**
-     * @param string $text
-     */
-    public function setText(string $text): void
+    public function setText(string $text): self
     {
         $this->text = $text;
+        return $this;
     }
 
-    /**
-     * @param Game $game
-     */
     public function setGame(Game $game): void
     {
         $this->game = $game;
     }
 
-    /**
-     * @return bool
-     */
     public function isStart(): bool
     {
         return $this->isStart;
     }
 
-    /**
-     * @return bool
-     */
     public function isFinish(): bool
     {
         return $this->isFinish;
     }
 
-    /**
-     * @return int
-     */
     public function getLocationX(): int
     {
         return $this->locationX;
     }
 
-    /**
-     * @return int
-     */
     public function getLocationY(): int
     {
         return $this->locationY;
     }
 
-    /**
-     * @param int $locationX
-     * @return Question
-     */
     public function setLocationX(int $locationX): Question
     {
         $this->locationX = $locationX;
         return $this;
     }
 
-    /**
-     * @param int $locationY
-     * @return Question
-     */
     public function setLocationY(int $locationY): Question
     {
         $this->locationY = $locationY;

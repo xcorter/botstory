@@ -4,7 +4,7 @@ namespace App\Infrastructure\Persistence\Doctrine\Repository\Answer;
 
 use App\Core\Answer\AnswerRepositoryInterface;
 use App\Core\Entity\Answer;
-use App\Core\Entity\Question;
+use App\Core\Question\Entity\Question;
 use Doctrine\ORM\EntityManagerInterface;
 
 class AnswerRepository implements AnswerRepositoryInterface

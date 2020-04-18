@@ -6,7 +6,7 @@ use App\Bot\Telegram\Transform\ResponseConverter;
 use App\Bot\Telegram\Util\Helper;
 use App\Core\Answer\AnswerRepositoryInterface;
 use App\Core\Entity\Answer;
-use App\Core\Entity\Question;
+use App\Core\Question\Entity\Question;
 use App\Core\Entity\User;
 use App\Core\Game\GameContextRepositoryInterface;
 use App\Core\Game\GameContextService;
