@@ -2,7 +2,7 @@
 
 namespace App\Infrastructure\Persistence\Doctrine\Repository\Game;
 
-use App\Core\Entity\User;
+use App\Core\Entity\Player;
 use App\Core\Game\Entity\Game;
 use App\Core\Game\Entity\GameContext;
 use App\Core\Game\GameContextRepositoryInterface;
@@ -24,7 +24,7 @@ class GameContextRepository implements GameContextRepositoryInterface
         $this->entityManager = $entityManager;
     }
 
-    public function findGameContext(User $user, Game $game): ?GameContext
+    public function findGameContext(Player $user, Game $game): ?GameContext
     {
         return $this->entityManager->getRepository(GameContext::class)->findOneBy([
             'user' => $user,

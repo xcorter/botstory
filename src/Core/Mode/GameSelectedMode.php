@@ -3,7 +3,7 @@
 namespace App\Core\Mode;
 
 use App\Bot\Telegram\Util\Helper;
-use App\Core\Entity\User;
+use App\Core\Entity\Player;
 use App\Core\Game\GameContextService;
 use App\Core\Game\GameRepositoryInterface;
 use SimpleTelegramBotClient\Dto\Type\Message;
@@ -36,7 +36,7 @@ class GameSelectedMode implements ModeInterface
         $this->gameContextService = $gameContextService;
     }
 
-    public function run(User $user, Message $message): void
+    public function run(Player $user, Message $message): void
     {
         $text = $message->getText();
         if (!$text) {

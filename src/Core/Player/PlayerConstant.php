@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Core\User;
+namespace App\Core\Player;
 
-class UserConstant
+class PlayerConstant
 {
 
     public const PROVIDER_TELEGRAM = 'telegram';

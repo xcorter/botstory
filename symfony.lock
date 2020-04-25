@@ -158,6 +158,9 @@
     "monolog/monolog": {
         "version": "1.24.0"
     },
+    "nikic/php-parser": {
+        "version": "v4.4.0"
+    },
     "ocramius/package-versions": {
         "version": "1.4.0"
     },
@@ -280,6 +283,15 @@
     "symfony/intl": {
         "version": "v4.3.1"
     },
+    "symfony/maker-bundle": {
+        "version": "1.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "1.0",
+            "ref": "fadbfe33303a76e25cb63401050439aa9b1a9c7f"
+        }
+    },
     "symfony/mime": {
         "version": "v4.3.1"
     },
@@ -338,6 +350,30 @@
             "config/packages/test/routing.yaml",
             "config/routes.yaml"
         ]
+    },
+    "symfony/security-bundle": {
+        "version": "4.4",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "4.4",
+            "ref": "7b4408dc203049666fe23fabed23cbadc6d8440f"
+        },
+        "files": [
+            "config/packages/security.yaml"
+        ]
+    },
+    "symfony/security-core": {
+        "version": "v5.0.7"
+    },
+    "symfony/security-csrf": {
+        "version": "v5.0.7"
+    },
+    "symfony/security-guard": {
+        "version": "v5.0.7"
+    },
+    "symfony/security-http": {
+        "version": "v5.0.7"
     },
     "symfony/service-contracts": {
         "version": "v1.1.2"

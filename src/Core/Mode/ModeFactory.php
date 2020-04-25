@@ -2,7 +2,7 @@
 
 namespace App\Core\Mode;
 
-use App\Core\Entity\User;
+use App\Core\Entity\Player;
 use App\Core\Interaction\Command;
 use Psr\Log\LoggerInterface;
 use SimpleTelegramBotClient\Dto\Type\Message;
@@ -72,11 +72,11 @@ class ModeFactory
     }
 
     /**
-     * @param User $user
+     * @param Player $user
      * @param Message $message
      * @return ModeInterface
      */
-    public function getStep(User $user, Message $message): ModeInterface
+    public function getStep(Player $user, Message $message): ModeInterface
     {
         if ($message->getText() === Command::SETTINGS) {
             return $this->settingsMode;

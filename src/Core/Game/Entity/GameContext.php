@@ -2,7 +2,7 @@
 
 namespace App\Core\Game\Entity;
 
-use App\Core\Entity\User;
+use App\Core\Entity\Player;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -18,9 +18,9 @@ class GameContext
      */
     private $id;
     /**
-     * @ORM\ManyToOne(targetEntity="App\Core\Entity\User")
+     * @ORM\ManyToOne(targetEntity="App\Core\Entity\Player")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
-     * @var User
+     * @var Player
      */
     private $user;
     /**
@@ -37,11 +37,11 @@ class GameContext
 
     /**
      * GameContext constructor.
-     * @param User $user
+     * @param Player $user
      * @param Game $game
      * @param string $context
      */
-    public function __construct(User $user, Game $game, string $context)
+    public function __construct(Player $user, Game $game, string $context)
     {
         $this->user = $user;
         $this->game = $game;
@@ -57,9 +57,9 @@ class GameContext
     }
 
     /**
-     * @return User
+     * @return Player
      */
-    public function getUser(): User
+    public function getUser(): Player
     {
         return $this->user;
     }

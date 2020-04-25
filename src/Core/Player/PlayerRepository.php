@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Core\User;
+namespace App\Core\Player;
 
-use App\Core\Entity\User;
+use App\Core\Entity\Player;
 use Doctrine\ORM\EntityManagerInterface;
 
-class UserRepository
+class PlayerRepository
 {
 
     /**
@@ -25,17 +25,17 @@ class UserRepository
     /**
      * @param string $providerUserId
      * @param string $providerName
-     * @return User|null
+     * @return Player|null
      */
-    public function findProviderUserId(string $providerUserId, string $providerName): ?User
+    public function findProviderUserId(string $providerUserId, string $providerName): ?Player
     {
-        return $this->entityManager->getRepository(User::class)->findOneBy([
+        return $this->entityManager->getRepository(Player::class)->findOneBy([
             'providerName' => $providerName,
             'providerUserId' => $providerUserId,
         ]);
     }
 
-    public function save(User $user): void
+    public function save(Player $user): void
     {
 
         $this->entityManager->persist($user);

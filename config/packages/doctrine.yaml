@@ -32,3 +32,9 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Core/Question/Entity'
                 prefix: 'App\Core\Question\Entity'
                 alias: App\Core\Question
+            App\Core\User\:
+                is_bundle: false
+                type: annotation
+                dir: '%kernel.project_dir%/src/Core/User/Entity'
+                prefix: 'App\Core\User\Entity'
+                alias: App\Core\User

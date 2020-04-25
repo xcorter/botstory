@@ -4,7 +4,7 @@ namespace App\Core\Mode;
 
 use App\Bot\Telegram\Transform\ResponseConverter;
 use App\Bot\Telegram\Util\Helper;
-use App\Core\Entity\User;
+use App\Core\Entity\Player;
 use App\Core\Game\GameRepositoryInterface;
 use App\Core\Interaction\Command;
 use App\Core\Interaction\InteractionService;
@@ -49,7 +49,7 @@ class SelectGameMode implements ModeInterface
         $this->telegramService = $telegramService;
     }
 
-    public function run(User $user, Message $message): void
+    public function run(Player $user, Message $message): void
     {
         $text = $message->getText();
         if (!$text) {

@@ -4,10 +4,10 @@ namespace App\Bot\Telegram\Console;
 
 use App\Core\Mode\ModeFactory;
 use App\Core\Entity\UpdateLog;
-use App\Core\Entity\User;
+use App\Core\Entity\Player;
 use App\Core\Update\UpdateRepository;
-use App\Core\User\UserConstant;
-use App\Core\User\UserRepository;
+use App\Core\Player\PlayerConstant;
+use App\Core\Player\PlayerRepository;
 use Psr\Log\LoggerInterface;
 use SimpleTelegramBotClient\Exception\ClientException;
 use SimpleTelegramBotClient\TelegramService;
@@ -24,7 +24,7 @@ class TelegramBotRun extends Command
      */
     private $telegramService;
     /**
-     * @var UserRepository
+     * @var PlayerRepository
      */
     private $userRepository;
     /**
@@ -43,14 +43,14 @@ class TelegramBotRun extends Command
     /**
      * TelegramBotRun constructor.
      * @param TelegramService $telegramService
-     * @param UserRepository $userRepository
+     * @param PlayerRepository $userRepository
      * @param UpdateRepository $updateRepository
      * @param ModeFactory $stepFactory
      * @param LoggerInterface $logger
      */
     public function __construct(
         TelegramService $telegramService,
-        UserRepository $userRepository,
+        PlayerRepository $userRepository,
         UpdateRepository $updateRepository,
         ModeFactory $stepFactory,
         LoggerInterface $logger
@@ -79,7 +79,7 @@ class TelegramBotRun extends Command
             $updates = $response->getResult();
             foreach ($updates as $update) {
                 $updateId = $update->getUpdateId();
-                if ($this->updateRepository->updateExists($updateId, UserConstant::PROVIDER_TELEGRAM)) {
+                if ($this->updateRepository->updateExists($updateId, PlayerConstant::PROVIDER_TELEGRAM)) {
                     continue;
                 }
                 echo $updateId . "\n";
@@ -89,10 +89,10 @@ class TelegramBotRun extends Command
                 }
                 $userFromTelegram = $message->getFrom();
                 if (!$userFromTelegram) {
-                    throw new \RuntimeException('User from telegram is null');
+                    throw new \RuntimeException('Player from telegram is null');
                 }
 
-                $user = $this->userRepository->findProviderUserId($userFromTelegram->getId(), UserConstant::PROVIDER_TELEGRAM);
+                $user = $this->userRepository->findProviderUserId($userFromTelegram->getId(), PlayerConstant::PROVIDER_TELEGRAM);
                 if (!$user) {
                     $user = $this->createNewUser($userFromTelegram);
                 }
@@ -122,11 +122,11 @@ class TelegramBotRun extends Command
 
     /**
      * @param TelegramUser $userFromTelegram
-     * @return User
+     * @return Player
      */
-    private function createNewUser(TelegramUser $userFromTelegram): User
+    private function createNewUser(TelegramUser $userFromTelegram): Player
     {
-        $user = new User($userFromTelegram->getId(), UserConstant::PROVIDER_TELEGRAM);
+        $user = new Player($userFromTelegram->getId(), PlayerConstant::PROVIDER_TELEGRAM);
         $user
             ->setFirstName($userFromTelegram->getFirstName())
             ->setLastName($userFromTelegram->getLastName())
@@ -138,7 +138,7 @@ class TelegramBotRun extends Command
 
     private function createUpdate(int $updateId): void
     {
-        $update = new UpdateLog($updateId, UserConstant::PROVIDER_TELEGRAM);
+        $update = new UpdateLog($updateId, PlayerConstant::PROVIDER_TELEGRAM);
         $this->updateRepository->save($update);
     }
 }

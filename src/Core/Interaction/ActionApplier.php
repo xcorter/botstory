@@ -2,7 +2,7 @@
 
 namespace App\Core\Interaction;
 
-use App\Core\Entity\User;
+use App\Core\Entity\Player;
 use App\Core\Game\GameContextRepositoryInterface;
 use App\Core\Game\GameRepositoryInterface;
 use App\Core\Interaction\Action\ActionFactory;
@@ -35,7 +35,7 @@ class ActionApplier
         $this->gameRepository = $gameRepository;
     }
 
-    public function apply(User $user, $actionParams): void
+    public function apply(Player $user, $actionParams): void
     {
         $gameId = $user->getContext()->getCurrentGame();
         $game = $this->gameRepository->findById($gameId);

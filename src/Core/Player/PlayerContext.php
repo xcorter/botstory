@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Core\User;
+namespace App\Core\Player;
 
-class UserContext
+class PlayerContext
 {
     /**
      * @var int
      */
-    private $mode = UserConstant::MODE_START;
+    private $mode = PlayerConstant::MODE_START;
     /**
      * @var int|null
      */
@@ -17,15 +17,15 @@ class UserContext
      */
     private $questionId;
 
-    public function selectGameMode(): UserContext
+    public function selectGameMode(): PlayerContext
     {
-        $this->mode = UserConstant::MODE_SELECT_GAME;
+        $this->mode = PlayerConstant::MODE_SELECT_GAME;
         return $this;
     }
 
-    public function showMenuMode(): UserContext
+    public function showMenuMode(): PlayerContext
     {
-        $this->mode = UserConstant::MODE_MENU;
+        $this->mode = PlayerConstant::MODE_MENU;
         return $this;
     }
 
@@ -34,22 +34,22 @@ class UserContext
      */
     public function isStart(): bool
     {
-        return $this->mode === UserConstant::MODE_START;
+        return $this->mode === PlayerConstant::MODE_START;
     }
 
     public function isModeShowMenu(): bool
     {
-        return $this->mode === UserConstant::MODE_MENU;
+        return $this->mode === PlayerConstant::MODE_MENU;
     }
 
     public function isModeSelectGame(): bool
     {
-        return $this->mode === UserConstant::MODE_SELECT_GAME;
+        return $this->mode === PlayerConstant::MODE_SELECT_GAME;
     }
 
     public function isModeGameOver(): bool
     {
-        return $this->mode === UserConstant::MODE_GAME_OVER;
+        return $this->mode === PlayerConstant::MODE_GAME_OVER;
     }
 
     /**
@@ -63,32 +63,32 @@ class UserContext
     public function runGame(int $game): void
     {
         $this->currentGame = $game;
-        $this->mode = UserConstant::MODE_RUN;
+        $this->mode = PlayerConstant::MODE_RUN;
     }
 
     public function backToGame(): void
     {
-        $this->mode = UserConstant::MODE_RUN;
+        $this->mode = PlayerConstant::MODE_RUN;
     }
 
     public function isGameRunning(): bool
     {
-        return $this->mode === UserConstant::MODE_RUN;
+        return $this->mode === PlayerConstant::MODE_RUN;
     }
 
     public function gameOver(): void
     {
-        $this->mode = UserConstant::MODE_GAME_OVER;
+        $this->mode = PlayerConstant::MODE_GAME_OVER;
     }
 
     public function selectSettingsMenu(): void
     {
-        $this->mode = UserConstant::MODE_SETTINGS;
+        $this->mode = PlayerConstant::MODE_SETTINGS;
     }
 
     public function isSettingMenu():bool
     {
-        return $this->mode === UserConstant::MODE_SETTINGS;
+        return $this->mode === PlayerConstant::MODE_SETTINGS;
     }
 
     public function serialize(): string
@@ -96,7 +96,7 @@ class UserContext
         return serialize($this);
     }
 
-    public static function deserialize($serialized): UserContext
+    public static function deserialize($serialized): PlayerContext
     {
         return unserialize($serialized, [__CLASS__]);
     }

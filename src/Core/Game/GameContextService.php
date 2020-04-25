@@ -2,7 +2,7 @@
 
 namespace App\Core\Game;
 
-use App\Core\Entity\User;
+use App\Core\Entity\Player;
 use App\Core\Game\Entity\Game;
 use App\Core\Game\Entity\GameContext;
 
@@ -37,7 +37,7 @@ class GameContextService
         $this->gameContextRepository = $gameContextRepository;
     }
 
-    public function createGameContext(User $user, Game $game): void
+    public function createGameContext(Player $user, Game $game): void
     {
         $characteristics = $this->characteristicRepository->findByGame($game);
         $serializeArray = $this->characteristicService->serializeArray($characteristics);
@@ -45,7 +45,7 @@ class GameContextService
         $this->gameContextRepository->save($gameContext);
     }
 
-    public function removeGameContext(User $user, Game $game): void
+    public function removeGameContext(Player $user, Game $game): void
     {
         $gameContext = $this->gameContextRepository->findGameContext($user, $game);
         if ($gameContext) {

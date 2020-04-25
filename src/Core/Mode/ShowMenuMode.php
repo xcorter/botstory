@@ -3,7 +3,7 @@
 namespace App\Core\Mode;
 
 use App\Bot\Telegram\Transform\ResponseConverter;
-use App\Core\Entity\User;
+use App\Core\Entity\Player;
 use App\Core\Interaction\InteractionService;
 use SimpleTelegramBotClient\Dto\Type\Message;
 use SimpleTelegramBotClient\TelegramService;
@@ -39,7 +39,7 @@ class ShowMenuMode implements ModeInterface
         $this->telegramService = $telegramService;
     }
 
-    public function run(User $user, Message $message): void
+    public function run(Player $user, Message $message): void
     {
         $user->showMenuStep();
         $interactionResponse = $this->interactionService->getInfo($message->getChat()->getId());

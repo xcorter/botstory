@@ -2,7 +2,7 @@
 
 namespace App\Core\Entity;
 
-use App\Core\User\UserContext;
+use App\Core\Player\PlayerContext;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks()
  */
-class User
+class Player
 {
     /**
      * @ORM\Column(type="integer", options={"unsigned"=true})
@@ -50,7 +50,7 @@ class User
      */
     private $context;
     /**
-     * @var UserContext
+     * @var PlayerContext
      */
     private $contextObject;
     /**
@@ -65,7 +65,7 @@ class User
     private $updatedDate;
 
     /**
-     * User constructor.
+     * Player constructor.
      * @param string $providerUserId
      * @param string $providerName
      */
@@ -73,7 +73,7 @@ class User
     {
         $this->providerUserId = $providerUserId;
         $this->providerName = $providerName;
-        $this->contextObject = new UserContext();
+        $this->contextObject = new PlayerContext();
     }
 
     /**
@@ -102,9 +102,9 @@ class User
 
     /**
      * @param string|null $firstName
-     * @return User
+     * @return Player
      */
-    public function setFirstName(?string $firstName): User
+    public function setFirstName(?string $firstName): Player
     {
         $this->firstName = $firstName;
         return $this;
@@ -112,9 +112,9 @@ class User
 
     /**
      * @param string|null $lastName
-     * @return User
+     * @return Player
      */
-    public function setLastName(?string $lastName): User
+    public function setLastName(?string $lastName): Player
     {
         $this->lastName = $lastName;
         return $this;
@@ -122,9 +122,9 @@ class User
 
     /**
      * @param string|null $username
-     * @return User
+     * @return Player
      */
-    public function setUsername(?string $username): User
+    public function setUsername(?string $username): Player
     {
         $this->username = $username;
         return $this;
@@ -157,11 +157,11 @@ class User
     public function deserializeContext(): void
     {
         if (!$this->context) {
-            $this->contextObject = new UserContext();
+            $this->contextObject = new PlayerContext();
             $this->serializeContext();
             return;
         }
-        $this->contextObject = UserContext::deserialize($this->context);
+        $this->contextObject = PlayerContext::deserialize($this->context);
     }
 
     public function isStart(): bool
@@ -181,7 +181,7 @@ class User
         $this->serializeContext();
     }
 
-    public function getContext(): UserContext
+    public function getContext(): PlayerContext
     {
         return $this->contextObject;
     }
@@ -218,7 +218,7 @@ class User
 
     public function resetContext(): void
     {
-        $this->contextObject = new UserContext();
+        $this->contextObject = new PlayerContext();
         $this->serializeContext();
     }
 
