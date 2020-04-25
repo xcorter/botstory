@@ -99,7 +99,7 @@ class User implements UserInterface
      */
     public function getSalt()
     {
-        // not needed when using the "bcrypt" algorithm in security.yaml
+        return '27jCRP`~#3bZ,3y+';
     }
 
     /**
