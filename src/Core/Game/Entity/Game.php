@@ -2,8 +2,10 @@
 
 namespace App\Core\Game\Entity;
 
+use App\Core\User\Entity\User;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
 
 /**
  * @ORM\Entity()
@@ -24,27 +26,28 @@ class Game
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     * @var string $author
-     */
-    private $author;
-
-    /**
      * @ORM\Column(type="datetime_immutable", options={"default": "CURRENT_TIMESTAMP"})
      * @var DateTimeImmutable $createdAt
      */
     private $createdAt;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Core\User\Entity\User")
+     * @JoinColumn(name="author_id", referencedColumnName="id")
+     * @var User
+     */
+    private $author;
+
+    /**
      * Game constructor.
      * @param string $name
-     * @param string $author
+     * @param User $author
      */
-    public function __construct(string $name, string $author)
+    public function __construct(string $name, User $author)
     {
         $this->name = $name;
-        $this->author = $author;
         $this->createdAt = new DateTimeImmutable();
+        $this->author = $author;
     }
 
     /**
@@ -64,14 +67,6 @@ class Game
     }
 
     /**
-     * @return string
-     */
-    public function getAuthor(): string
-    {
-        return $this->author;
-    }
-
-    /**
      * @return DateTimeImmutable
      */
     public function getCreatedAt(): DateTimeImmutable
@@ -86,16 +81,6 @@ class Game
     public function setName(string $name): Game
     {
         $this->name = $name;
-        return $this;
-    }
-
-    /**
-     * @param string $author
-     * @return Game
-     */
-    public function setAuthor(string $author): Game
-    {
-        $this->author = $author;
         return $this;
     }
 }

@@ -33,6 +33,12 @@ class User implements UserInterface
      */
     private $password;
 
+    /**
+     * @var string The hashed password
+     * @ORM\Column(type="string")
+     */
+    private $username;
+
     public function getId(): ?int
     {
         return $this->id;
