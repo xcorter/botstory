@@ -2,7 +2,7 @@
     "type": "project",
     "license": "proprietary",
     "require": {
-        "php": "^7.3",
+        "php": "^7.4",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ext-json": "*",
@@ -10,6 +10,7 @@
         "jms/serializer": "^3.5",
         "jms/serializer-bundle": "^3.5",
         "knplabs/knp-paginator-bundle": "^5.0",
+        "sensio/framework-extra-bundle": "^5.5",
         "symfony/console": "^5.0",
         "symfony/dotenv": "^5.0",
         "symfony/event-dispatcher": "^5.0",

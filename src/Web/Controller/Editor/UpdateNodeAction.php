@@ -13,18 +13,9 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class UpdateNodeAction
 {
-    /**
-     * @var QuestionService
-     */
-    private $questionService;
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-    /**
-     * @var GrantsChecker
-     */
-    private $grantsChecker;
+    private QuestionService $questionService;
+    private LoggerInterface $logger;
+    private GrantsChecker $grantsChecker;
 
     /**
      * UpdateNodeAction constructor.

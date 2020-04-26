@@ -11,30 +11,14 @@ use App\Web\Security\GrantsChecker;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class DeleteNodeAction
 {
-    /**
-     * @var QuestionService
-     */
-    private $questionService;
-
-    /**
-     * @var GameRepositoryInterface
-     */
-    private $gameRepository;
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * @var GrantsChecker
-     */
-    private $grantsChecker;
+    private QuestionService $questionService;
+    private GameRepositoryInterface $gameRepository;
+    private LoggerInterface $logger;
+    private GrantsChecker $grantsChecker;
 
     /**
      * DeleteNodeAction constructor.

@@ -11,14 +11,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class GetGraph
 {
-    /**
-     * @var GameService
-     */
-    private $gameService;
-    /**
-     * @var GrantsChecker
-     */
-    private $grantsChecker;
+    private GameService $gameService;
+    private GrantsChecker $grantsChecker;
 
     /**
      * GetGraph constructor.

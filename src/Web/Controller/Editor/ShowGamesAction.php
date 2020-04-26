@@ -3,7 +3,6 @@
 namespace App\Web\Controller\Editor;
 
 use App\Core\Game\Entity\Game;
-use App\Core\Game\GameRepositoryInterface;
 use App\Web\Security\GrantsChecker;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,14 +11,8 @@ use Twig\Environment;
 
 class ShowGamesAction
 {
-    /**
-     * @var Environment
-     */
-    private $twig;
-    /**
-     * @var GrantsChecker
-     */
-    private $grantsChecker;
+    private Environment $twig;
+    private GrantsChecker $grantsChecker;
 
     /**
      * ShowGamesAction constructor.
