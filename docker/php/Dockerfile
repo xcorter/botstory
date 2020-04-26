@@ -1,6 +1,6 @@
-FROM php:7.3-fpm-alpine3.8
+FROM php:7.4-fpm-alpine
 
-ARG XDEBUG_VERSION=2.7.1
+ARG XDEBUG_VERSION=2.9.5
 
 RUN set -xe \
         && apk add --no-cache --virtual .build-deps \
@@ -23,7 +23,7 @@ RUN set -xe \
     && docker-php-ext-install sockets \
     && pecl install xdebug-${XDEBUG_VERSION} \
     && docker-php-ext-enable xdebug \
-    && docker-php-ext-configure zip --with-libzip \
+    && docker-php-ext-configure zip \
     && docker-php-ext-install zip \
     && docker-php-ext-install bcmath \
     && docker-php-ext-install gd \
