@@ -3,55 +3,39 @@
 namespace App\Infrastructure\Persistence\Doctrine\Repository\Answer;
 
 use App\Core\Answer\AnswerRepositoryInterface;
+use App\Core\Answer\Specification\SpecificationInterface;
 use App\Core\Entity\Answer;
 use App\Core\Question\Entity\Question;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 
 class AnswerRepository implements AnswerRepositoryInterface
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
 
-    /**
-     * AnswerRepository constructor.
-     * @param EntityManagerInterface $entityManager
-     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
     }
 
-    /**
-     * @param Question $question
-     * @return Answer[]
-     */
-    public function findByQuestion(Question $question): array
+    public function satisfyBy(SpecificationInterface $specification): array
     {
-        return $this->entityManager->getRepository(Answer::class)->findBy([
-            'question' => $question,
-        ]);
+        return $this->applySpecification($specification)->getResult();
     }
 
-    /**
-     * @param Question $question
-     * @return Answer[]
-     */
-    public function findByNextQuestion(Question $question): array
+    public function satisfyOneBy(SpecificationInterface $specification): ?Answer
     {
-        return $this->entityManager->getRepository(Answer::class)->findBy([
-            'nextQuestion' => $question,
-        ]);
+        return $this->applySpecification($specification)->getOneOrNullResult();
     }
 
-    /**
-     * @param int $id
-     * @return Answer|null
-     */
-    public function find(int $id): ?Answer
+    private function applySpecification(SpecificationInterface $specification): Query
     {
-        return $this->entityManager->getRepository(Answer::class)->find($id);
+        $qb = $this->entityManager->createQueryBuilder();
+        $qb->select('a')
+            ->from(Answer::class, 'a');
+        $specification->match($qb,'a');
+        return $qb->getQuery();
     }
 
     /**

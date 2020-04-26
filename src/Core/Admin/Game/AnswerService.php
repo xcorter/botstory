@@ -3,6 +3,7 @@
 namespace App\Core\Admin\Game;
 
 use App\Core\Answer\AnswerRepositoryInterface;
+use App\Core\Answer\Specification\IdSpecification;
 
 class AnswerService
 {
@@ -28,7 +29,7 @@ class AnswerService
 
     public function updateAnswer(int $answerId, array $fields): void
     {
-        $answer = $this->answerRepository->find($answerId);
+        $answer = $this->answerRepository->satisfyOneBy(new IdSpecification($answerId));
         if (!$answer) {
             throw new \OutOfRangeException('Answer not found');
         }

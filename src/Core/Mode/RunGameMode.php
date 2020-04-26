@@ -5,6 +5,7 @@ namespace App\Core\Mode;
 use App\Bot\Telegram\Transform\ResponseConverter;
 use App\Bot\Telegram\Util\Helper;
 use App\Core\Answer\AnswerRepositoryInterface;
+use App\Core\Answer\Specification\QuestionIdSpecification;
 use App\Core\Entity\Answer;
 use App\Core\Question\Entity\Question;
 use App\Core\Entity\Player;
@@ -15,6 +16,8 @@ use App\Core\Interaction\ActionApplier;
 use App\Core\Interaction\ConstraintsFactory;
 use App\Core\Interaction\InteractionService;
 use App\Core\Question\QuestionRepositoryInterface;
+use App\Core\Question\Specification\FindByIdSpecification;
+use App\Core\Question\Specification\StartQuestionSpecification;
 use SimpleTelegramBotClient\Dto\Type\Message;
 use SimpleTelegramBotClient\TelegramService;
 
@@ -106,9 +109,9 @@ class RunGameMode implements ModeInterface
         if (!$currentQuestionId) {
             // Начало игры
             $user->runGame($gameId);
-            $question = $this->questionRepository->getStartQuestion($game->getId());
+            $question = $this->questionRepository->satisfyOneBy(new StartQuestionSpecification($gameId));
         } else {
-            $currentQuestion = $this->questionRepository->findQuestion($currentQuestionId);
+            $currentQuestion = $this->questionRepository->satisfyOneBy(new FindByIdSpecification($currentQuestionId));
             if (!$currentQuestion) {
                 throw new \RuntimeException('Question not found');
             }
@@ -151,7 +154,7 @@ class RunGameMode implements ModeInterface
      */
     private function getAnswer(Message $message, Question $question): Answer
     {
-        $answers = $this->answerRepository->findByQuestion($question);
+        $answers = $this->answerRepository->satisfyBy(new QuestionIdSpecification($question->getId()));
         $normalizedAnswer = Helper::trim($message->getText());
         foreach ($answers as $answer) {
             if ($answer->getText() === $normalizedAnswer) {

@@ -3,11 +3,14 @@
 namespace App\Core\Admin\Game;
 
 use App\Core\Answer\AnswerRepositoryInterface;
+use App\Core\Answer\Specification\NextQuestionSpecification;
+use App\Core\Answer\Specification\QuestionIdSpecification;
 use App\Core\Entity\Answer;
 use App\Core\Game\Entity\Game;
 use App\Core\Question\Entity\Question;
 use App\Core\Game\GameRepositoryInterface;
 use App\Core\Question\QuestionRepositoryInterface;
+use App\Core\Question\Specification\FindByIdSpecification;
 use App\Editor\DTO\Node;
 use DomainException;
 use JMS\Serializer\SerializerInterface;
@@ -65,7 +68,7 @@ class QuestionService
         $node = $this->serializer->deserialize($json, Node::class, 'json');
 
         if ($node->getId()) {
-            $question = $this->questionRepository->findQuestion($node->getId());
+            $question = $this->questionRepository->satisfyOneBy(new FindByIdSpecification($node->getId()));
             if (!$question) {
                 throw new \OutOfRangeException('Question not found');
             }
@@ -84,7 +87,7 @@ class QuestionService
 
         $this->questionRepository->save($question);
 
-        $answers = $this->answerRepository->findByQuestion($question);
+        $answers = $this->answerRepository->satisfyBy(new QuestionIdSpecification($question->getId()));
         $nodeAnswers = $node->getAnswers();
         foreach ($nodeAnswers as $nodeAnswer) {
             $answer = null;
@@ -108,12 +111,14 @@ class QuestionService
             }
             $nextQuestion = null;
             if ($nodeAnswer->getNextQuestionId()) {
-                $nextQuestion = $this->questionRepository->findQuestion($nodeAnswer->getNextQuestionId());
+                $nextQuestion = $this->questionRepository->satisfyOneBy(
+                    new FindByIdSpecification($nodeAnswer->getNextQuestionId())
+                );
             }
             $answer->setNextQuestion($nextQuestion);
             $this->answerRepository->save($answer);
         }
-        $answers = $this->answerRepository->findByQuestion($question);
+        $answers = $this->answerRepository->satisfyBy(new QuestionIdSpecification($question->getId()));
         $this->removeAnswers($nodeAnswers, $answers);
 
         return $question;
@@ -121,7 +126,7 @@ class QuestionService
 
     public function deleteQuestion(Game $game, int $questionId): void
     {
-        $question = $this->questionRepository->findQuestion($questionId);
+        $question = $this->questionRepository->satisfyOneBy(new FindByIdSpecification($questionId));
         if (!$question) {
             $this->logger->error('Question already removed', [
                 'questionId' => $questionId
@@ -136,12 +141,12 @@ class QuestionService
             ]);
             throw new RuntimeException($errorMessage);
         }
-        $links = $this->answerRepository->findByNextQuestion($question);
+        $links = $this->answerRepository->satisfyBy(new NextQuestionSpecification($question->getId()));
         foreach ($links as $answer) {
             $answer->setNextQuestion(null);
             $this->answerRepository->save($answer);
         }
-        $answers = $this->answerRepository->findByQuestion($question);
+        $answers = $this->answerRepository->satisfyBy(new QuestionIdSpecification($question->getId()));
         foreach ($answers as $answer) {
             $this->answerRepository->remove($answer);
         }

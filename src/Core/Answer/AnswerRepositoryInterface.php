@@ -2,28 +2,19 @@
 
 namespace App\Core\Answer;
 
+use App\Core\Answer\Specification\SpecificationInterface;
 use App\Core\Entity\Answer;
-use App\Core\Question\Entity\Question;
 
 interface AnswerRepositoryInterface
 {
     /**
-     * @param Question $question
+     * @param SpecificationInterface $specification
      * @return Answer[]
      */
-    public function findByQuestion(Question $question): array;
+    public function satisfyBy(SpecificationInterface $specification): array;
 
-    public function findByNextQuestion(Question $question): array;
+    public function satisfyOneBy(SpecificationInterface $specification): ?Answer;
 
-    /**
-     * @param int $id
-     * @return Answer|null
-     */
-    public function find(int $id): ?Answer;
-
-    /**
-     * @param Answer $answer
-     */
     public function save(Answer $answer): void;
 
     public function remove(Answer $answer): void;

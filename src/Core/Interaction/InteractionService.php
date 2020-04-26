@@ -3,6 +3,7 @@
 namespace App\Core\Interaction;
 
 use App\Core\Answer\AnswerRepositoryInterface;
+use App\Core\Answer\Specification\QuestionIdSpecification;
 use App\Core\Game\Entity\Game;
 use App\Core\Question\Entity\Question;
 
@@ -61,7 +62,7 @@ class InteractionService
     {
         $interactionResponse = new InteractionResponse($chatId, $question->getText());
 
-        $answers = $this->answerRepository->findByQuestion($question);
+        $answers = $this->answerRepository->satisfyBy(new QuestionIdSpecification($question->getId()));
         $keyboard = [];
         if ($answers) {
             foreach ($answers as $answer) {

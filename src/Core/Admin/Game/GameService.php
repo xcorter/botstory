@@ -3,9 +3,11 @@
 namespace App\Core\Admin\Game;
 
 use App\Core\Answer\AnswerRepositoryInterface;
+use App\Core\Answer\Specification\QuestionIdSpecification;
 use App\Core\Game\Entity\Game;
 use App\Core\Game\GameRepositoryInterface;
 use App\Core\Question\QuestionRepositoryInterface;
+use App\Core\Question\Specification\GameIdSpecification;
 
 class GameService
 {
@@ -38,11 +40,11 @@ class GameService
 
     public function getGraph(Game $game): array
     {
-        $questions = $this->questionRepository->findAllQuestionsByGameId($game->getId());
+        $questions = $this->questionRepository->satisfyBy(new GameIdSpecification($game->getId()));
         $result = [];
         foreach ($questions as $question) {
             $data = $question->toArray();
-            $answers = $this->answerRepository->findByQuestion($question);
+            $answers = $this->answerRepository->satisfyBy(new QuestionIdSpecification($question->getId()));
             foreach ($answers as $answer) {
                 $nextQuestionId =
                     $answer->getNextQuestion() ? $answer->getNextQuestion()->getId() : null;

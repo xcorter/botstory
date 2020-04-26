@@ -4,6 +4,7 @@ namespace App\Infrastructure\Persistence\Doctrine\Repository\Question;
 
 use App\Core\Question\Entity\Question;
 use App\Core\Question\QuestionRepositoryInterface;
+use App\Core\Question\Specification\SpecificationInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query;
 
@@ -12,28 +13,11 @@ use Doctrine\ORM\Query;
  */
 class QuestionRepository implements QuestionRepositoryInterface
 {
+    private EntityManagerInterface $entityManager;
 
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
-
-    /**
-     * ScriptRepository constructor.
-     * @param EntityManagerInterface $entityManager
-     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
-    }
-
-    public function findAllQuestionsByGameId(int $gameId): array
-    {
-        return $this->entityManager->getRepository(Question::class)->findBy(
-            [
-                'game' => $gameId
-            ]
-        );
     }
 
     public function getPaginatorQuery(int $gameId): Query
@@ -52,18 +36,27 @@ class QuestionRepository implements QuestionRepositoryInterface
         $this->entityManager->flush();
     }
 
-    public function findQuestion(int $id): ?Question
+    /**
+     * @param SpecificationInterface $specification
+     * @return Question[]
+     */
+    public function satisfyBy(SpecificationInterface $specification): array
     {
-        return $this->entityManager->getRepository(Question::class)->find($id);
+        return $this->applySpecification($specification)->getResult();
     }
 
-    public function getStartQuestion(int $gameId): Question
+    public function satisfyOneBy(SpecificationInterface $specification): ?Question
     {
-        return $this->entityManager->getRepository(Question::class)
-            ->findOneBy([
-                'game' => $gameId,
-                'isStart' => true,
-            ]);
+        return $this->applySpecification($specification)->getOneOrNullResult();
+    }
+
+    private function applySpecification(SpecificationInterface $specification): Query
+    {
+        $qb = $this->entityManager->createQueryBuilder();
+        $qb->select('q')
+            ->from(Question::class, 'q');
+        $specification->match($qb,'q');
+        return $qb->getQuery();
     }
 
     public function remove(Question $question): void
