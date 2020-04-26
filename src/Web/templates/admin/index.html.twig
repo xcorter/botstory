@@ -8,7 +8,7 @@
     <div class="container pt-5">
         {% for game in games %}
         <div class="list-group">
-            <p><a href="{{ path('game', {'gameId': game.id}) }}" class="list-group-item list-group-item-action">{{ game.name }}</a></p>
+            <p><a href="{{ path('game', {'id': game.id}) }}" class="list-group-item list-group-item-action">{{ game.name }}</a></p>
         </div>
         {% endfor %}
     </div>

@@ -12,6 +12,8 @@ use Doctrine\ORM\Mapping\JoinColumn;
  */
 class Game
 {
+    public const ACTION_EDIT = 'edit';
+
     /**
      * @ORM\Column(type="integer", options={"unsigned"=true})
      * @ORM\Id()
@@ -82,5 +84,18 @@ class Game
     {
         $this->name = $name;
         return $this;
+    }
+
+    /**
+     * @return User
+     */
+    public function getAuthor(): User
+    {
+        return $this->author;
+    }
+
+    public function belongsToUser(User $user): bool
+    {
+        return $user->getId() && $this->author->getId() === $user->getId();
     }
 }

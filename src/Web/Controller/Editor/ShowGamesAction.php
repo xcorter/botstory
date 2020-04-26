@@ -1,10 +1,11 @@
 <?php
 
-
 namespace App\Web\Controller\Editor;
 
-
+use App\Core\Game\Entity\Game;
 use App\Core\Game\GameRepositoryInterface;
+use App\Web\Security\GrantsChecker;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Twig\Environment;
@@ -15,34 +16,33 @@ class ShowGamesAction
      * @var Environment
      */
     private $twig;
-
     /**
-     * @var GameRepositoryInterface
+     * @var GrantsChecker
      */
-    private $gameRepository;
+    private $grantsChecker;
 
     /**
-     * IndexAction constructor.
+     * ShowGamesAction constructor.
      * @param Environment $twig
-     * @param GameRepositoryInterface $gameRepository
+     * @param GrantsChecker $grantsChecker
      */
-    public function __construct(Environment $twig, GameRepositoryInterface $gameRepository)
+    public function __construct(Environment $twig, GrantsChecker $grantsChecker)
     {
         $this->twig = $twig;
-        $this->gameRepository = $gameRepository;
+        $this->grantsChecker = $grantsChecker;
     }
 
     /**
-     * @Route("/editor/game/{gameId}", name="game")
+     * @Route("/editor/game/{id}", name="game")
+     * @ParamConverter("game", class="App\Core\Game\Entity\Game")
      * @return Response
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
      */
-    public function __invoke(int $gameId)
+    public function __invoke(Game $game)
     {
-        $game = $this->gameRepository->findById($gameId);
-
+        $this->grantsChecker->denyAccessUnlessGranted(Game::ACTION_EDIT, $game);
         return new Response(
             $this->twig->render('@web/game.html.twig', [
                 'game' => $game

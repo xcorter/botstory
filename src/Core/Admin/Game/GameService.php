@@ -3,6 +3,7 @@
 namespace App\Core\Admin\Game;
 
 use App\Core\Answer\AnswerRepositoryInterface;
+use App\Core\Game\Entity\Game;
 use App\Core\Game\GameRepositoryInterface;
 use App\Core\Question\QuestionRepositoryInterface;
 
@@ -35,9 +36,9 @@ class GameService
         $this->answerRepository = $answerRepository;
     }
 
-    public function getGraph(int $gameId): array
+    public function getGraph(Game $game): array
     {
-        $questions = $this->questionRepository->findAllQuestionsByGameId($gameId);
+        $questions = $this->questionRepository->findAllQuestionsByGameId($game->getId());
         $result = [];
         foreach ($questions as $question) {
             $data = $question->toArray();

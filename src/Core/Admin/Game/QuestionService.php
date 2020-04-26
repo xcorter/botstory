@@ -4,6 +4,7 @@ namespace App\Core\Admin\Game;
 
 use App\Core\Answer\AnswerRepositoryInterface;
 use App\Core\Entity\Answer;
+use App\Core\Game\Entity\Game;
 use App\Core\Question\Entity\Question;
 use App\Core\Game\GameRepositoryInterface;
 use App\Core\Question\QuestionRepositoryInterface;
@@ -11,6 +12,7 @@ use App\Editor\DTO\Node;
 use DomainException;
 use JMS\Serializer\SerializerInterface;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 
 class QuestionService
 {
@@ -57,7 +59,7 @@ class QuestionService
         $this->logger = $logger;
     }
 
-    public function updateQuestion(int $gameId, string $json): Question
+    public function updateQuestion(Game $game, string $json): Question
     {
         /** @var Node $node */
         $node = $this->serializer->deserialize($json, Node::class, 'json');
@@ -67,8 +69,10 @@ class QuestionService
             if (!$question) {
                 throw new \OutOfRangeException('Question not found');
             }
+            if (!$question->belongsTo($game)) {
+                throw new \Exception('User does not have grants');
+            }
         } else {
-            $game = $this->gameRepository->findById($gameId);
             $question = new Question($game, false);
         }
 
@@ -115,7 +119,7 @@ class QuestionService
         return $question;
     }
 
-    public function deleteQuestion(int $gameId, int $questionId): void
+    public function deleteQuestion(Game $game, int $questionId): void
     {
         $question = $this->questionRepository->findQuestion($questionId);
         if (!$question) {
@@ -123,6 +127,14 @@ class QuestionService
                 'questionId' => $questionId
             ]);
             return;
+        }
+        if (!$question->belongsTo($game)) {
+            $errorMessage = 'Question does not belongs to game';
+            $this->logger->error($errorMessage, [
+                'questionId' => $questionId,
+                'gameId' => $game->getId(),
+            ]);
+            throw new RuntimeException($errorMessage);
         }
         $links = $this->answerRepository->findByNextQuestion($question);
         foreach ($links as $answer) {

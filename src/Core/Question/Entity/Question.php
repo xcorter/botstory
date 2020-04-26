@@ -141,4 +141,9 @@ class Question
             'answers' => []
         ];
     }
+
+    public function belongsTo(Game $game): bool
+    {
+        return $this->getGame()->getId() === $game->getId();
+    }
 }
