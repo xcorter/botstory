@@ -4,7 +4,7 @@ namespace App\Core\Question\Specification;
 
 use Doctrine\ORM\QueryBuilder;
 
-class FindByIdSpecification implements SpecificationInterface
+class IdSpecification implements SpecificationInterface
 {
     private int $id;
 

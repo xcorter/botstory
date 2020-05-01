@@ -10,44 +10,20 @@ use App\Core\Game\Entity\Game;
 use App\Core\Question\Entity\Question;
 use App\Core\Game\GameRepositoryInterface;
 use App\Core\Question\QuestionRepositoryInterface;
-use App\Core\Question\Specification\FindByIdSpecification;
+use App\Core\Question\Specification\IdSpecification;
 use App\Editor\DTO\Node;
-use DomainException;
 use JMS\Serializer\SerializerInterface;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 
 class QuestionService
 {
-    /**
-     * @var QuestionRepositoryInterface
-     */
-    private $questionRepository;
-    /**
-     * @var AnswerRepositoryInterface
-     */
-    private $answerRepository;
-    /**
-     * @var SerializerInterface
-     */
-    private $serializer;
-    /**
-     * @var GameRepositoryInterface
-     */
-    private $gameRepository;
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private QuestionRepositoryInterface $questionRepository;
+    private AnswerRepositoryInterface $answerRepository;
+    private SerializerInterface $serializer;
+    private GameRepositoryInterface $gameRepository;
+    private LoggerInterface $logger;
 
-    /**
-     * QuestionService constructor.
-     * @param QuestionRepositoryInterface $questionRepository
-     * @param SerializerInterface $serializer
-     * @param AnswerRepositoryInterface $answerRepository
-     * @param GameRepositoryInterface $gameRepository
-     * @param LoggerInterface $logger
-     */
     public function __construct(
         QuestionRepositoryInterface $questionRepository,
         SerializerInterface $serializer,
@@ -68,7 +44,7 @@ class QuestionService
         $node = $this->serializer->deserialize($json, Node::class, 'json');
 
         if ($node->getId()) {
-            $question = $this->questionRepository->satisfyOneBy(new FindByIdSpecification($node->getId()));
+            $question = $this->questionRepository->satisfyOneBy(new IdSpecification($node->getId()));
             if (!$question) {
                 throw new \OutOfRangeException('Question not found');
             }
@@ -112,7 +88,7 @@ class QuestionService
             $nextQuestion = null;
             if ($nodeAnswer->getNextQuestionId()) {
                 $nextQuestion = $this->questionRepository->satisfyOneBy(
-                    new FindByIdSpecification($nodeAnswer->getNextQuestionId())
+                    new IdSpecification($nodeAnswer->getNextQuestionId())
                 );
             }
             $answer->setNextQuestion($nextQuestion);
@@ -126,7 +102,7 @@ class QuestionService
 
     public function deleteQuestion(Game $game, int $questionId): void
     {
-        $question = $this->questionRepository->satisfyOneBy(new FindByIdSpecification($questionId));
+        $question = $this->questionRepository->satisfyOneBy(new IdSpecification($questionId));
         if (!$question) {
             $this->logger->error('Question already removed', [
                 'questionId' => $questionId

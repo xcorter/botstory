@@ -2,6 +2,7 @@
 
 namespace App\Core\Question\Entity;
 
+use App\Core\Entity\Answer;
 use App\Core\Game\Entity\Game;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -14,46 +15,39 @@ class Question
      * @ORM\Column(type="integer", options={"unsigned"=true})
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @var integer $id
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\Column(type="string")
-     * @var string $text
      */
-    private $text;
+    private string $text;
 
     /**
      * @ORM\Column(type="boolean", options={"default":"0"})
-     * @var bool
      */
-    private $isStart;
+    private bool $isStart;
 
     /**
      * @ORM\Column(type="boolean", options={"default":"0"})
-     * @var bool
      */
-    private $isFinish = false;
+    private bool $isFinish = false;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Core\Game\Entity\Game")
      * @ORM\JoinColumn(name="game_id", referencedColumnName="id")
-     * @var Game
      */
-    private $game;
+    private Game $game;
 
     /**
      * @ORM\Column(type="integer", options={"default":"0"})
-     * @var int $locationX
      */
-    private $locationX;
+    private int $locationX;
 
     /**
      * @ORM\Column(type="integer", options={"default":"0"})
-     * @var int $locationX
      */
-    private $locationY;
+    private int $locationY;
 
     /**
      * Question constructor.
@@ -126,10 +120,15 @@ class Question
     }
 
     /**
+     * @param Answer[] $answers
      * @return array
      */
-    public function toArray(): array
+    public function toArray(array $answers): array
     {
+        $answersArr = [];
+        foreach ($answers as $answer) {
+            $answersArr[] = $answer->toArray();
+        }
         return [
             'id' => $this->getId(),
             'text' => $this->getText(),
@@ -138,7 +137,7 @@ class Question
                 'x' => $this->getLocationX(),
                 'y' => $this->getLocationY(),
             ],
-            'answers' => []
+            'answers' => $answersArr,
         ];
     }
 

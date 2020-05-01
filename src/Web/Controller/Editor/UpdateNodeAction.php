@@ -3,6 +3,8 @@
 namespace App\Web\Controller\Editor;
 
 use App\Core\Admin\Game\QuestionService;
+use App\Core\Answer\AnswerRepositoryInterface;
+use App\Core\Answer\Specification\QuestionIdSpecification;
 use App\Core\Game\Entity\Game;
 use App\Web\Security\GrantsChecker;
 use Psr\Log\LoggerInterface;
@@ -16,18 +18,21 @@ class UpdateNodeAction
     private QuestionService $questionService;
     private LoggerInterface $logger;
     private GrantsChecker $grantsChecker;
+    private AnswerRepositoryInterface $answerRepository;
 
     /**
      * UpdateNodeAction constructor.
      * @param QuestionService $questionService
      * @param LoggerInterface $logger
      * @param GrantsChecker $grantsChecker
+     * @param AnswerRepositoryInterface $answerRepository
      */
-    public function __construct(QuestionService $questionService, LoggerInterface $logger, GrantsChecker $grantsChecker)
+    public function __construct(QuestionService $questionService, LoggerInterface $logger, GrantsChecker $grantsChecker, AnswerRepositoryInterface $answerRepository)
     {
         $this->questionService = $questionService;
         $this->logger = $logger;
         $this->grantsChecker = $grantsChecker;
+        $this->answerRepository = $answerRepository;
     }
 
     /**
@@ -35,6 +40,7 @@ class UpdateNodeAction
      * @ParamConverter("game", class="App\Core\Game\Entity\Game")
      * @param Request $request
      * @return JsonResponse
+     * @throws \Exception
      */
     public function update(Game $game, Request $request): JsonResponse
     {
@@ -45,8 +51,9 @@ class UpdateNodeAction
         }
         $this->grantsChecker->denyAccessUnlessGranted(Game::ACTION_EDIT, $game);
         $question = $this->questionService->updateQuestion($game, $json);
+        $answers = $this->answerRepository->satisfyBy(new QuestionIdSpecification($question->getId()));
         return JsonResponse::create([
-            'data' => $question->toArray(),
+            'data' => $question->toArray($answers),
         ]);
     }
 }

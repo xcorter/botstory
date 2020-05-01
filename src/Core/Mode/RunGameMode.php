@@ -16,7 +16,7 @@ use App\Core\Interaction\ActionApplier;
 use App\Core\Interaction\ConstraintsFactory;
 use App\Core\Interaction\InteractionService;
 use App\Core\Question\QuestionRepositoryInterface;
-use App\Core\Question\Specification\FindByIdSpecification;
+use App\Core\Question\Specification\IdSpecification;
 use App\Core\Question\Specification\StartQuestionSpecification;
 use SimpleTelegramBotClient\Dto\Type\Message;
 use SimpleTelegramBotClient\TelegramService;
@@ -111,7 +111,7 @@ class RunGameMode implements ModeInterface
             $user->runGame($gameId);
             $question = $this->questionRepository->satisfyOneBy(new StartQuestionSpecification($gameId));
         } else {
-            $currentQuestion = $this->questionRepository->satisfyOneBy(new FindByIdSpecification($currentQuestionId));
+            $currentQuestion = $this->questionRepository->satisfyOneBy(new IdSpecification($currentQuestionId));
             if (!$currentQuestion) {
                 throw new \RuntimeException('Question not found');
             }

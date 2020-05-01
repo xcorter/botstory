@@ -41,8 +41,17 @@ export class Node {
             const viewId = this.generateAnswerId();
             this.answerViewIds.set(viewId, item.id);
             item.viewId = viewId;
-        })
+        });
+    }
 
+    public update(el: Element) {
+        this.el = el;
+        this.answerViewIds = new Map();
+        this.el.answers.forEach((item: Answer) => {
+            const viewId = this.generateAnswerId();
+            this.answerViewIds.set(viewId, item.id);
+            item.viewId = viewId;
+        });
     }
 
     public generateAnswerId(): string {
@@ -81,7 +90,6 @@ export class Node {
 
     updatePosition(): void {
         this.el.position = this.getCurrentPosition();
-        console.log(this.el.position);
     }
 
     updateAnswer(viewId: string, text: string): void {

@@ -43,17 +43,8 @@ class GameService
         $questions = $this->questionRepository->satisfyBy(new GameIdSpecification($game->getId()));
         $result = [];
         foreach ($questions as $question) {
-            $data = $question->toArray();
             $answers = $this->answerRepository->satisfyBy(new QuestionIdSpecification($question->getId()));
-            foreach ($answers as $answer) {
-                $nextQuestionId =
-                    $answer->getNextQuestion() ? $answer->getNextQuestion()->getId() : null;
-                $data['answers'][] = [
-                    'next_question_id' => $nextQuestionId,
-                    'id' => $answer->getId(),
-                    'text' => $answer->getText()
-                ];
-            }
+            $data = $question->toArray($answers);
             $result[] = $data;
         }
         return $result;

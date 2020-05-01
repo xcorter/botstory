@@ -120,4 +120,15 @@ class Answer
         $this->nextQuestion = $nextQuestion;
         return $this;
     }
+
+    public function toArray(): array
+    {
+        $nextQuestionId =
+            $this->getNextQuestion() ? $this->getNextQuestion()->getId() : null;
+        return [
+            'next_question_id' => $nextQuestionId,
+            'id' => $this->getId(),
+            'text' => $this->getText()
+        ];
+    }
 }

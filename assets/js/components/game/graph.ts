@@ -109,23 +109,10 @@ class GameGraph {
 
         const removeButton = <HTMLElement>node.getEl().querySelector('[data-node-delete]');
         removeButton.addEventListener('click', (e) => {
-            this.tree.removeNode(node);
-            const linesId = node.getNodeLineId();
-            const elementNodeListOf = this.graphNode.querySelectorAll('.' + linesId);
-            elementNodeListOf.forEach((value) => {
-                value.remove();
-            });
-            node.getAnswers().forEach((answer) => {
-                const selector = '[data-answer-view-id=' + answer.viewId + ']';
-                const link = this.graphNode.querySelector(selector);
-                if (link) {
-                    link.remove();
-                }
-            });
-            node.getEl().remove();
+            this.removeNode(node);
             Runner.run(node.el.id, () => {
                 this.eventDispatcher.dispatch(LOADING_RUN);
-                this.nodeRepository.delete(node).finally(() => this.eventDispatcher.dispatch(LOADING_RUN));
+                this.nodeRepository.delete(node).finally(() => this.eventDispatcher.dispatch(LOADING_STOP));
             }, 1000);
         });
 
@@ -135,6 +122,25 @@ class GameGraph {
         this.eventDispatcher.addListener(CHANGE_SCALE, () => {
             this.drawLines();
         });
+    }
+
+    removeNode(node: Node) {
+        this.tree.removeNode(node);
+        const linesId = node.getNodeLineId();
+        console.log(linesId);
+        const elementNodeListOf = this.app.querySelectorAll('.' + linesId);
+        console.log(elementNodeListOf);
+        elementNodeListOf.forEach((value) => {
+            value.remove();
+        });
+        node.getAnswers().forEach((answer) => {
+            const selector = '[data-answer-view-id=' + answer.viewId + ']';
+            const link = this.app.querySelector(selector);
+            if (link) {
+                link.remove();
+            }
+        });
+        node.getEl().remove();
     }
 
     addPinMove(pin: HTMLElement, node: Node) {
@@ -225,8 +231,6 @@ class GameGraph {
 
             node.getEl().style.zIndex = '1000';
 
-            // передвинуть мяч под координаты курсора
-            // и сдвинуть на половину ширины/высоты для центрирования
             function moveAt(e: any) {
                 const left = e.pageX / scale - shiftX + 'px';
                 const top = e.pageY / scale - shiftY + 'px';
@@ -262,9 +266,13 @@ class GameGraph {
         }
     }
 
-    updateLinkIn(node: Node) {
+    getLinksIn(node: Node)  {
         const nodeLineId = node.getNodeLineId();
-        const links = <NodeListOf<SVGElement>> this.app.querySelectorAll('.' + nodeLineId);
+        return <NodeListOf<SVGElement>> this.app.querySelectorAll('.' + nodeLineId);
+    }
+
+    updateLinkIn(node: Node) {
+        const links = this.getLinksIn(node);
         links.forEach((linkEl: SVGElement) => {
             const pinNode = <HTMLElement> node.getEl().querySelector('.pin-node');
             const nodePinPosition = this.getCenter(pinNode);
@@ -362,7 +370,16 @@ class GameGraph {
     private updateNode(node: Node): void {
         Runner.run(node.el.id, () => {
             this.eventDispatcher.dispatch(LOADING_RUN);
-            this.nodeRepository.save(node).finally(() => this.eventDispatcher.dispatch(LOADING_STOP));
+            this.nodeRepository.save(node)
+                .then(res => res.json())
+                .then(data => {
+                    this.removeNode(node);
+                    const newNode = new Node(data.data);
+                    this.renderNode(newNode);
+                    this.tree.addNode(newNode.el.id, newNode);
+                    this.drawLines();
+                })
+                .finally(() => this.eventDispatcher.dispatch(LOADING_STOP));
         }, 1000);
     }
 }
