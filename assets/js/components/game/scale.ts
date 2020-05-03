@@ -1,5 +1,6 @@
 import {EventDispatcher} from "../core/event";
 import {CHANGE_SCALE, MOVE_SCREEN} from "../core/event/const";
+import {KEY_CONTROL} from "../core/keyManager/keys";
 
 const SCALE_STEP = 0.1;
 const MIN_SCALE_STEP = 0.4;
@@ -32,6 +33,9 @@ export class Scale {
     graph: HTMLElement;
     eventDispatcher: EventDispatcher;
 
+    movingMode: boolean = false;
+    startMoving: boolean = false;
+
     constructor(plus: string, minus: string, graph: HTMLElement, eventDispatcher: EventDispatcher) {
         this.plus = <HTMLElement>document.querySelector(plus);
         this.minus = <HTMLElement>document.querySelector(minus);
@@ -50,6 +54,33 @@ export class Scale {
         this.scale = 1.0;
         this.graph.style.transform = 'matrix(1,0,0,1,0,0)';
         this.screenMoving();
+        this.cursorMoving();
+    }
+
+    cursorMoving() {
+        document.addEventListener('keydown', (e) => {
+            if (e.key === KEY_CONTROL) {
+                if (!document.body.classList.contains('moving')) {
+                    document.body.classList.add('moving');
+                    this.movingMode = true;
+                }
+            }
+        });
+
+        document.addEventListener('keyup', (e) => {
+            if (e.key === KEY_CONTROL) {
+                if (document.body.classList.contains('moving')) {
+                    document.body.classList.remove('moving');
+                    this.movingMode = false;
+                }
+            }
+        });
+
+        document.querySelector('svg').addEventListener('onmousedown', (e) => {
+            if (this.movingMode) {
+                this.startMoving = true;
+            }
+        });
     }
 
     screenMoving() {

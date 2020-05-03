@@ -2,3 +2,8 @@
 @import "node.scss";
 @import "background.scss";
 @import "throbber.scss";
+@import "svg.scss";
+
+body.moving {
+  cursor: grabbing;
+}

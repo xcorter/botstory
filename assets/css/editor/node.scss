@@ -1,3 +1,5 @@
+@import "colors";
+
 body {
   overflow: hidden;
 }
@@ -11,14 +13,14 @@ body {
 
 .node {
   position: absolute;
-  border: 1px solid #fff;
-  border-radius: 3px;
-  background-color: #fff;
+  border: 1px solid $border-node-color;
+  border-radius: 5px;
+  background-color: #393939;
   width: 200px;
-  min-height: 200px;
+  color: $text-color;
 
   &:hover {
-    border: 1px solid #49eff1;
+    border: 1px solid $hover-color;
   }
 
   &.isStart .node-header {
@@ -28,52 +30,68 @@ body {
   .node-header {
     cursor: default;
     user-select: none;
-    background-color: rgb(238, 238, 238);
     font-weight: 700;
-    color: #666;
     padding-left: 10px;
-    height: 40px;
+    height: 25px;
     display: flex;
+    border-bottom: 1px solid $border-node-color;
+    font-family: monospace;
 
     .title {
-      line-height: 40px;
+      line-height: 25px;
       flex: 1;
     }
 
     .node-delete {
-      width: 39px;
-      height: 39px;
-      background-color: white;
-      border: 1px solid black;
+      width: 29px;
+      height: 24px;
       text-align: center;
-      line-height: 39px;
+      line-height: 24px;
       cursor: pointer;
 
       &:hover {
-        background-color: #ededed;
+        color: $hover-color;
       }
     }
   }
 
   .text {
-    //border: 1px solid #828282;
-    //background-color: aliceblue;
-    height: 90px;
+    min-height: 90px;
     padding: 8px;
-    border-bottom: 1px solid #eeeeee;
-    margin-bottom: 5px;
+    border-bottom: 1px solid black;
+  }
+
+  .text[contentEditable=true]:empty:not(:focus)::before{
+    content:attr(data-placeholder)
   }
 
   .options {
-    padding: 2px 8px;
-    border-bottom: 1px solid #eeeeee;
+    padding: 5px 8px;
+    border-bottom: 1px solid $border-node-color;
+
+    &:empty {
+      border: none;
+      padding: 0;
+    }
 
     .answer {
       display: flex;
       position: relative;
+      font-family: monospace;
 
       .answer-text {
         flex: 1;
+        cursor: default;
+
+        &[contentEditable=true]:empty:not(:focus)::before{
+          content:attr(data-placeholder)
+        }
+
+        &:hover {
+          text-decoration: underline;
+          text-decoration-style: dotted;
+          text-decoration-color: #49eff1;
+        }
       }
 
       .answer-remove {
@@ -84,20 +102,24 @@ body {
   }
 
   .option-title {
-    padding: 2px 8px;
+    padding: 5px 8px;
     text-align: center;
+    font-family: monospace;
+    cursor: pointer;
   }
 
   .pin-node {
     position: absolute;
     top: 43%;
     left: -5px;
+    background-color: #f3cbf2;
   }
 
   .pin-answer {
     position: absolute;
     top: 7px;
-    right: -15px;
+    right: -12px;
+    background-color: #8be1e7;
   }
 }
 

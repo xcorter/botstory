@@ -11,6 +11,8 @@ import {EventDispatcher} from "../core/event";
 import {CHANGE_SCALE, LOADING_RUN, LOADING_STOP, MOVE_SCREEN, NEW_NODE} from "../core/event/const";
 import {Scale} from "./scale";
 import {Loading} from "./loading";
+import {KEY_ENTER, KEY_SHIFT} from "../core/keyManager/keys";
+import KeyManager from "../core/keyManager/keyManager";
 
 class GameGraph {
 
@@ -25,6 +27,7 @@ class GameGraph {
     eventDispatcher: EventDispatcher;
     scale: Scale;
     loading: Loading;
+    keyManager: KeyManager;
 
     constructor(app: HTMLElement) {
         this.app = app;
@@ -32,7 +35,6 @@ class GameGraph {
         this.gameId = parseInt(app.dataset.gameId);
         this.tree = new Tree();
         this.graphNode = app.querySelector('.graph');
-        // this.configureGraphArea();
 
         this.nodeRepository = new NodeRepository(this.gameId);
         this.eventDispatcher = new EventDispatcher();
@@ -42,6 +44,7 @@ class GameGraph {
 
         this.scale = new Scale('[scale-increase]', '[scale-decrease]', this.graphNode, this.eventDispatcher);
         this.loading = new Loading(this.eventDispatcher);
+        this.keyManager = new KeyManager();
         // window.tree = this.tree;
     }
 
@@ -67,14 +70,26 @@ class GameGraph {
         this.setListeners(node);
     }
 
+    editAnswerHandler(node: Node, target: HTMLElement): void {
+        const answerViewId = target.parentElement.dataset.viewId;
+        node.updateAnswer(answerViewId, target.innerText);
+        this.updateNode(node);
+    }
+
     setListeners(node: Node) {
         const options = <HTMLElement>node.getEl().getElementsByClassName('options')[0];
         options.childNodes.forEach((option: HTMLElement) =>{
+            option.addEventListener('keydown', (e) => {
+                if (e.key === KEY_ENTER && !this.keyManager.isKeyDown(KEY_SHIFT)) {
+                    e.preventDefault();
+                    window.getSelection().removeAllRanges();
+                    const target = <HTMLElement> e.target;
+                    this.editAnswerHandler(node, target);
+                }
+            });
             option.addEventListener('input', (e) => {
                 const target = <HTMLElement> e.target;
-                const answerViewId = target.parentElement.dataset.viewId;
-                node.updateAnswer(answerViewId, target.innerText);
-                this.updateNode(node);
+                this.editAnswerHandler(node, target);
             })
         });
 

@@ -7,12 +7,17 @@ export class LinkHelper {
         y2: number,
     ) {
         const lineEl = <SVGElement> linkEl.querySelector('.line');
+        const gradientEl = <SVGElement> linkEl.querySelector('.gradient');
 
         lineEl.setAttribute('x1', x1.toString());
+        gradientEl.setAttribute('x1', x1.toString());
         lineEl.setAttribute('y1', y1.toString());
+        gradientEl.setAttribute('y1', y1.toString());
 
         lineEl.setAttribute('x2', x2.toString());
+        gradientEl.setAttribute('x2', x2.toString());
         lineEl.setAttribute('y2', y2.toString());
+        gradientEl.setAttribute('y2', y2.toString());
 
         const circle = <SVGElement> linkEl.querySelector('circle');
         circle.setAttribute('cx', ((x2-x1) / 2 + x1).toString());

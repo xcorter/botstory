@@ -82,18 +82,31 @@
                 <div class="title">Node</div>
                 <div class="node-delete" data-node-delete>x</div>
             </div>
-            <div class="text" contenteditable="true" data-text><%-text%></div>
-            <div class="options">
+            <div class="text" contenteditable="true" data-text data-placeholder="Ваш текст..."><%-text%></div>
+            <div class="options">{% apply spaceless %}
                 <% answers.forEach(function(answer) { %>
                 <div class="answer" data-id="<%-answer.id%>" data-view-id="<%-answer.viewId%>">
-                    <div class="answer-text" contenteditable="true" data-id="<%-answer.id%>" data-view-id="<%-answer.viewId%>"><%-answer.text%></div>
+                    <div class="answer-text" contenteditable="true" data-id="<%-answer.id%>" data-view-id="<%-answer.viewId%>" data-placeholder="Ответ..."><%-answer.text%></div>
                     <div class="answer-remove">x</div>
                     <div class="pin pin-answer"></div>
                 </div>
                 <% }) %>
-            </div>
+                {% endapply  %}</div>
             <div class="option-title">Добавить</div>
             </div>
+    </script>
+
+    <script type="text/template" id="linearGradient">
+        <linearGradient id="e"
+                        x1="<%-x1%>"
+                        y1="<%-y1%>"
+                        x2="<%-x2%>"
+                        y2="<%-y2%>"
+                        gradientUnits="userSpaceOnUse"
+        >
+            <stop stop-color="#8be1e7" offset="0" />
+            <stop stop-color="#f3cbf2" offset="1" />
+        </linearGradient>
     </script>
 
     <script type="text/template" id="line-template">
@@ -102,13 +115,27 @@
             data-view-id="<%-answerLineId%>"
             data-answer-view-id="<%-answerViewId%>"
         >
+            <defs>
+                <linearGradient
+                    id="gradient-<%-answerLineId%>"
+                    class="gradient"
+                    x1="<%-x1%>"
+                    y1="<%-y1%>"
+                    x2="<%-x2%>"
+                    y2="<%-y2%>"
+                    gradientUnits="userSpaceOnUse"
+                >
+                    <stop offset="0" />
+                    <stop offset="1" />
+                </linearGradient>
+            </defs>
             <line
                 class="line"
                 x1="<%-x1%>"
                 y1="<%-y1%>"
                 x2="<%-x2%>"
                 y2="<%-y2%>"
-                style="stroke:rgb(255,0,0);stroke-width:2"
+                stroke="url(#gradient-<%-answerLineId%>)"
             >
             </line>
             <g class="remove-link">
@@ -116,20 +143,11 @@
                 <circle
                         cx="<%- (x2-x1)/2 + x1 %>"
                         cy="<%- (y2-y1)/2 + y1 %>"
-                        r="7"
-                        stroke-width="1"
-                        stroke="black"
-                        fill="red"
-                >
-
-                </circle>
+                ></circle>
                 <text
                     x="<%- (x2-x1)/2 + x1 - 4 %>"
                     y="<%- (y2-y1)/2 + y1 + 4 %>"
-                    cursor="pointer"
-                >
-                    x
-                </text>
+                >x</text>
             </g>
         </g>
     </script>

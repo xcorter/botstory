@@ -1,6 +1,9 @@
+@import "colors";
+
 .menu {
   position: absolute;
   z-index: 10;
+  color: $text-color;
 
   top: 20px;
   right: 50px;
