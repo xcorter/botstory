@@ -3,17 +3,20 @@ import NodeRepository from "../repository/nodeRepository";
 import {Node} from "./node";
 import {EventDispatcher} from "../core/event";
 import {NEW_NODE} from "../core/event/const";
+import {Scale} from "./scale";
 
 export class Menu {
 
     tree: Tree;
     nodeRepository: NodeRepository;
     eventDispatcher: EventDispatcher;
+    scale: Scale;
 
-    constructor(tree: Tree, nodeRepository: NodeRepository, eventDispatcher: EventDispatcher) {
+    constructor(tree: Tree, nodeRepository: NodeRepository, eventDispatcher: EventDispatcher, scale: Scale) {
         this.tree = tree;
         this.nodeRepository = nodeRepository;
         this.eventDispatcher = eventDispatcher;
+        this.scale = scale;
     }
 
     init() {
@@ -24,12 +27,14 @@ export class Menu {
     }
 
     newNode() {
+        const matrix = this.scale.getTransform();
+        const nodePosition = {
+            x: (window.screen.availWidth) / matrix.d / 2 - matrix.tx  * matrix.d,
+            y: (window.screen.availHeight / 2) * matrix.d - matrix.ty,
+        };
         const node = new Node({
             id: null,
-            position: {
-                x: 0,
-                y: 0,
-            },
+            position: nodePosition,
             text: "",
             isStart: false,
             answers: []

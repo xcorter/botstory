@@ -190,7 +190,7 @@ export class Scale {
         this.graph.style.width = 'calc(100% / ' + this.scale + ')'
     }
 
-    private getTransform(): Matrix {
+    getTransform(): Matrix {
         let matrixSource = this.graph.style.transform.replace(/matrix\((.*)\)/, '$1');
         const matrixArr = matrixSource.split(',');
         const matrixArrInt = matrixArr.map(value => parseFloat(value.trim()));

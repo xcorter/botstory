@@ -1,14 +1,24 @@
 @import "colors";
 
 .menu {
-  position: absolute;
+  position: fixed;
   z-index: 10;
   color: $text-color;
+  display: block;
+  width: 100%;
+  font-family: monospace;
+  border-bottom: 1px solid $border-node-color;
+  background-color: black;
 
-  top: 20px;
-  right: 50px;
+  .logo {
+    padding: 0 5px;
+    background-color: $text-color;
+    color: black;
+  }
 
-  .new-node {
+  .menu-item {
+    display: inline-block;
     cursor: pointer;
+    margin-right: 5px;
   }
 }

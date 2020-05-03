@@ -40,15 +40,16 @@ class GameGraph {
         this.nodeRepository = new NodeRepository(this.gameId);
         this.eventDispatcher = new EventDispatcher();
 
-        this.menu = new Menu(this.tree, this.nodeRepository, this.eventDispatcher);
-        this.menu.init();
-
         this.keyManager = new KeyManager();
         this.scale = new Scale(
             this.graphNode,
             this.eventDispatcher,
             this.keyManager
         );
+
+        this.menu = new Menu(this.tree, this.nodeRepository, this.eventDispatcher, this.scale);
+        this.menu.init();
+
         this.loading = new Loading(this.eventDispatcher);
         // window.tree = this.tree;
     }

@@ -37,7 +37,7 @@ class ShowGamesAction
     {
         $this->grantsChecker->denyAccessUnlessGranted(Game::ACTION_EDIT, $game);
         return new Response(
-            $this->twig->render('@web/game.html.twig', [
+            $this->twig->render('@web/editor/editor.html.twig', [
                 'game' => $game
             ])
         );
