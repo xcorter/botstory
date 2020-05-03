@@ -1,6 +1,8 @@
 import {EventDispatcher} from "../core/event";
 import {CHANGE_SCALE, MOVE_SCREEN} from "../core/event/const";
 import {KEY_CONTROL} from "../core/keyManager/keys";
+import {Position} from './position';
+import KeyManager from "../core/keyManager/keyManager";
 
 const SCALE_STEP = 0.1;
 const MIN_SCALE_STEP = 0.4;
@@ -28,19 +30,18 @@ export class Scale {
 
     private scale: number;
 
-    plus: HTMLElement;
-    minus: HTMLElement;
     graph: HTMLElement;
     eventDispatcher: EventDispatcher;
+    keyManager: KeyManager;
 
     movingMode: boolean = false;
     startMoving: boolean = false;
+    startPosition: Position;
 
-    constructor(plus: string, minus: string, graph: HTMLElement, eventDispatcher: EventDispatcher) {
-        this.plus = <HTMLElement>document.querySelector(plus);
-        this.minus = <HTMLElement>document.querySelector(minus);
+    constructor(graph: HTMLElement, eventDispatcher: EventDispatcher, keyManager: KeyManager) {
         this.graph = graph;
         this.eventDispatcher = eventDispatcher;
+        this.keyManager = keyManager;
 
         window.addEventListener('wheel', (e) => {
             if (e.deltaY < 0) {
@@ -76,10 +77,30 @@ export class Scale {
             }
         });
 
-        document.querySelector('svg').addEventListener('onmousedown', (e) => {
-            if (this.movingMode) {
-                this.startMoving = true;
+        document.querySelector('svg').addEventListener('mousedown', (e: MouseEvent) => {
+            this.startMoving = true;
+            const matrix = this.getTransform();
+            this.startPosition = {
+                x: e.clientX - matrix.tx,
+                y: e.clientY - matrix.ty,
+            };
+        });
+
+        document.querySelector('svg').addEventListener('mouseup', (e: MouseEvent) => {
+            this.startMoving = false;
+        });
+        document.querySelector('svg').addEventListener('mousemove', (e: MouseEvent) => {
+            if (!this.startMoving) {
+                return;
             }
+            if (!this.keyManager.isKeyDown(KEY_CONTROL)) {
+                return;
+            }
+            const transform = this.getTransform();
+            transform.tx = e.clientX - this.startPosition.x;
+            transform.ty = e.clientY - this.startPosition.y;
+            this.setMatrix(transform);
+            this.eventDispatcher.dispatch(MOVE_SCREEN);
         });
     }
 

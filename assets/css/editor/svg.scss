@@ -1,6 +1,8 @@
 @import "colors";
 
 svg {
+  user-select: none;
+
   linearGradient {
     stop[offset="0"] {
       stop-color: #8be1e7;

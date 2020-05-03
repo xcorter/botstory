@@ -1,9 +1,5 @@
 import * as _ from 'lodash';
-
-export interface Position {
-    x: number;
-    y: number;
-}
+import {Position} from './position';
 
 export interface Answer {
     next_question_id: number;

@@ -2,7 +2,8 @@ import logger from '../core/logger/error';
 import Runner from '../core/helper/singleRun'
 import NodeRepository from '../repository/nodeRepository'
 import {Tree} from "./tree";
-import {Node, Answer, Templates, Position} from "./node";
+import {Position} from './position';
+import {Node, Answer, Templates} from "./node";
 import * as _ from 'lodash';
 import {AnswerHelper} from "./answer";
 import {LinkHelper} from "./link";
@@ -42,9 +43,13 @@ class GameGraph {
         this.menu = new Menu(this.tree, this.nodeRepository, this.eventDispatcher);
         this.menu.init();
 
-        this.scale = new Scale('[scale-increase]', '[scale-decrease]', this.graphNode, this.eventDispatcher);
-        this.loading = new Loading(this.eventDispatcher);
         this.keyManager = new KeyManager();
+        this.scale = new Scale(
+            this.graphNode,
+            this.eventDispatcher,
+            this.keyManager
+        );
+        this.loading = new Loading(this.eventDispatcher);
         // window.tree = this.tree;
     }
 
@@ -142,9 +147,7 @@ class GameGraph {
     removeNode(node: Node) {
         this.tree.removeNode(node);
         const linesId = node.getNodeLineId();
-        console.log(linesId);
         const elementNodeListOf = this.app.querySelectorAll('.' + linesId);
-        console.log(elementNodeListOf);
         elementNodeListOf.forEach((value) => {
             value.remove();
         });
