@@ -6,6 +6,7 @@ import KeyManager from "../core/keyManager/keyManager";
 
 const SCALE_STEP = 0.1;
 const MIN_SCALE_STEP = 0.4;
+const MAX_SCALE_STEP = 1.5;
 const MOVE_STEP_HORIZONTAL = 15;
 const MOVE_STEP_VERTICAL = 15;
 
@@ -43,19 +44,18 @@ export class Scale {
         this.eventDispatcher = eventDispatcher;
         this.keyManager = keyManager;
 
-        window.addEventListener('wheel', (e) => {
-            if (e.deltaY < 0) {
-                this.increaseScale(e);
-            }
-            else if (e.deltaY > 0) {
-                this.decreaseScale(e);
-            }
-        });
+        window.addEventListener('wheel', (e) => this.changeScale(e));
 
         this.scale = 1.0;
         this.graph.style.transform = 'matrix(1,0,0,1,0,0)';
         this.screenMoving();
         this.cursorMoving();
+    }
+
+    width() {
+        const rect = this.graph.getBoundingClientRect();
+        console.log(rect.right - rect.left);
+        return rect.right - rect.left;
     }
 
     cursorMoving() {
@@ -122,26 +122,6 @@ export class Scale {
         });
     }
 
-    increaseScale(e: WheelEvent) {
-        if (this.scale >= 1.5) {
-            return;
-        }
-        this.scale += SCALE_STEP;
-        this.changeScale(this.scale, true);
-        this.updateWidth();
-        this.eventDispatcher.dispatch(CHANGE_SCALE);
-    }
-
-    decreaseScale(e: WheelEvent) {
-        if (this.scale <= MIN_SCALE_STEP) {
-            return;
-        }
-        this.scale -= SCALE_STEP;
-        this.changeScale(this.scale, false);
-        this.updateWidth();
-        this.eventDispatcher.dispatch(CHANGE_SCALE);
-    }
-
     right() {
         const matrix = this.getTransform();
         matrix.tx = matrix.tx - MOVE_STEP_HORIZONTAL;
@@ -166,28 +146,39 @@ export class Scale {
         this.setMatrix(matrix);
     }
 
-    private changeScale(value: number, increase: boolean) {
-        const matrix = this.getTransform();
-
-        if (increase) {
-            matrix.ty -= 30 / this.scale;
-            matrix.tx += 30 / this.scale;
-        } else {
-            matrix.ty += 30 / this.scale;
-            matrix.tx -= 30 / this.scale;
+    private changeScale(e: WheelEvent) {
+        let scaleDelta = -1 * SCALE_STEP;
+        if (e.deltaY < 0) {
+            scaleDelta = SCALE_STEP;
         }
+        if (e.deltaY < 0 && this.scale >= MAX_SCALE_STEP) {
+            return;
+        } else if (e.deltaY > 0 && this.scale <= MIN_SCALE_STEP) {
+            return;
+        }
+        let lastScale = this.scale;
+        this.scale += scaleDelta;
 
-        matrix.a = value;
-        matrix.d = value;
+        const matrix = this.getTransform();
+        let mouseX = e.pageX - matrix.tx,
+            mouseY = e.pageY - matrix.ty,
+            newX = mouseX * (this.scale / lastScale),
+            newY = mouseY * (this.scale / lastScale),
+            deltaX = mouseX - newX,
+            deltaY = mouseY - newY;
+
+        matrix.tx += deltaX;
+        matrix.ty += deltaY;
+
+        matrix.a = this.scale;
+        matrix.d = this.scale;
+
         this.setMatrix(matrix);
+        this.eventDispatcher.dispatch(CHANGE_SCALE);
     }
 
     private setMatrix(matrix: Matrix) {
         this.graph.style.transform = matrix.toStyle();
-    }
-
-    private updateWidth() {
-        this.graph.style.width = 'calc(100% / ' + this.scale + ')'
     }
 
     getTransform(): Matrix {

@@ -1,5 +1,8 @@
 @import "colors";
-
+.graph {
+  width: 0;
+  height: 0;
+}
 .menu {
   position: fixed;
   z-index: 10;
