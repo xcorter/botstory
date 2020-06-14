@@ -29,7 +29,7 @@ class Matrix {
 
 export class Scale {
 
-    private scale: number;
+    private scale: number = 1.0;
 
     graph: HTMLElement;
     eventDispatcher: EventDispatcher;
@@ -46,16 +46,9 @@ export class Scale {
 
         window.addEventListener('wheel', (e) => this.changeScale(e));
 
-        this.scale = 1.0;
         this.graph.style.transform = 'matrix(1,0,0,1,0,0)';
         this.screenMoving();
         this.cursorMoving();
-    }
-
-    width() {
-        const rect = this.graph.getBoundingClientRect();
-        console.log(rect.right - rect.left);
-        return rect.right - rect.left;
     }
 
     cursorMoving() {
@@ -88,6 +81,7 @@ export class Scale {
 
         document.querySelector('svg').addEventListener('mouseup', (e: MouseEvent) => {
             this.startMoving = false;
+            this.eventDispatcher.dispatch(MOVE_SCREEN);
         });
         document.querySelector('svg').addEventListener('mousemove', (e: MouseEvent) => {
             if (!this.startMoving) {
@@ -197,5 +191,19 @@ export class Scale {
 
     getScale() {
         return this.scale;
+    }
+
+    getCenter(): Position {
+        const matrix = this.getTransform();
+        const scaledWidth = window.screen.availWidth / matrix.d;
+        const scaledHeight = window.screen.availHeight / matrix.d;
+
+        const left = scaledWidth / 2 - matrix.tx / matrix.d;
+        const top = scaledHeight / 2 - matrix.ty / matrix.d;
+
+        return {
+            x: left,
+            y: top,
+        }
     }
 }

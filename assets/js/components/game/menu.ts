@@ -27,11 +27,11 @@ export class Menu {
     }
 
     newNode() {
-        const matrix = this.scale.getTransform();
+        const centerPosition = this.scale.getCenter();
         const nodePosition = {
-            x: (window.screen.availWidth) / matrix.d / 2 - matrix.tx  * matrix.d,
-            y: (window.screen.availHeight / 2) * matrix.d - matrix.ty,
-        };
+            x: centerPosition.x - 200 * this.scale.getScale(),
+            y: centerPosition.y - 146 * this.scale.getScale(),
+        }
         const node = new Node({
             id: null,
             position: nodePosition,
