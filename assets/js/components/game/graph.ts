@@ -9,7 +9,14 @@ import {AnswerHelper} from "./answer";
 import {LinkHelper} from "./link";
 import {Menu} from "./menu";
 import {EventDispatcher} from "../core/event";
-import {CHANGE_SCALE, LOADING_RUN, LOADING_STOP, MOVE_SCREEN, NEW_NODE} from "../core/event/const";
+import {
+    CHANGE_SCALE_START, CHANGE_SCALE_STOP,
+    LOADING_RUN,
+    LOADING_STOP,
+    MOVE_SCREEN_START,
+    MOVE_SCREEN_STOP,
+    NEW_NODE
+} from "../core/event/const";
 import {Scale} from "./scale";
 import {Loading} from "./loading";
 import {KEY_ENTER, KEY_SHIFT} from "../core/keyManager/keys";
@@ -137,10 +144,12 @@ class GameGraph {
             }, 1000);
         });
 
-        this.eventDispatcher.addListener(MOVE_SCREEN, () => {
-            this.drawLines();
+        this.eventDispatcher.addListener([MOVE_SCREEN_START, CHANGE_SCALE_START], () => {
+            this.hideLines()
         });
-        this.eventDispatcher.addListener(CHANGE_SCALE, () => {
+
+        this.eventDispatcher.addListener([MOVE_SCREEN_STOP, CHANGE_SCALE_STOP], () => {
+            this.showLines();
             this.drawLines();
         });
     }
@@ -400,6 +409,24 @@ class GameGraph {
                 })
                 .finally(() => this.eventDispatcher.dispatch(LOADING_STOP));
         }, 1000);
+    }
+
+    private hideLines() {
+        const svg = this.getSVG();
+        if (!svg.classList.contains('hidden')) {
+            svg.classList.add("hidden");
+        }
+    }
+
+    private showLines() {
+        const svg = this.getSVG();
+        if (svg.classList.contains('hidden')) {
+            svg.classList.remove("hidden");
+        }
+    }
+
+    private getSVG(): SVGElement {
+        return <SVGElement> this.app.querySelector('svg');
     }
 }
 

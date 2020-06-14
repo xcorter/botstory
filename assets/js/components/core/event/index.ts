@@ -6,7 +6,17 @@ export class EventDispatcher {
         this.events = {};
     }
 
-    addListener(event: string, callback: (data?: any) => any) {
+    addListener(event: string | string[], callback: (data?: any) => any) {
+        if (typeof event === 'string') {
+            this.addOneListener(event, callback);
+            return;
+        }
+        event.forEach((value) => {
+            this.addOneListener(value, callback);
+        });
+    }
+
+    private addOneListener(event: string, callback: (data?: any) => any) {
         // Create the event if not exists
         if (this.events[event] === undefined) {
             this.events[event] = {

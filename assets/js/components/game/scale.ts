@@ -1,8 +1,14 @@
 import {EventDispatcher} from "../core/event";
-import {CHANGE_SCALE, MOVE_SCREEN} from "../core/event/const";
+import {
+    CHANGE_SCALE_START,
+    CHANGE_SCALE_STOP,
+    MOVE_SCREEN_START,
+    MOVE_SCREEN_STOP
+} from "../core/event/const";
 import {KEY_CONTROL} from "../core/keyManager/keys";
 import {Position} from './position';
 import KeyManager from "../core/keyManager/keyManager";
+import singleRun from "../core/helper/singleRun";
 
 const SCALE_STEP = 0.1;
 const MIN_SCALE_STEP = 0.4;
@@ -70,20 +76,24 @@ export class Scale {
             }
         });
 
-        document.querySelector('svg').addEventListener('mousedown', (e: MouseEvent) => {
+        document.querySelector('.app').addEventListener('mousedown', (e: MouseEvent) => {
+            console.log('down')
             this.startMoving = true;
             const matrix = this.getTransform();
             this.startPosition = {
                 x: e.clientX - matrix.tx,
                 y: e.clientY - matrix.ty,
-            };
+            }
+            if (this.movingMode) {
+                this.eventDispatcher.dispatch(MOVE_SCREEN_START);
+            }
         });
 
-        document.querySelector('svg').addEventListener('mouseup', (e: MouseEvent) => {
+        document.querySelector('.app').addEventListener('mouseup', (e: MouseEvent) => {
             this.startMoving = false;
-            this.eventDispatcher.dispatch(MOVE_SCREEN);
+            this.eventDispatcher.dispatch(MOVE_SCREEN_STOP);
         });
-        document.querySelector('svg').addEventListener('mousemove', (e: MouseEvent) => {
+        document.querySelector('.app').addEventListener('mousemove', (e: MouseEvent) => {
             if (!this.startMoving) {
                 return;
             }
@@ -94,7 +104,6 @@ export class Scale {
             transform.tx = e.clientX - this.startPosition.x;
             transform.ty = e.clientY - this.startPosition.y;
             this.setMatrix(transform);
-            this.eventDispatcher.dispatch(MOVE_SCREEN);
         });
     }
 
@@ -112,7 +121,14 @@ export class Scale {
             } else if (event.key === 'ArrowDown') {
                 this.down();
             }
-            this.eventDispatcher.dispatch(MOVE_SCREEN);
+            this.eventDispatcher.dispatch(MOVE_SCREEN_START);
+        });
+
+        document.addEventListener('keyup', event => {
+            if (['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'].indexOf(event.key) === -1) {
+                return;
+            }
+            this.eventDispatcher.dispatch(MOVE_SCREEN_STOP);
         });
     }
 
@@ -141,6 +157,7 @@ export class Scale {
     }
 
     private changeScale(e: WheelEvent) {
+        this.eventDispatcher.dispatch(CHANGE_SCALE_START);
         let scaleDelta = -1 * SCALE_STEP;
         if (e.deltaY < 0) {
             scaleDelta = SCALE_STEP;
@@ -168,7 +185,9 @@ export class Scale {
         matrix.d = this.scale;
 
         this.setMatrix(matrix);
-        this.eventDispatcher.dispatch(CHANGE_SCALE);
+        singleRun.run(-1, () => {
+            this.eventDispatcher.dispatch(CHANGE_SCALE_STOP);
+        }, 100);
     }
 
     private setMatrix(matrix: Matrix) {
