@@ -14,3 +14,6 @@
 
 2. Для запуска миграций инеобходимо выполнить `docker-compose exec botstory-php bin/console doctrine:migrations:migrate`
 
+## Help
+docker-compose exec php php vendor/bin/phpstan analyse src --level=6
+
