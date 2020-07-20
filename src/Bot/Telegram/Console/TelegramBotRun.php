@@ -92,7 +92,8 @@ class TelegramBotRun extends Command
                     throw new \RuntimeException('Player from telegram is null');
                 }
 
-                $user = $this->userRepository->findProviderUserId($userFromTelegram->getId(), PlayerConstant::PROVIDER_TELEGRAM);
+                $telegramUserId = (string) $userFromTelegram->getId();
+                $user = $this->userRepository->findProviderUserId($telegramUserId, PlayerConstant::PROVIDER_TELEGRAM);
                 if (!$user) {
                     $user = $this->createNewUser($userFromTelegram);
                 }
@@ -126,7 +127,8 @@ class TelegramBotRun extends Command
      */
     private function createNewUser(TelegramUser $userFromTelegram): Player
     {
-        $user = new Player($userFromTelegram->getId(), PlayerConstant::PROVIDER_TELEGRAM);
+        $telegramUserId = (string) $userFromTelegram->getId();
+        $user = new Player($telegramUserId, PlayerConstant::PROVIDER_TELEGRAM);
         $user
             ->setFirstName($userFromTelegram->getFirstName())
             ->setLastName($userFromTelegram->getLastName())

@@ -10,14 +10,8 @@ use App\Core\Interaction\Constraint\ConstraintInterface;
 
 class ConstraintsFactory
 {
-    /**
-     * @var GameConstraintRepositoryInterface
-     */
-    private $gameConstraintRepository;
-    /**
-     * @var ConstraintFactory
-     */
-    private $constraintFactory;
+    private GameConstraintRepositoryInterface $gameConstraintRepository;
+    private ConstraintFactory $constraintFactory;
 
     /**
      * ConstraintsFactory constructor.

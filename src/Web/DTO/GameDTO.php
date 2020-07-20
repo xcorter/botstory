@@ -7,7 +7,7 @@ use App\Core\User\Entity\User;
 
 class GameDTO
 {
-    public $name;
+    public string $name;
 
     private User $user;
 
@@ -16,7 +16,7 @@ class GameDTO
         $this->user = $user;
     }
 
-    public function toEntity()
+    public function toEntity(): Game
     {
         return new Game($this->name, $this->user);
     }

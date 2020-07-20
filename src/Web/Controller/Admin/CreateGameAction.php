@@ -52,8 +52,6 @@ class CreateGameAction
             $this->gameService->save($game);
             return new RedirectResponse($this->router->generate('admin_main_page'));
         }
-        return new Response([
-            'form' => $form->createView()
-        ]);
+        return new RedirectResponse($this->router->generate('create_game_form'));
     }
 }

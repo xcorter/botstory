@@ -173,6 +173,9 @@
     "php": {
         "version": "7.4"
     },
+    "phpstan/phpstan": {
+        "version": "0.12.33"
+    },
     "psr/cache": {
         "version": "1.0.1"
     },

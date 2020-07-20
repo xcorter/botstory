@@ -141,7 +141,7 @@ class RunGameMode implements ModeInterface
 
     private function sendMessage(Message $message, Question $question)
     {
-        $chatId = $message->getChat()->getId();
+        $chatId = (string) $message->getChat()->getId();
         $interactionResponse = $this->interactionService->showQuestion($chatId, $question);
         $sendMessage = $this->responseConverter->convertToTelegramMessage($interactionResponse);
         $this->telegramService->sendMessage($sendMessage);

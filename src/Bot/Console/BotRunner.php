@@ -19,5 +19,6 @@ class BotRunner extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output->writeln('I`m running');
+        return 0;
     }
 }

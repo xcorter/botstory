@@ -8,6 +8,10 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class GameForm extends AbstractType
 {
+    /**
+     * {@inheritdoc}
+     * @return void
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder

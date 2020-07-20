@@ -6,15 +6,12 @@ use App\Core\Game\Entity\GameContext;
 
 class LessConstraint extends AbstractConstraint
 {
-    /**
-     * @var bool
-     */
-    private $orEquals;
+    private bool $orEquals;
 
     /**
      * AbstractConstraint constructor.
      * @param int $characteristicId
-     * @param $value
+     * @param mixed $value
      * @param bool $orEquals
      */
     public function __construct(int $characteristicId, $value, bool $orEquals)

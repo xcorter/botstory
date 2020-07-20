@@ -15,5 +15,6 @@ class ActionFactory
             case 3:
                 return new EquatingAction($action['target'], $action['value']);
         }
+        throw new \DomainException('Operation not found, id: ' . $action['operation']);
     }
 }

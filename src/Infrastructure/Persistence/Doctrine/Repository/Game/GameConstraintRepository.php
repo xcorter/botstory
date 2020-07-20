@@ -9,10 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class GameConstraintRepository implements GameConstraintRepositoryInterface
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
 
     /**
      * GameConstraintRepository constructor.

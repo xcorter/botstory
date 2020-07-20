@@ -4,19 +4,16 @@ namespace App\Core\Interaction\Constraint;
 
 abstract class AbstractConstraint implements ConstraintInterface
 {
+    protected int $characteristicId;
     /**
-     * @var int
-     */
-    protected $characteristicId;
-    /**
-     * @var
+     * @var mixed
      */
     protected $value;
 
     /**
      * AbstractConstraint constructor.
      * @param int $characteristicId
-     * @param $value
+     * @param mixed $value
      */
     public function __construct(int $characteristicId, $value)
     {

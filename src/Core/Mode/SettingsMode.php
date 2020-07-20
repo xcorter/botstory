@@ -42,7 +42,7 @@ class SettingsMode implements ModeInterface
     public function run(Player $user, Message $message): void
     {
         $user->selectSettingsMenu();
-        $interactionResponse = $this->interactionService->showSettings($message->getChat()->getId());
+        $interactionResponse = $this->interactionService->showSettings((string) $message->getChat()->getId());
         $sendMessage = $this->responseConverter->convertToTelegramMessage($interactionResponse);
         $this->telegramService->sendMessage($sendMessage);
     }

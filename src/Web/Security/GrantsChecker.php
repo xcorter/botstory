@@ -19,6 +19,11 @@ class GrantsChecker
         $this->authorizationChecker = $authorizationChecker;
     }
 
+    /**
+     * @param mixed $attributes
+     * @param mixed|null $subject
+     * @param string $message
+     */
     public function denyAccessUnlessGranted($attributes, $subject = null, string $message = 'Access Denied.'): void
     {
         if (!$this->isGranted($attributes, $subject)) {
@@ -30,6 +35,11 @@ class GrantsChecker
         }
     }
 
+    /**
+     * @param mixed $attributes
+     * @param null $subject
+     * @return bool
+     */
     private function isGranted($attributes, $subject = null): bool
     {
         return $this->authorizationChecker->isGranted($attributes, $subject);

@@ -62,7 +62,7 @@ class SelectGameMode implements ModeInterface
         $games = $this->gameRepository->findAll();
 
         $interactionResponse = $this->interactionService->showAllGames(
-            $message->getChat()->getId(),
+            (string) $message->getChat()->getId(),
             $games
         );
         $sendMessage = $this->responseConverter->convertToTelegramMessage($interactionResponse);

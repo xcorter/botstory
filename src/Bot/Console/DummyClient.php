@@ -2,9 +2,7 @@
 
 namespace App\Bot\Console;
 
-use App\Core\CommandProcessor\DummyCommandProcessor;
 use App\Core\Interaction\InteractionService;
-use App\Core\Player\PlayerContext;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -35,12 +33,6 @@ class DummyClient extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
-        $interactionResponse = $this->interactionService->getInfo();
-        $userContext = new PlayerContext();
-        $output->writeln($interactionResponse->getText());
-        $command = fgets(STDIN, 4096);
-
-
+        return 0;
     }
 }

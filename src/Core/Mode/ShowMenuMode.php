@@ -42,7 +42,7 @@ class ShowMenuMode implements ModeInterface
     public function run(Player $user, Message $message): void
     {
         $user->showMenuStep();
-        $interactionResponse = $this->interactionService->getInfo($message->getChat()->getId());
+        $interactionResponse = $this->interactionService->getInfo((string) $message->getChat()->getId());
         $sendMessage = $this->responseConverter->convertToTelegramMessage($interactionResponse);
         $this->telegramService->sendMessage($sendMessage);
     }

@@ -12,7 +12,7 @@ class GameVoter extends Voter
 {
     const EDIT = 'edit';
 
-    private $security;
+    private Security $security;
 
     public function __construct(Security $security)
     {
@@ -34,6 +34,12 @@ class GameVoter extends Voter
         return true;
     }
 
+    /**
+     * @param string $attribute
+     * @param mixed $subject
+     * @param TokenInterface $token
+     * @return bool
+     */
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
         $user = $token->getUser();
@@ -44,7 +50,7 @@ class GameVoter extends Voter
         }
 
         // you know $subject is a Game object, thanks to `supports()`
-        /** @var Game $post */
+        /** @var Game $game */
         $game = $subject;
 
         switch ($attribute) {
