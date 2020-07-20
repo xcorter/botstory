@@ -11,25 +11,25 @@ class Node
      * @var int|null $id
      * @Type("integer")
      */
-    private $id;
+    private ?int $id;
 
     /**
      * @var string $text
      * @Type("string")
      */
-    private $text;
+    private string $text;
 
     /**
      * @var NodePosition
      * @Type("App\Editor\DTO\NodePosition")
      */
-    private $position;
+    private NodePosition $position;
 
     /**
      * @var Answer[]
      * @Type("array<App\Editor\DTO\Answer>")
      */
-    private $answers;
+    private array $answers;
 
     /**
      * @return int|null
@@ -37,6 +37,12 @@ class Node
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+        return $this;
     }
 
     /**

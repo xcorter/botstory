@@ -8,15 +8,8 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class GameService
 {
-    /**
-     * @var GameRepositoryInterface
-     */
-    private $gameRepository;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
+    private GameRepositoryInterface $gameRepository;
+    private EventDispatcherInterface $eventDispatcher;
 
     /**
      * GameService constructor.

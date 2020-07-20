@@ -11,3 +11,14 @@ jms_serializer:
 #            another-name:
 #                namespace_prefix: "My\\BarBundle"
 #                path: "@MyBarBundle/Resources/config/serializer"
+
+services:
+    App\Core\Utils\Serialization\SerializerFactory: ~
+
+    camel_case_serializer:
+        class: 'JMS\Serializer\SerializerInterface'
+        factory: ['@App\Core\Utils\Serialization\SerializerFactory', 'createCameCaseSerializer']
+
+    identical_serializer:
+        class: 'JMS\Serializer\SerializerInterface'
+        factory: ['@App\Core\Utils\Serialization\SerializerFactory', 'createIdenticalPropertySerializer']

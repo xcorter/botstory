@@ -7,22 +7,24 @@ use JMS\Serializer\Annotation\Type;
 class Answer
 {
     /**
-     * @var null|int
      * @Type("int")
      */
-    private $id;
+    private ?int $id;
 
     /**
-     * @var null|int
      * @Type("int")
      */
-    private $nextQuestionId;
+    private ?int $nextQuestionId = null;
 
     /**
-     * @var string
      * @Type("string")
      */
-    private $text;
+    private string $text;
+
+    /**
+     * @Type("string")
+     */
+    private ?string $viewId = null;
 
     /**
      * @return int|null
@@ -30,6 +32,12 @@ class Answer
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+        return $this;
     }
 
     /**
@@ -46,5 +54,13 @@ class Answer
     public function getText(): string
     {
         return $this->text;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getViewId(): ?string
+    {
+        return $this->viewId;
     }
 }

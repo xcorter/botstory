@@ -9,6 +9,8 @@ import {KEY_CONTROL} from "../core/keyManager/keys";
 import {Position} from './position';
 import KeyManager from "../core/keyManager/keyManager";
 import singleRun from "../core/helper/singleRun";
+import ActionManager from "../core/actionManager/actionManager";
+import {EDITING} from "../core/actionManager/actions";
 
 const SCALE_STEP = 0.1;
 const MIN_SCALE_STEP = 0.4;
@@ -40,15 +42,17 @@ export class Scale {
     graph: HTMLElement;
     eventDispatcher: EventDispatcher;
     keyManager: KeyManager;
+    actionManager: ActionManager;
 
     movingMode: boolean = false;
     startMoving: boolean = false;
     startPosition: Position;
 
-    constructor(graph: HTMLElement, eventDispatcher: EventDispatcher, keyManager: KeyManager) {
+    constructor(graph: HTMLElement, eventDispatcher: EventDispatcher, keyManager: KeyManager, actionManager: ActionManager) {
         this.graph = graph;
         this.eventDispatcher = eventDispatcher;
         this.keyManager = keyManager;
+        this.actionManager = actionManager;
 
         window.addEventListener('wheel', (e) => this.changeScale(e));
 
@@ -77,7 +81,9 @@ export class Scale {
         });
 
         document.querySelector('.app').addEventListener('mousedown', (e: MouseEvent) => {
-            console.log('down')
+            if (!this.keyManager.isKeyDown(KEY_CONTROL)) {
+                return;
+            }
             this.startMoving = true;
             const matrix = this.getTransform();
             this.startPosition = {
@@ -90,6 +96,9 @@ export class Scale {
         });
 
         document.querySelector('.app').addEventListener('mouseup', (e: MouseEvent) => {
+            if (!this.startMoving) {
+                return;
+            }
             this.startMoving = false;
             this.eventDispatcher.dispatch(MOVE_SCREEN_STOP);
         });
@@ -110,6 +119,9 @@ export class Scale {
     screenMoving() {
         document.addEventListener('keydown', event => {
             if (['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'].indexOf(event.key) === -1) {
+                return;
+            }
+            if (this.actionManager.has(EDITING)) {
                 return;
             }
             if (event.key === 'ArrowRight') {

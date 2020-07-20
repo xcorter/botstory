@@ -38,7 +38,7 @@ class QuestionService
         $this->logger = $logger;
     }
 
-    public function updateQuestion(Game $game, string $json): Question
+    public function updateQuestion(Game $game, string $json): Node
     {
         /** @var Node $node */
         $node = $this->serializer->deserialize($json, Node::class, 'json');
@@ -62,11 +62,13 @@ class QuestionService
         ;
 
         $this->questionRepository->save($question);
+        $node->setId($question->getId());
 
         $answers = $this->answerRepository->satisfyBy(new QuestionIdSpecification($question->getId()));
         $nodeAnswers = $node->getAnswers();
-        foreach ($nodeAnswers as $nodeAnswer) {
+        foreach ($nodeAnswers as $key => $nodeAnswer) {
             $answer = null;
+            $isNewAnswer = false;
             if ($nodeAnswer->getId()) {
                 foreach ($answers as $answer) {
                     if ($nodeAnswer->getId() === $answer->getId()) {
@@ -84,6 +86,7 @@ class QuestionService
                     $nodeAnswer->getText(),
                     null
                 );
+                $isNewAnswer = true;
             }
             $nextQuestion = null;
             if ($nodeAnswer->getNextQuestionId()) {
@@ -93,11 +96,14 @@ class QuestionService
             }
             $answer->setNextQuestion($nextQuestion);
             $this->answerRepository->save($answer);
+            if ($isNewAnswer) {
+                $nodeAnswers[$key]->setId($answer->getId());
+            }
         }
         $answers = $this->answerRepository->satisfyBy(new QuestionIdSpecification($question->getId()));
         $this->removeAnswers($nodeAnswers, $answers);
 
-        return $question;
+        return $node;
     }
 
     public function deleteQuestion(Game $game, int $questionId): void
@@ -151,5 +157,10 @@ class QuestionService
         foreach ($deletedAnswers as $answer) {
             $this->answerRepository->remove($answer);
         }
+    }
+
+    private function toNodeDto(Question $question)
+    {
+
     }
 }

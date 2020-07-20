@@ -16,7 +16,7 @@ class Question
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private int $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(type="string")
@@ -61,7 +61,7 @@ class Question
     }
 
 
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }

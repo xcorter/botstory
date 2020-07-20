@@ -2,13 +2,13 @@ import * as _ from 'lodash';
 import {Position} from './position';
 
 export interface Answer {
-    next_question_id: number;
+    nextQuestionId: number | null;
     id: number;
     text: string;
-    viewId: string;
+    viewId: string | null;
 }
 
-interface Element {
+export interface Element {
     id: number | null;
     position: Position;
     text: string;
@@ -19,6 +19,7 @@ interface Element {
 export class Templates {
     static node: string = document.getElementById('node-template').innerHTML;
     static line: string = document.getElementById('line-template').innerHTML;
+    static answer: string = document.getElementById('answer-template').innerHTML;
 }
 
 export class Node {
@@ -122,7 +123,7 @@ export class Node {
         const answer = <Answer> {
             id: null,
             text: '',
-            next_question_id: null,
+            nextQuestionId: null,
             viewId: viewId
         };
         this.el.answers.push(answer);
@@ -135,7 +136,7 @@ export class Node {
 
     removeAnswerLink(answerViewId: string) {
         const answer = this.getAnswerById(answerViewId);
-        answer.next_question_id = null;
+        answer.nextQuestionId = null;
     }
 
     getNodeLineId(): string {

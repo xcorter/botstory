@@ -7,6 +7,7 @@ use App\Core\Answer\AnswerRepositoryInterface;
 use App\Core\Answer\Specification\QuestionIdSpecification;
 use App\Core\Game\Entity\Game;
 use App\Web\Security\GrantsChecker;
+use JMS\Serializer\SerializerInterface;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -18,22 +19,23 @@ class UpdateNodeAction
     private QuestionService $questionService;
     private LoggerInterface $logger;
     private GrantsChecker $grantsChecker;
-    private AnswerRepositoryInterface $answerRepository;
+    private SerializerInterface $serializer;
 
     /**
      * UpdateNodeAction constructor.
      * @param QuestionService $questionService
      * @param LoggerInterface $logger
      * @param GrantsChecker $grantsChecker
-     * @param AnswerRepositoryInterface $answerRepository
+     * @param SerializerInterface $serializer
      */
-    public function __construct(QuestionService $questionService, LoggerInterface $logger, GrantsChecker $grantsChecker, AnswerRepositoryInterface $answerRepository)
+    public function __construct(QuestionService $questionService, LoggerInterface $logger, GrantsChecker $grantsChecker, SerializerInterface $serializer)
     {
         $this->questionService = $questionService;
         $this->logger = $logger;
         $this->grantsChecker = $grantsChecker;
-        $this->answerRepository = $answerRepository;
+        $this->serializer = $serializer;
     }
+
 
     /**
      * @Route("/editor/game/{id}/node/", methods={"POST"}, name="update_node")
@@ -50,10 +52,9 @@ class UpdateNodeAction
             return JsonResponse::create();
         }
         $this->grantsChecker->denyAccessUnlessGranted(Game::ACTION_EDIT, $game);
-        $question = $this->questionService->updateQuestion($game, $json);
-        $answers = $this->answerRepository->satisfyBy(new QuestionIdSpecification($question->getId()));
+        $node = $this->questionService->updateQuestion($game, $json);
         return JsonResponse::create([
-            'data' => $question->toArray($answers),
+            'data' => json_decode($this->serializer->serialize($node, 'json'), true)
         ]);
     }
 }

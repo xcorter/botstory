@@ -8,10 +8,7 @@ use Throwable;
 
 class GrantsChecker
 {
-    /**
-     * @var AuthorizationCheckerInterface
-     */
-    private $authorizationChecker;
+    private AuthorizationCheckerInterface $authorizationChecker;
 
     /**
      * GrantsChecker constructor.

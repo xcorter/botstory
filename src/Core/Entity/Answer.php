@@ -126,7 +126,7 @@ class Answer
         $nextQuestionId =
             $this->getNextQuestion() ? $this->getNextQuestion()->getId() : null;
         return [
-            'next_question_id' => $nextQuestionId,
+            'nextQuestionId' => $nextQuestionId,
             'id' => $this->getId(),
             'text' => $this->getText()
         ];

@@ -3,13 +3,14 @@ import Runner from '../core/helper/singleRun'
 import NodeRepository from '../repository/nodeRepository'
 import {Tree} from "./tree";
 import {Position} from './position';
-import {Node, Answer, Templates} from "./node";
+import {Node, Answer, Templates, Element} from "./node";
 import * as _ from 'lodash';
 import {AnswerHelper} from "./answer";
 import {LinkHelper} from "./link";
 import {Menu} from "./menu";
 import {EventDispatcher} from "../core/event";
 import {
+    CHANGE_NODE,
     CHANGE_SCALE_START, CHANGE_SCALE_STOP,
     LOADING_RUN,
     LOADING_STOP,
@@ -21,6 +22,8 @@ import {Scale} from "./scale";
 import {Loading} from "./loading";
 import {KEY_ENTER, KEY_SHIFT} from "../core/keyManager/keys";
 import KeyManager from "../core/keyManager/keyManager";
+import ActionManager from "../core/actionManager/actionManager";
+import {EDITING} from "../core/actionManager/actions";
 
 class GameGraph {
 
@@ -36,6 +39,7 @@ class GameGraph {
     scale: Scale;
     loading: Loading;
     keyManager: KeyManager;
+    actionManager: ActionManager;
 
     constructor(app: HTMLElement) {
         this.app = app;
@@ -48,10 +52,12 @@ class GameGraph {
         this.eventDispatcher = new EventDispatcher();
 
         this.keyManager = new KeyManager();
+        this.actionManager = new ActionManager();
         this.scale = new Scale(
             this.graphNode,
             this.eventDispatcher,
-            this.keyManager
+            this.keyManager,
+            this.actionManager
         );
 
         this.menu = new Menu(this.tree, this.nodeRepository, this.eventDispatcher, this.scale);
@@ -86,27 +92,48 @@ class GameGraph {
     editAnswerHandler(node: Node, target: HTMLElement): void {
         const answerViewId = target.parentElement.dataset.viewId;
         node.updateAnswer(answerViewId, target.innerText);
-        this.updateNode(node);
+        this.updateNodeWithoutRerender(node);
     }
 
     setListeners(node: Node) {
         const options = <HTMLElement>node.getEl().getElementsByClassName('options')[0];
-        options.childNodes.forEach((option: HTMLElement) =>{
-            option.addEventListener('keydown', (e) => {
+        // edit answer events
+        options.childNodes.forEach((option: HTMLElement) => {
+            const answerText = <HTMLElement>option.querySelector('.answer-text');
+            answerText.addEventListener('focus', (e) => {
+                this.actionManager.add(EDITING);
+                console.log('focus');
+            });
+            answerText.addEventListener('keydown', (e) => {
                 if (e.key === KEY_ENTER && !this.keyManager.isKeyDown(KEY_SHIFT)) {
                     e.preventDefault();
                     window.getSelection().removeAllRanges();
                     const target = <HTMLElement> e.target;
-                    this.editAnswerHandler(node, target);
+                    target.blur();
                 }
             });
-            option.addEventListener('input', (e) => {
+            answerText.addEventListener('input', (e) => {
+                this.updateLines(node);
+            });
+            answerText.addEventListener('blur', (e) => {
+                this.actionManager.remove(EDITING);
                 const target = <HTMLElement> e.target;
                 this.editAnswerHandler(node, target);
             })
         });
 
-        (<HTMLElement>node.getEl().querySelector('[data-text]')).addEventListener('input', (e) => {
+        const dataText = (<HTMLElement>node.getEl().querySelector('[data-text]'));
+        dataText.addEventListener('input', (e) => {
+                // const target = <HTMLElement> e.target;
+                // node.updateText(target.innerText);
+                this.updateLines(node);
+            });
+        dataText.addEventListener('focus', (e) => {
+            this.actionManager.add(EDITING);
+        });
+        dataText.addEventListener('blur', (e) => {
+            this.actionManager.remove(EDITING);
+            this.eventDispatcher.dispatch(CHANGE_NODE);
             const target = <HTMLElement> e.target;
             node.updateText(target.innerText);
             this.updateNode(node);
@@ -116,6 +143,7 @@ class GameGraph {
         addButton.addEventListener('click', (e) => {
             node.addNewAnswer();
             this.renderNode(node);
+            this.drawLines();
         });
 
         const removeAnswerButtons =
@@ -127,6 +155,7 @@ class GameGraph {
                 node.removeAnswer(answerViewId);
                 this.renderNode(node);
                 this.updateNode(node);
+                this.updateLines(node);
             });
         }
 
@@ -211,7 +240,7 @@ class GameGraph {
                 const nodeLineId = targetNode.getNodeLineId();
                 link.classList.add(nodeLineId);
                 const answer = node.getAnswerById(answerEl.dataset.viewId);
-                answer.next_question_id = targetNode.el.id;
+                answer.nextQuestionId = targetNode.el.id;
                 this.eventDispatcher.dispatch(LOADING_RUN);
                 this.nodeRepository.save(node).then(() => this.eventDispatcher.dispatch(LOADING_STOP));
             };
@@ -287,6 +316,11 @@ class GameGraph {
         });
     }
 
+    updateLines(node: Node) {
+        node.getAnswers().forEach((answer) => this.drawLine(answer));
+        this.updateLinkIn(node);
+    }
+
     drawLines() {
         for (let nodesKey in this.tree.nodes) {
             const node = this.tree.nodes[nodesKey];
@@ -318,10 +352,10 @@ class GameGraph {
 
         const answerPinPosition = this.getCenter(answerPinEl);
 
-        if (!answer.next_question_id) {
+        if (!answer.nextQuestionId) {
             return;
         }
-        const nextNode = this.tree.getNode(answer.next_question_id);
+        const nextNode = this.tree.getNode(answer.nextQuestionId);
         if (!nextNode) {
             logger.error("Node for pin not found");
             return;
@@ -395,20 +429,52 @@ class GameGraph {
         }
     }
 
+    private updateNodeWithoutRerender(node: Node): void {
+        Runner.run(node.el.id, () => {
+            this.eventDispatcher.dispatch(LOADING_RUN);
+            this.nodeRepository.save(node)
+                .then(res => res.json())
+                .then(result => {
+                    console.log(result)
+                    // this.removeNode(node);
+                    // const newNode = new Node(data.data);
+                    // this.renderNode(newNode);
+                    // this.tree.addNode(newNode.el.id, newNode);
+                    // this.drawLines();
+                    this.updateNodeFields(result.data);
+                })
+                .finally(() => this.eventDispatcher.dispatch(LOADING_STOP));
+        }, 1000);
+    }
+
+    private updateNodeFields(data: any) {
+        let node = this.tree.getNode(data.id);
+
+        console.dir(node);
+        console.dir(data);
+    }
+
+
     private updateNode(node: Node): void {
         Runner.run(node.el.id, () => {
             this.eventDispatcher.dispatch(LOADING_RUN);
             this.nodeRepository.save(node)
                 .then(res => res.json())
                 .then(data => {
-                    this.removeNode(node);
-                    const newNode = new Node(data.data);
-                    this.renderNode(newNode);
-                    this.tree.addNode(newNode.el.id, newNode);
-                    this.drawLines();
+                    // this.removeNode(node);
+                    // const newNode = new Node(data.data);
+                    // this.renderNode(newNode);
+                    // this.tree.addNode(newNode.el.id, newNode);
+                    this.rerender(data.data)
                 })
                 .finally(() => this.eventDispatcher.dispatch(LOADING_STOP));
         }, 1000);
+    }
+
+    private rerender(el: Element) {
+        // el.id
+        let node = this.tree.getNode(el.id);
+
     }
 
     private hideLines() {

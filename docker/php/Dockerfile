@@ -1,7 +1,6 @@
 FROM php:7.4-fpm-alpine
 
 ARG XDEBUG_VERSION=2.9.5
-
 RUN set -xe \
         && apk add --no-cache --virtual .build-deps \
             $PHPIZE_DEPS \
@@ -30,6 +29,7 @@ RUN set -xe \
     && docker-php-ext-install opcache \
     && pecl clear-cache \
     && apk del .build-deps
+
 
 RUN echo 'xdebug.remote_autostart=true' >> /usr/local/etc/php/php.ini && \
     echo 'xdebug.remote_mode=req' >> /usr/local/etc/php/php.ini && \
