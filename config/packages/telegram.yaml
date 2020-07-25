@@ -11,10 +11,6 @@ services:
   SimpleTelegramBotClient\Config:
     arguments:
       $key: '%telegram_token%'
-    calls:
-      - method: setProxy
-        arguments:
-          - 'http://51.158.108.135:8811'
 
   GuzzleHttp\Client: ~
 
