@@ -7,7 +7,7 @@ use App\Core\User\Entity\User;
 
 class GameDTO
 {
-    public string $name;
+    public string $name = '';
 
     private User $user;
 
