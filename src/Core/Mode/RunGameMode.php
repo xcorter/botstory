@@ -115,7 +115,15 @@ class RunGameMode implements ModeInterface
             if (!$currentQuestion) {
                 throw new \RuntimeException('Question not found');
             }
-            $answer = $this->getAnswer($message, $currentQuestion);
+            try {
+                $answer = $this->getAnswer($message, $currentQuestion);
+            } catch (\LogicException $e) {
+                // END OF GAME
+                $user->resetContext();
+                $this->gameContextService->removeGameContext($user, $game);
+                return;
+            }
+
             $question = $answer->getNextQuestion();
             if ($question->isFinish()) {
                 $this->sendMessage($message, $question);
