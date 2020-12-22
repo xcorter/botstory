@@ -5,7 +5,7 @@ namespace App\Infrastructure\Persistence\Doctrine\Repository\Answer;
 use App\Core\Answer\AnswerRepositoryInterface;
 use App\Core\Answer\Specification\SpecificationInterface;
 use App\Core\Entity\Answer;
-use App\Core\Question\Entity\Question;
+use App\Core\Node\Entity\Node;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;

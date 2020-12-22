@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Core\Question\Entity;
+namespace App\Core\Node\Entity;
 
 use App\Core\Entity\Answer;
 use App\Core\Game\Entity\Game;
@@ -9,8 +9,12 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity()
  */
-class Question
+class Node
 {
+    public const TYPE_TEXT = 1;
+    public const TYPE_ACTION = 2;
+    public const TYPE_LOGIC = 3;
+
     /**
      * @ORM\Column(type="integer", options={"unsigned"=true})
      * @ORM\Id()
@@ -50,10 +54,15 @@ class Question
     private int $locationY;
 
     /**
-     * Question constructor.
-     * @param Game $game
-     * @param bool $isStart
+     * @ORM\Column(type="integer", options={"default":"1"})
      */
+    private int $type = 1;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    private string $actions;
+
     public function __construct(Game $game, bool $isStart)
     {
         $this->game = $game;
@@ -107,22 +116,18 @@ class Question
         return $this->locationY;
     }
 
-    public function setLocationX(int $locationX): Question
+    public function setLocationX(int $locationX): Node
     {
         $this->locationX = $locationX;
         return $this;
     }
 
-    public function setLocationY(int $locationY): Question
+    public function setLocationY(int $locationY): Node
     {
         $this->locationY = $locationY;
         return $this;
     }
 
-    /**
-     * @param Answer[] $answers
-     * @return array
-     */
     public function toArray(array $answers): array
     {
         $answersArr = [];
@@ -144,5 +149,21 @@ class Question
     public function belongsTo(Game $game): bool
     {
         return $this->getGame()->getId() === $game->getId();
+    }
+
+    /**
+     * @return int
+     */
+    public function getType(): int
+    {
+        return $this->type;
+    }
+
+    public function getActions(): ?array
+    {
+        if (!$this->actions) {
+            return null;
+        }
+        return json_decode($this->actions, true);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Core\Question\Specification;
+namespace App\Core\Node\Specification;
 
 use Doctrine\ORM\QueryBuilder;
 

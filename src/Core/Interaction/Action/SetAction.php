@@ -5,26 +5,12 @@ namespace App\Core\Interaction\Action;
 use App\Core\Game\Entity\GameContext;
 use App\Core\Interaction\ActionOperation;
 
-class EquatingAction implements ActionInterface
+class SetAction implements ActionInterface
 {
-    /**
-     * @var int
-     */
-    private $operation = ActionOperation::EQUATING;
-    /**
-     * @var string
-     */
-    private $target;
-    /**
-     * @var int
-     */
-    private $value;
+    private int $operation = ActionOperation::SET;
+    private string $target;
+    private int $value;
 
-    /**
-     * SumAction constructor.
-     * @param string $target
-     * @param int $value
-     */
     public function __construct(string $target, int $value)
     {
         $this->target = $target;

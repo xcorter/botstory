@@ -26,12 +26,12 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Core/Game/Entity'
                 prefix: 'App\Core\Game\Entity'
                 alias: App\Core\Game
-            App\Core\Question:
+            App\Core\Node:
                 is_bundle: false
                 type: annotation
-                dir: '%kernel.project_dir%/src/Core/Question/Entity'
-                prefix: 'App\Core\Question\Entity'
-                alias: App\Core\Question
+                dir: '%kernel.project_dir%/src/Core/Node/Entity'
+                prefix: 'App\Core\Node\Entity'
+                alias: App\Core\Node
             App\Core\User\:
                 is_bundle: false
                 type: annotation

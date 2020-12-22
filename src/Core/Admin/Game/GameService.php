@@ -6,8 +6,8 @@ use App\Core\Answer\AnswerRepositoryInterface;
 use App\Core\Answer\Specification\QuestionIdSpecification;
 use App\Core\Game\Entity\Game;
 use App\Core\Game\GameRepositoryInterface;
-use App\Core\Question\QuestionRepositoryInterface;
-use App\Core\Question\Specification\GameIdSpecification;
+use App\Core\Node\NodeRepositoryInterface;
+use App\Core\Node\Specification\GameIdSpecification;
 
 class GameService
 {
@@ -17,7 +17,7 @@ class GameService
      */
     private $gameRepository;
     /**
-     * @var QuestionRepositoryInterface
+     * @var NodeRepositoryInterface
      */
     private $questionRepository;
     /**
@@ -28,10 +28,10 @@ class GameService
     /**
      * GameService constructor.
      * @param GameRepositoryInterface $gameRepository
-     * @param QuestionRepositoryInterface $questionRepository
+     * @param NodeRepositoryInterface $questionRepository
      * @param AnswerRepositoryInterface $answerRepository
      */
-    public function __construct(GameRepositoryInterface $gameRepository, QuestionRepositoryInterface $questionRepository, AnswerRepositoryInterface $answerRepository)
+    public function __construct(GameRepositoryInterface $gameRepository, NodeRepositoryInterface $questionRepository, AnswerRepositoryInterface $answerRepository)
     {
         $this->gameRepository = $gameRepository;
         $this->questionRepository = $questionRepository;

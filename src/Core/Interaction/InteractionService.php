@@ -5,7 +5,7 @@ namespace App\Core\Interaction;
 use App\Core\Answer\AnswerRepositoryInterface;
 use App\Core\Answer\Specification\QuestionIdSpecification;
 use App\Core\Game\Entity\Game;
-use App\Core\Question\Entity\Question;
+use App\Core\Node\Entity\Node;
 
 class InteractionService
 {
@@ -55,10 +55,10 @@ class InteractionService
 
     /**
      * @param string $chatId
-     * @param Question $question
+     * @param Node $question
      * @return InteractionResponse
      */
-    public function showQuestion(string $chatId, Question $question): InteractionResponse
+    public function showQuestion(string $chatId, Node $question): InteractionResponse
     {
         $interactionResponse = new InteractionResponse($chatId, $question->getText());
 

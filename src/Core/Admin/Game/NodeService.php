@@ -7,25 +7,25 @@ use App\Core\Answer\Specification\NextQuestionSpecification;
 use App\Core\Answer\Specification\QuestionIdSpecification;
 use App\Core\Entity\Answer;
 use App\Core\Game\Entity\Game;
-use App\Core\Question\Entity\Question;
+use App\Core\Node\Entity\Node;
 use App\Core\Game\GameRepositoryInterface;
-use App\Core\Question\QuestionRepositoryInterface;
-use App\Core\Question\Specification\IdSpecification;
-use App\Editor\DTO\Node;
+use App\Core\Node\NodeRepositoryInterface;
+use App\Core\Node\Specification\IdSpecification;
+use App\Editor\DTO\Node as NodeEditor;
 use JMS\Serializer\SerializerInterface;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 
-class QuestionService
+class NodeService
 {
-    private QuestionRepositoryInterface $questionRepository;
+    private NodeRepositoryInterface $questionRepository;
     private AnswerRepositoryInterface $answerRepository;
     private SerializerInterface $serializer;
     private GameRepositoryInterface $gameRepository;
     private LoggerInterface $logger;
 
     public function __construct(
-        QuestionRepositoryInterface $questionRepository,
+        NodeRepositoryInterface $questionRepository,
         SerializerInterface $serializer,
         AnswerRepositoryInterface $answerRepository,
         GameRepositoryInterface $gameRepository,
@@ -38,21 +38,21 @@ class QuestionService
         $this->logger = $logger;
     }
 
-    public function updateQuestion(Game $game, string $json): Node
+    public function updateQuestion(Game $game, string $json): NodeEditor
     {
-        /** @var Node $node */
-        $node = $this->serializer->deserialize($json, Node::class, 'json');
+        /** @var NodeEditor $node */
+        $node = $this->serializer->deserialize($json, NodeEditor::class, 'json');
 
         if ($node->getId()) {
             $question = $this->questionRepository->satisfyOneBy(new IdSpecification($node->getId()));
             if (!$question) {
-                throw new \OutOfRangeException('Question not found');
+                throw new \OutOfRangeException('Node not found');
             }
             if (!$question->belongsTo($game)) {
                 throw new \Exception('User does not have grants');
             }
         } else {
-            $question = new Question($game, false);
+            $question = new Node($game, false);
         }
 
         $question
@@ -110,13 +110,13 @@ class QuestionService
     {
         $question = $this->questionRepository->satisfyOneBy(new IdSpecification($questionId));
         if (!$question) {
-            $this->logger->error('Question already removed', [
+            $this->logger->error('Node already removed', [
                 'questionId' => $questionId
             ]);
             return;
         }
         if (!$question->belongsTo($game)) {
-            $errorMessage = 'Question does not belongs to game';
+            $errorMessage = 'Node does not belongs to game';
             $this->logger->error($errorMessage, [
                 'questionId' => $questionId,
                 'gameId' => $game->getId(),
@@ -135,7 +135,7 @@ class QuestionService
         $this->questionRepository->remove($question);
     }
 
-    public function serialize(Question $question): string
+    public function serialize(Node $question): string
     {
         return $this->serializer->serialize($question, 'json');
     }
@@ -159,7 +159,7 @@ class QuestionService
         }
     }
 
-    private function toNodeDto(Question $question)
+    private function toNodeDto(Node $question)
     {
 
     }

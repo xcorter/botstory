@@ -2,7 +2,7 @@
 
 namespace App\Core\Entity;
 
-use App\Core\Question\Entity\Question;
+use App\Core\Node\Entity\Node;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -14,108 +14,72 @@ class Answer
      * @ORM\Column(type="integer", options={"unsigned"=true})
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @var integer $id
      */
-    private $id;
+    private int $id;
     /**
-     * @ORM\ManyToOne(targetEntity="App\Core\Question\Entity\Question")
-     * @ORM\JoinColumn(name="question_id", referencedColumnName="id")
-     * @var Question
+     * @ORM\ManyToOne(targetEntity="App\Core\Node\Entity\Node")
+     * @ORM\JoinColumn(name="node_id", referencedColumnName="id")
      */
-    private $question;
+    private Node $question;
     /**
      * @ORM\Column(type="string", length=255)
-     * @var string $text
      */
-    private $text;
+    private string $text;
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @var string|null $action
      */
-    private $action;
+    private ?string $action;
     /**
-     * @ORM\ManyToOne(targetEntity="App\Core\Question\Entity\Question")
-     * @ORM\JoinColumn(name="next_question_id", referencedColumnName="id", nullable=true)
-     * @var Question|null
+     * @ORM\ManyToOne(targetEntity="App\Core\Node\Entity\Node")
+     * @ORM\JoinColumn(name="next_node_id", referencedColumnName="id", nullable=true)
      */
-    private $nextQuestion;
+    private ?Node $nextQuestion;
 
-    /**
-     * Answer constructor.
-     * @param Question $question
-     * @param string $text
-     * @param string|null $action
-     */
-    public function __construct(Question $question, string $text, ?string $action)
+    public function __construct(Node $question, string $text, ?string $action)
     {
         $this->question = $question;
         $this->text = $text;
         $this->action = $action;
     }
 
-    /**
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @return Question
-     */
-    public function getQuestion(): Question
+    public function getQuestion(): Node
     {
         return $this->question;
     }
 
-    /**
-     * @return string
-     */
     public function getText(): string
     {
         return $this->text;
     }
 
-    /**
-     * @return string|null
-     */
     public function getAction(): ?string
     {
         return $this->action;
     }
 
-    /**
-     * @return bool
-     */
+
     public function hasAction(): bool
     {
         return (bool) $this->action;
     }
 
-    /**
-     * @return Question|null
-     */
-    public function getNextQuestion(): ?Question
+    public function getNextNode(): ?Node
     {
         return $this->nextQuestion;
     }
 
-    /**
-     * @param string $text
-     * @return Answer
-     */
     public function setText(string $text): Answer
     {
         $this->text = $text;
         return $this;
     }
 
-    /**
-     * @param Question|null $nextQuestion
-     * @return Answer
-     */
-    public function setNextQuestion(?Question $nextQuestion): Answer
+    public function setNextQuestion(?Node $nextQuestion): Answer
     {
         $this->nextQuestion = $nextQuestion;
         return $this;
@@ -124,7 +88,7 @@ class Answer
     public function toArray(): array
     {
         $nextQuestionId =
-            $this->getNextQuestion() ? $this->getNextQuestion()->getId() : null;
+            $this->getNextNode() ? $this->getNextNode()->getId() : null;
         return [
             'nextQuestionId' => $nextQuestionId,
             'id' => $this->getId(),

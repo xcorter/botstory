@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Infrastructure\Persistence\Doctrine\Repository\Question;
+namespace App\Infrastructure\Persistence\Doctrine\Repository\Node;
 
-use App\Core\Question\Entity\Question;
-use App\Core\Question\QuestionRepositoryInterface;
-use App\Core\Question\Specification\SpecificationInterface;
+use App\Core\Node\Entity\Node;
+use App\Core\Node\NodeRepositoryInterface;
+use App\Core\Node\Specification\SpecificationInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query;
 
 /**
  * @method createQueryBuilder(string $string)
  */
-class QuestionRepository implements QuestionRepositoryInterface
+class NodeRepository implements NodeRepositoryInterface
 {
     private EntityManagerInterface $entityManager;
 
@@ -24,13 +24,13 @@ class QuestionRepository implements QuestionRepositoryInterface
     {
         return $this->entityManager->createQueryBuilder()
             ->select('q.id', 'q.text')
-            ->from(Question::class, 'q')
+            ->from(Node::class, 'q')
             ->andWhere('q.game = :gameId')
             ->setParameter('gameId', $gameId)
             ->getQuery();
     }
 
-    public function save(Question $question): void
+    public function save(Node $question): void
     {
         $this->entityManager->persist($question);
         $this->entityManager->flush();
@@ -38,14 +38,14 @@ class QuestionRepository implements QuestionRepositoryInterface
 
     /**
      * @param SpecificationInterface $specification
-     * @return Question[]
+     * @return Node[]
      */
     public function satisfyBy(SpecificationInterface $specification): array
     {
         return $this->applySpecification($specification)->getResult();
     }
 
-    public function satisfyOneBy(SpecificationInterface $specification): ?Question
+    public function satisfyOneBy(SpecificationInterface $specification): ?Node
     {
         return $this->applySpecification($specification)->getOneOrNullResult();
     }
@@ -54,12 +54,12 @@ class QuestionRepository implements QuestionRepositoryInterface
     {
         $qb = $this->entityManager->createQueryBuilder();
         $qb->select('q')
-            ->from(Question::class, 'q');
+            ->from(Node::class, 'q');
         $specification->match($qb,'q');
         return $qb->getQuery();
     }
 
-    public function remove(Question $question): void
+    public function remove(Node $question): void
     {
         $this->entityManager->remove($question);
         $this->entityManager->flush();

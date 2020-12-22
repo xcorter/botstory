@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Web\Controller\Editor;
 
-use App\Core\Admin\Game\QuestionService;
+use App\Core\Admin\Game\NodeService;
 use App\Core\Game\Entity\Game;
 use App\Core\Game\GameRepositoryInterface;
 use App\Web\Security\GrantsChecker;
@@ -15,19 +15,19 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class DeleteNodeAction
 {
-    private QuestionService $questionService;
+    private NodeService $questionService;
     private GameRepositoryInterface $gameRepository;
     private LoggerInterface $logger;
     private GrantsChecker $grantsChecker;
 
     /**
      * DeleteNodeAction constructor.
-     * @param QuestionService $questionService
+     * @param NodeService $questionService
      * @param GameRepositoryInterface $gameRepository
      * @param LoggerInterface $logger
      * @param GrantsChecker $grantsChecker
      */
-    public function __construct(QuestionService $questionService, GameRepositoryInterface $gameRepository, LoggerInterface $logger, GrantsChecker $grantsChecker)
+    public function __construct(NodeService $questionService, GameRepositoryInterface $gameRepository, LoggerInterface $logger, GrantsChecker $grantsChecker)
     {
         $this->questionService = $questionService;
         $this->gameRepository = $gameRepository;

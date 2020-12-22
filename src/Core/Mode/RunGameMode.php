@@ -7,7 +7,7 @@ use App\Bot\Telegram\Util\Helper;
 use App\Core\Answer\AnswerRepositoryInterface;
 use App\Core\Answer\Specification\QuestionIdSpecification;
 use App\Core\Entity\Answer;
-use App\Core\Question\Entity\Question;
+use App\Core\Node\Entity\Node;
 use App\Core\Entity\Player;
 use App\Core\Game\GameContextRepositoryInterface;
 use App\Core\Game\GameContextService;
@@ -15,9 +15,9 @@ use App\Core\Game\GameRepositoryInterface;
 use App\Core\Interaction\ActionApplier;
 use App\Core\Interaction\ConstraintsFactory;
 use App\Core\Interaction\InteractionService;
-use App\Core\Question\QuestionRepositoryInterface;
-use App\Core\Question\Specification\IdSpecification;
-use App\Core\Question\Specification\StartQuestionSpecification;
+use App\Core\Node\NodeRepositoryInterface;
+use App\Core\Node\Specification\IdSpecification;
+use App\Core\Node\Specification\StartQuestionSpecification;
 use SimpleTelegramBotClient\Dto\Type\Message;
 use SimpleTelegramBotClient\TelegramService;
 
@@ -28,7 +28,7 @@ class RunGameMode implements ModeInterface
      */
     private $gameRepository;
     /**
-     * @var QuestionRepositoryInterface
+     * @var NodeRepositoryInterface
      */
     private $questionRepository;
     /**
@@ -71,7 +71,7 @@ class RunGameMode implements ModeInterface
     /**
      * RunGameMode constructor.
      * @param GameRepositoryInterface $gameRepository
-     * @param QuestionRepositoryInterface $questionRepository
+     * @param NodeRepositoryInterface $questionRepository
      * @param InteractionService $interactionService
      * @param ResponseConverter $responseConverter
      * @param TelegramService $telegramService
@@ -82,7 +82,7 @@ class RunGameMode implements ModeInterface
      * @param GameOverMode $gameOverMode
      * @param GameContextService $gameContextService
      */
-    public function __construct(GameRepositoryInterface $gameRepository, QuestionRepositoryInterface $questionRepository, InteractionService $interactionService, ResponseConverter $responseConverter, TelegramService $telegramService, AnswerRepositoryInterface $answerRepository, ActionApplier $actionApplier, ConstraintsFactory $constraintsFactory, GameContextRepositoryInterface $gameContextRepository, GameOverMode $gameOverMode, GameContextService $gameContextService)
+    public function __construct(GameRepositoryInterface $gameRepository, NodeRepositoryInterface $questionRepository, InteractionService $interactionService, ResponseConverter $responseConverter, TelegramService $telegramService, AnswerRepositoryInterface $answerRepository, ActionApplier $actionApplier, ConstraintsFactory $constraintsFactory, GameContextRepositoryInterface $gameContextRepository, GameOverMode $gameOverMode, GameContextService $gameContextService)
     {
         $this->gameRepository = $gameRepository;
         $this->questionRepository = $questionRepository;
@@ -109,11 +109,11 @@ class RunGameMode implements ModeInterface
         if (!$currentQuestionId) {
             // Начало игры
             $user->runGame($gameId);
-            $question = $this->questionRepository->satisfyOneBy(new StartQuestionSpecification($gameId));
+            $node = $this->questionRepository->satisfyOneBy(new StartQuestionSpecification($gameId));
         } else {
             $currentQuestion = $this->questionRepository->satisfyOneBy(new IdSpecification($currentQuestionId));
             if (!$currentQuestion) {
-                throw new \RuntimeException('Question not found');
+                throw new \RuntimeException('Node not found');
             }
             try {
                 $answer = $this->getAnswer($message, $currentQuestion);
@@ -124,30 +124,35 @@ class RunGameMode implements ModeInterface
                 return;
             }
 
-            $question = $answer->getNextQuestion();
-            if ($question->isFinish()) {
-                $this->sendMessage($message, $question);
-                $user->resetContext();
-                $this->gameContextService->removeGameContext($user, $game);
-                return;
-            }
-            $constraint = $this->constraintsFactory->createConstraint($game);
-            $gameContext = $this->gameContextRepository->findGameContext($user, $game);
-            if (!$constraint->isSatisfiedBy($gameContext)) {
+            $node = $answer->getNextNode();
+            if ($node->isFinish()) {
+                $this->sendMessage($message, $node);
                 $user->resetContext();
                 $this->gameContextService->removeGameContext($user, $game);
                 return;
             }
         }
-        if (!$question) {
+        $constraint = $this->constraintsFactory->createConstraint($game);
+        $gameContext = $this->gameContextRepository->findGameContext($user, $game);
+        if (!$constraint->isSatisfiedBy($gameContext)) {
+            $user->resetContext();
+            $this->gameContextService->removeGameContext($user, $game);
             return;
         }
 
-        $user->setCurrentQuestion($question->getId());
-        $this->sendMessage($message, $question);
+        if (!$node) {
+            return;
+        }
+        if ($node->getType() === Node::TYPE_TEXT) {
+            $user->setCurrentQuestion($node->getId());
+        } elseif ($node->getType() === Node::TYPE_ACTION) {
+            $this->actionApplier->apply($user, $node->getActions());
+        }
+
+        $this->sendMessage($message, $node);
     }
 
-    private function sendMessage(Message $message, Question $question)
+    private function sendMessage(Message $message, Node $question)
     {
         $chatId = (string) $message->getChat()->getId();
         $interactionResponse = $this->interactionService->showQuestion($chatId, $question);
@@ -157,10 +162,10 @@ class RunGameMode implements ModeInterface
 
     /**
      * @param Message $message
-     * @param Question $question
+     * @param Node $question
      * @return Answer
      */
-    private function getAnswer(Message $message, Question $question): Answer
+    private function getAnswer(Message $message, Node $question): Answer
     {
         $answers = $this->answerRepository->satisfyBy(new QuestionIdSpecification($question->getId()));
         $normalizedAnswer = Helper::trim($message->getText());

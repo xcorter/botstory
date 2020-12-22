@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Core\Question;
+namespace App\Core\Node;
 
 
 use App\Core\Game\Event\NewGame;
@@ -10,15 +10,15 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class NewGameSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var QuestionService
+     * @var NodeService
      */
     private $questionService;
 
     /**
      * NewGameSubscriber constructor.
-     * @param QuestionService $questionService
+     * @param NodeService $questionService
      */
-    public function __construct(QuestionService $questionService)
+    public function __construct(NodeService $questionService)
     {
         $this->questionService = $questionService;
     }

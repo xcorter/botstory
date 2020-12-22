@@ -2,7 +2,7 @@
 
 namespace App\Web\Controller\Editor;
 
-use App\Core\Admin\Game\QuestionService;
+use App\Core\Admin\Game\NodeService;
 use App\Core\Answer\AnswerRepositoryInterface;
 use App\Core\Answer\Specification\QuestionIdSpecification;
 use App\Core\Game\Entity\Game;
@@ -16,19 +16,19 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class UpdateNodeAction
 {
-    private QuestionService $questionService;
+    private NodeService $questionService;
     private LoggerInterface $logger;
     private GrantsChecker $grantsChecker;
     private SerializerInterface $serializer;
 
     /**
      * UpdateNodeAction constructor.
-     * @param QuestionService $questionService
+     * @param NodeService $questionService
      * @param LoggerInterface $logger
      * @param GrantsChecker $grantsChecker
      * @param SerializerInterface $serializer
      */
-    public function __construct(QuestionService $questionService, LoggerInterface $logger, GrantsChecker $grantsChecker, SerializerInterface $serializer)
+    public function __construct(NodeService $questionService, LoggerInterface $logger, GrantsChecker $grantsChecker, SerializerInterface $serializer)
     {
         $this->questionService = $questionService;
         $this->logger = $logger;

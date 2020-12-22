@@ -13,26 +13,18 @@ class UpdateLog
      * @ORM\Column(type="integer", options={"unsigned"=true})
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @var integer $id
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\Column(type="integer", options={"unsigned"=true})
-     * @var integer $updateId
      */
-    private $updateId;
+    private int $updateId;
     /**
      * @ORM\Column(type="string", length=255)
-     * @var string $name
      */
-    private $provider;
+    private string $provider;
 
-    /**
-     * Update constructor.
-     * @param int $updateId
-     * @param string $provider
-     */
     public function __construct(int $updateId, string $provider)
     {
         $this->updateId = $updateId;

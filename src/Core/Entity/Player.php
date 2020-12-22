@@ -16,59 +16,42 @@ class Player
      * @ORM\Column(type="integer", options={"unsigned"=true})
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @var integer $id
      */
-    private $id;
+    private int $id;
     /**
      * @ORM\Column(type="string", length=255)
-     * @var string $name
      */
-    private $providerUserId;
+    private string $providerUserId;
     /**
      * @ORM\Column(type="string", length=255)
-     * @var string $name
      */
-    private $providerName;
+    private string $providerName;
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @var string|null $firstName
      */
-    private $firstName;
+    private ?string $firstName;
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @var string|null $lastName
      */
-    private $lastName;
+    private ?string $lastName;
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @var string|null $username
      */
-    private $username;
+    private ?string $username;
     /**
      * @ORM\Column(type="string", length=1000)
-     * @var string $context
      */
-    private $context;
-    /**
-     * @var PlayerContext
-     */
-    private $contextObject;
+    private string $context;
+    private PlayerContext $contextObject;
     /**
      * @ORM\Column(type="datetime_immutable")
-     * @var DateTimeImmutable $createdDate
      */
-    private $createdDate;
+    private DateTimeImmutable $createdDate;
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
-     * @var DateTimeImmutable $updatedDate
      */
-    private $updatedDate;
+    private DateTimeImmutable $updatedDate;
 
-    /**
-     * Player constructor.
-     * @param string $providerUserId
-     * @param string $providerName
-     */
     public function __construct(string $providerUserId, string $providerName)
     {
         $this->providerUserId = $providerUserId;
